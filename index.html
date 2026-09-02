@@ -17,88 +17,124 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Header Section -->
+        <!-- Header & Navigation Tabs Section -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product และ Model รายวัน</p>
+                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และ Line ภาพรวม</p>
             </div>
-            <div class="flex items-center gap-3 bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800">
-                <span class="text-xs text-slate-400">สถานะระบบ:</span>
-                <span class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> กำลังดำเนินงาน
-                </span>
+            
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                <!-- Navigation Tabs -->
+                <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
+                    <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg">
+                        📋 Matrix View
+                    </button>
+                    <button onclick="switchTab('overview')" id="tab-btn-overview" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                        🏢 Line Overview (6 Lines)
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ระบบพร้อมใช้งาน
+                </div>
             </div>
         </header>
 
-        <!-- Control & Upload Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Upload Excel Card -->
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
-                <div>
-                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                        📁 อัปโหลดไฟล์แผนผลิต (Excel)
-                    </h2>
-                    <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+        <!-- ================= PAGE 1: MATRIX VIEW ================= -->
+        <div id="page-matrix" class="space-y-6">
+            <!-- Control & Upload Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Upload Excel Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
+                            📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                        </h2>
+                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+                    </div>
+                    
+                    <div class="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-slate-950/50 group">
+                        <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
+                        <div class="flex flex-col items-center justify-center space-y-2">
+                            <svg class="w-8 h-8 text-slate-400 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
+                            <p class="text-[10px] text-slate-500">(.xlsx, .xls)</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-slate-950/50 group">
-                    <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
-                    <div class="flex flex-col items-center justify-center space-y-2">
-                        <svg class="w-8 h-8 text-slate-400 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
-                        <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
-                        <p class="text-[10px] text-slate-500">(.xlsx, .xls)</p>
+
+                <!-- Settings Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
+                            ⚙️ ตั้งค่าการคำนวณกำลังการผลิต
+                        </h2>
+                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงการทำงานต่อวันเพื่อใช้คำนวณค่า UPH (Units Per Hour)</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
+                            <div class="flex items-center gap-3">
+                                <input type="number" id="working-hours" value="8" min="1" max="24" step="0.5" 
+                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500"
+                                    onchange="recalculateAll()">
+                                <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-500">* เปลี่ยนค่า UPH จะคำนวณใหม่ทันทีแบบ Real-time</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Settings Card -->
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
-                <div>
-                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                        ⚙️ ตั้งค่าการคำนวณกำลังการผลิต
-                    </h2>
-                    <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงการทำงานต่อวันเพื่อใช้คำนวณค่า UPH (Units Per Hour)</p>
+            <!-- Matrix Table Section -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (Matrix View)</h3>
+                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
                 </div>
                 
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
-                        <div class="flex items-center gap-3">
-                            <input type="number" id="working-hours" value="8" min="1" max="24" step="0.5" 
-                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500"
-                                onchange="recalculateAll()">
-                            <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
-                        </div>
-                    </div>
-                    <p class="text-[11px] text-slate-500">* เปลี่ยนค่า UPH จะคำนวณใหม่ทันทีแบบ Real-time</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="matrix-table">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="matrix-thead">
+                                <th class="p-3.5 pl-6">Product Group</th>
+                                <th class="p-3.5">Model</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
+                            <!-- ถูกสร้างด้วย JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- Matrix Table Section -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (Matrix View)</h3>
-                <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse" id="matrix-table">
-                    <thead>
-                        <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="matrix-thead">
-                            <th class="p-3.5 pl-6">Product Group</th>
-                            <th class="p-3.5">Model</th>
-                        </tr>
-                    </thead>
-                    <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
-                        <!-- ถูกสร้างด้วย JavaScript -->
-                    </tbody>
-                </table>
+        <!-- ================= PAGE 2: LINE OVERVIEW (6 LINES) ================= -->
+        <div id="page-overview" class="space-y-6 hidden">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตาม 6 ไลน์การผลิต (Line Overview)</h2>
+                        <p class="text-xs text-slate-400">สรุปยอดแผนผลิตรวมและกำลังการผลิตเฉลี่ยของแต่ละไลน์การผลิตหลัก</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
+                        <select id="overview-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
+                            <!-- ถูกสร้างด้วย JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cards Grid สำหรับ 6 Line -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="line-cards-container">
+                    <!-- ถูกสร้างด้วย JavaScript -->
+                </div>
             </div>
         </div>
 
@@ -129,12 +165,46 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
+        // กำหนดกลุ่ม 6 Line ตามที่ระบุ
+        const productionLines = [
+            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", groups: ["159", "199", "TM545", "G3 ECO"] },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", groups: ["TM10/12", "TM14", "TM19", "TM21"] },
+            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", groups: ["FUF14", "FUF18", "FUF22"] },
+            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", groups: ["TD 456", "TD 469", "TD 520"] },
+            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", groups: ["SBS 550", "SBS 620"] },
+            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", groups: ["BM23", "BM T-Door", "BM29", "BM T-Door (2)"] }
+        ];
+
         let planDatabase = {};
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
+        let activeTab = 'matrix';
 
         window.addEventListener('DOMContentLoaded', () => {
             initMatrixTable(currentDates);
+            initOverviewDateDropdown();
+            renderLineOverview();
         });
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            const btnMatrix = document.getElementById('tab-btn-matrix');
+            const btnOverview = document.getElementById('tab-btn-overview');
+            const pageMatrix = document.getElementById('page-matrix');
+            const pageOverview = document.getElementById('page-overview');
+
+            if (tabName === 'matrix') {
+                btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                pageMatrix.classList.remove('hidden');
+                pageOverview.classList.add('hidden');
+            } else {
+                btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                pageOverview.classList.remove('hidden');
+                pageMatrix.classList.add('hidden');
+                renderLineOverview();
+            }
+        }
 
         function formatExcelDate(serial) {
             if (typeof serial === 'number') {
@@ -217,6 +287,90 @@
             tbody.innerHTML = tbodyHTML;
         }
 
+        function initOverviewDateDropdown() {
+            const select = document.getElementById('overview-date-select');
+            let html = '';
+            currentDates.forEach(date => {
+                html += `<option value="${date}">${date}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        function renderLineOverview() {
+            const container = document.getElementById('line-cards-container');
+            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+
+            let cardsHTML = '';
+
+            productionLines.forEach((line, idx) => {
+                let lineTotalTarget = 0;
+                let groupBreakdown = [];
+
+                line.groups.forEach(groupName => {
+                    let groupObj = productStructure.find(g => g.group === groupName);
+                    let groupSum = 0;
+
+                    if (groupObj) {
+                        groupObj.models.forEach(model => {
+                            if (planDatabase[model] && planDatabase[model][selectedDate]) {
+                                groupSum += planDatabase[model][selectedDate];
+                            }
+                        });
+                    }
+                    lineTotalTarget += groupSum;
+                    groupBreakdown.push({ group: groupName, total: groupSum });
+                });
+
+                let lineUph = workingHours > 0 ? Math.round(lineTotalTarget / workingHours) : 0;
+                let colors = ['from-blue-500/20 to-indigo-500/20', 'from-emerald-500/20 to-teal-500/20', 'from-amber-500/20 to-orange-500/20', 'from-purple-500/20 to-pink-500/20', 'from-cyan-500/20 to-blue-500/20', 'from-rose-500/20 to-red-500/20'];
+                let borderColors = ['border-blue-500/30', 'border-emerald-500/30', 'border-amber-500/30', 'border-purple-500/30', 'border-cyan-500/30', 'border-rose-500/30'];
+
+                cardsHTML += `
+                    <div class="bg-gradient-to-br ${colors[idx % colors.length]} border ${borderColors[idx % borderColors.length]} p-5 rounded-2xl shadow-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> ${line.name}
+                                </h3>
+                                <span class="text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-full text-slate-300 font-mono">Line #${idx + 1}</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">${line.description}</p>
+                            
+                            <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดผลิตแยกตามกลุ่ม:</div>
+                `;
+
+                groupBreakdown.forEach(gb => {
+                    cardsHTML += `
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-300">• ${gb.group}</span>
+                            <span class="font-bold text-white">${gb.total > 0 ? gb.total.toLocaleString() : '-'}</span>
+                        </div>
+                    `;
+                });
+
+                cardsHTML += `
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center bg-slate-950/60 px-4 py-3 rounded-xl">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">รวม Target (${selectedDate})</span>
+                                <span class="text-lg font-extrabold text-amber-400">${lineTotalTarget > 0 ? lineTotalTarget.toLocaleString() : '-'}</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] text-slate-400 block">กำลังผลิต UPH</span>
+                                <span class="text-lg font-extrabold text-cyan-300">${lineUph > 0 ? lineUph.toLocaleString() : '0'} <span class="text-[10px] font-normal text-slate-400">อ/ชม.</span></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = cardsHTML;
+        }
+
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -237,7 +391,6 @@
                         return;
                     }
 
-                    const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
                     const count = smartParseExcelData(rawExcelData);
 
                     alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
@@ -249,13 +402,11 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // ระบบสมองกลอัจฉริยะกวาดหาและจับคู่ข้อมูลจาก Excel ทุกรูปแบบ
         function smartParseExcelData(rows) {
             let headerRowIndex = 0;
             let dateColStartIndex = -1;
             let datesFound = [];
 
-            // 1. ค้นหาแถวที่เป็นหัวตารางวันเดือนปี
             for (let r = 0; r < Math.min(rows.length, 10); r++) {
                 let row = rows[r];
                 if (!row) continue;
@@ -271,10 +422,9 @@
             }
 
             if (dateColStartIndex === -1) {
-                dateColStartIndex = 2; // ค่าสำรองถ้าหาไม่เจอ
+                dateColStartIndex = 2;
             }
 
-            // 2. ดึงรายการวันที่ทั้งหมดจากแถวหัวตาราง
             let headerRow = rows[headerRowIndex] || rows[0];
             for (let c = dateColStartIndex; c < headerRow.length; c++) {
                 let cell = headerRow[c];
@@ -289,12 +439,10 @@
 
             let updatedCount = 0;
 
-            // 3. กวาดอ่านข้อมูลทุกแถวเพื่อจับคู่รุ่น Model อย่างละเอียด
             for (let i = headerRowIndex + 1; i < rows.length; i++) {
                 let r = rows[i];
                 if (!r || r.length === 0) continue;
 
-                // ค้นหาข้อความชื่อรุ่นจากทุกคอลัมน์ฝั่งซ้ายก่อนถึงคอลัมน์วันที่
                 let matchedModel = "";
                 for (let c = 0; c < dateColStartIndex; c++) {
                     let cellText = String(r[c] || "").trim();
@@ -320,7 +468,6 @@
 
                 if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
 
-                // 4. บันทึกข้อมูลแผนการผลิตตามวันที่
                 currentDates.forEach((dateText, idx) => {
                     let valIndex = dateColStartIndex + idx;
                     let rawTarget = parseFloat(r[valIndex]) || 0;
@@ -334,11 +481,14 @@
             }
 
             initMatrixTable(currentDates);
+            initOverviewDateDropdown();
+            renderLineOverview();
             return updatedCount;
         }
 
         function recalculateAll() {
             initMatrixTable(currentDates);
+            renderLineOverview();
         }
     </script>
 </body>
