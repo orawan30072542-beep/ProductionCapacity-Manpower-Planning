@@ -340,19 +340,16 @@
 
             productStructure.forEach(group => {
                 group.models.forEach((model, index) => {
-                    let parts = modelSubParts[model] || [{name: "Door F", ratio: 1}, {name: "Door R", ratio: 1}];
-                    let mult = getMultiplier(model);
-
                     tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors" data-model="${model}">`;
                     
                     if (index === 0) {
                         tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
                     }
                     
+                    // เอาข้อความชิ้นส่วนย่อยออก เหลือเฉพาะชื่อ Model
                     tbodyHTML += `
                         <td class="p-3.5 font-medium text-slate-300">
                             <div>${model}</div>
-                            <div class="text-[10px] text-cyan-400">${parts.map(p => `${p.name}(${p.ratio})`).join(', ')} (x${mult})</div>
                         </td>
                     `;
 
@@ -360,9 +357,10 @@
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
                         let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
+                        // เอาวงเล็บตัวเลขยอดชิ้นส่วนย่อยด้านหลังออก
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
-                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(${baseVal})</span></div>
+                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'}</div>
                                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
                             </td>
                         `;
@@ -696,7 +694,7 @@
                                 <thead>
                                     <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
                                         <th class="p-3.5 pl-6">Product Group</th>
-                                        <th class="p-3.5">Model & Sub-parts Config</th>
+                                        <th class="p-3.5">Model</th>
                                         <th class="p-3.5 text-center">เป้าหมายรุ่น</th>
                                         <th class="p-3.5 text-center">รวมชิ้นส่วนย่อย</th>
                                         <th class="p-3.5 text-center">UPH รวม</th>
@@ -715,14 +713,12 @@
                     let mult = getMultiplier(model);
                     let totalPartsVal = currentTarget * mult;
                     let calcUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
-                    let partsDesc = modelSubParts[model] ? modelSubParts[model].map(p => `${p.name}(${p.ratio})`).join(', ') : '2 Parts';
 
                     html += `
                         <tr class="hover:bg-slate-900/50">
                             <td class="p-3.5 pl-6 font-semibold text-blue-400">${groupName}</td>
                             <td class="p-3.5 font-medium text-slate-300">
                                 <div>${model}</div>
-                                <div class="text-[10px] text-cyan-400">${partsDesc} (ตัวคูณรวม: x${mult})</div>
                             </td>
                             <td class="p-3.5 text-center">
                                 <input type="number" min="0" value="${currentTarget > 0 ? currentTarget : ''}" placeholder="0" 
