@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Overview Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(30, 58, 138, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
+                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตจากแผนผลิต (รายวัน & รายชั่วโมง)</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                <div class="text-right">
+                    <span class="block text-xs text-gray-400">วันที่ปัจจุบัน</span>
+                    <span id="current-date" class="text-sm font-semibold text-blue-300"></span>
+                </div>
+                <div class="bg-blue-950 px-4 py-2 rounded-xl border border-blue-800 text-xs font-medium text-blue-200">
+                    สถานะ: <span class="text-emerald-400 font-bold">● กำลังดำเนินงาน</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
+                <p class="text-xs text-gray-400 uppercase tracking-wider">Order รวมรายวัน (เป้าหมาย)</p>
+                <h3 class="text-2xl font-bold text-white mt-1">12,450 <span class="text-sm font-normal text-gray-400">pcs</span></h3>
+            </div>
+            <div class="glass-panel p-5 rounded-xl border-t-2 border-emerald-500">
+                <p class="text-xs text-gray-400 uppercase Tracking-wider">ยอดผลิตจริงสะสม (Day Shift)</p>
+                <h3 class="text-2xl font-bold text-emerald-400 mt-1">6,120 <span class="text-sm font-normal text-gray-400">pcs</span></h3>
+            </div>
+            <div class="glass-panel p-5 rounded-xl border-t-2 border-indigo-500">
+                <p class="text-xs text-gray-400 uppercase tracking-wider">ยอดผลิตจริงสะสม (Night Shift)</p>
+                <h3 class="text-2xl font-bold text-indigo-400 mt-1">5,890 <span class="text-sm font-normal text-gray-400">pcs</span></h3>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-5 border-b border-blue-900/50 bg-blue-950/30 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-white">ตารางสรุปยอดผลิตแยกตาม Line การผลิต</h2>
+                <span class="text-xs text-gray-400">* หน่วยนับ: ชิ้น (pcs)</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-blue-950/80 text-blue-300 uppercase text-xs tracking-wider border-b border-blue-900">
+                            <th class="py-4 px-6 font-semibold">Production Line</th>
+                            <th class="py-4 px-6 font-semibold text-center">Order รายวัน (Target)</th>
+                            <th class="py-4 px-6 font-semibold text-center bg-blue-900/30">ยอดผลิตรายชั่วโมง (Day Shift)</th>
+                            <th class="py-4 px-6 font-semibold text-center bg-indigo-950/30">ยอดผลิตรายชั่วโมง (Night Shift)</th>
+                            <th class="py-4 px-6 font-semibold text-center">ยอดรวมสะสม</th>
+                            <th class="py-4 px-6 font-semibold text-center">% Achievement</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-blue-950 text-sm text-gray-300">
+                        
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door Press</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Back plate&Bottom Plate</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">1,000</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">950</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,950</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.5%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door Frame&Door Glass</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">1,500</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">720</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">700</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,420</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">94.6%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door A</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">1,600</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">800</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">800</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,600</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">100.0%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door B</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door C</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">950</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,850</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">92.5%</span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-blue-900/20 transition-colors">
+                            <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>Door In Door</span>
+                            </td>
+                            <td class="py-4 px-6 text-center font-semibold text-white">1,750</td>
+                            <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">900</td>
+                            <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">740</td>
+                            <td class="py-4 px-6 text-center font-bold text-emerald-400">1,640</td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">93.7%</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // แสดงวันที่ปัจจุบันอัตโนมัติ
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
+    </script>
+</body>
+</html>
