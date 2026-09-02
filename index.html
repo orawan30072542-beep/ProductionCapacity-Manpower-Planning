@@ -470,32 +470,38 @@
             return updatedCount;
         }
 
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+function handleExcelUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+    document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    let rawExcelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            let rawExcelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                    const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-                    const count = renderMatrixWithData(rawExcelData, workingHours);
+            if (!rawExcelData || rawExcelData.length === 0) {
+                alert('ไฟล์ Excel ว่างเปล่า ไม่มีข้อมูล');
+                return;
+            }
 
-                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
-                } catch (error) {
-                    console.error(error);
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+            const count = renderMatrixWithData(rawExcelData, workingHours);
+
+            alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
+        } catch (error) {
+            console.error(error);
+            // แสดงรายละเอียด Error ที่แท้จริงออกมาบนหน้าจอเพื่อช่วยในการตรวจสอบ
+            alert('เกิดข้อผิดพลาดในการอ่านไฟล์: ' + error.message);
         }
+    };
+    reader.readAsArrayBuffer(file);
+}
 
         function saveManualPlan() {
             const modelInput = document.getElementById('input-model').value.trim();
