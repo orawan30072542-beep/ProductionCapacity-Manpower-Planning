@@ -23,7 +23,7 @@
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (Press Machine แยกตาม 400T, 200T, 100T)</p>
+                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (เพิ่มจัดการกระบวนการและเวลาใน Press Machine ได้)</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -45,7 +45,6 @@
 
         <!-- ================= PAGE 1: MATRIX VIEW ================= -->
         <div id="page-matrix" class="space-y-6">
-            <!-- Control & Upload Section -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Upload Excel Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
@@ -88,7 +87,6 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
                         <div class="flex items-center gap-2 pt-2">
                             <button onclick="manualSaveData()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
                                 💾 บันทึกข้อมูล
@@ -117,7 +115,7 @@
                             </tr>
                         </thead>
                         <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
-                            <!-- ถูกสร้างด้วย JavaScript -->
+                            <!-- JS Generated -->
                         </tbody>
                     </table>
                 </div>
@@ -130,29 +128,27 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ด Press Machine เพื่อดูกลุ่มเครื่องจักรย่อย (400T, 200T, 100T) หรือคลิกไลน์อื่นๆ เพื่อตั้งค่ารุ่น (Model)</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ด Press Machine เพื่อจัดการรุ่น, เพิ่มกระบวนการทำงาน และตั้งค่าเวลา</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
                         <select id="overview-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
-                            <!-- ถูกสร้างด้วย JS -->
+                            <!-- JS Generated -->
                         </select>
                     </div>
                 </div>
 
-                <!-- Cards Grid สำหรับ Line หลัก -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="line-cards-container">
-                    <!-- ถูกสร้างด้วย JavaScript -->
+                    <!-- JS Generated -->
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- ================= MODAL DETAIL & MACHINE SUB-GROUPS ================= -->
+    <!-- ================= MODAL DETAIL ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <!-- Modal Header -->
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950">
                 <div>
                     <span id="modal-line-badge" class="text-[10px] bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full font-mono">Line Detail</span>
@@ -163,12 +159,10 @@
                 </button>
             </div>
             
-            <!-- Modal Body Content -->
             <div class="p-6 overflow-y-auto space-y-4" id="modal-body-content">
-                <!-- ถูกสร้างด้วย JavaScript -->
+                <!-- JS Generated -->
             </div>
 
-            <!-- Modal Footer -->
             <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-between items-center">
                 <div class="text-xs text-slate-400">
                     กำลังแสดงผลข้อมูลวันที่: <span id="modal-footer-date" class="font-bold text-amber-400">-</span>
@@ -181,7 +175,6 @@
     </div>
 
     <script>
-        // โครงสร้าง Product และ Model ทั้งหมด
         const productStructure = [
             { group: "159", models: ["159C", "159F"] },
             { group: "199", models: ["199C", "199F"] },
@@ -205,16 +198,35 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // กำหนด Line หลัก โดย Press Machine มี subMachines 3 กลุ่มใหญ่ (400T, 200T, 100T)
         let productionLines = [
             { 
                 name: "Press Machine", 
-                description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (แยกตาม 400T, 200T, 100T)", 
+                description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (แยกตาม 400T, 200T, 100T พร้อมเพิ่มกระบวนการและเวลา)", 
                 hasSubMachines: true,
                 subMachines: [
-                    { name: "400T Press Machine", selectedModels: ["159C", "159F"] },
-                    { name: "200T Press Machine", selectedModels: ["199C", "199F", "TM545#212", "TM545#235"] },
-                    { name: "100T Press Machine", selectedModels: ["G3 ECO 320", "G3 ECO 350"] }
+                    { 
+                        name: "400T Press Machine", 
+                        selectedModels: ["159C", "159F"],
+                        processes: [
+                            { name: "Blanking", timePerUnit: 15 },
+                            { name: "Drawing", timePerUnit: 25 }
+                        ]
+                    },
+                    { 
+                        name: "200T Press Machine", 
+                        selectedModels: ["199C", "199F", "TM545#212", "TM545#235"],
+                        processes: [
+                            { name: "Piercing", timePerUnit: 10 },
+                            { name: "Bending", timePerUnit: 20 }
+                        ]
+                    },
+                    { 
+                        name: "100T Press Machine", 
+                        selectedModels: ["G3 ECO 320", "G3 ECO 350"],
+                        processes: [
+                            { name: "Trimming", timePerUnit: 12 }
+                        ]
+                    }
                 ]
             },
             { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", hasSubMachines: false, selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
@@ -231,7 +243,7 @@
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
         let activeTab = 'matrix';
         let currentActiveLineIndex = null;
-        let selectedSubMachineIndex = null; // ควบคุมการเปิดเลือก Model ของ 400T/200T/100T
+        let selectedSubMachineIndex = null; 
 
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedData(); 
@@ -457,7 +469,7 @@
 
         function openLineModal(lineIndex) {
             currentActiveLineIndex = lineIndex;
-            selectedSubMachineIndex = null; // เริ่มต้นแสดงหน้าเมนูหลักของไลน์
+            selectedSubMachineIndex = null; 
             renderModalContent();
             document.getElementById('line-modal').classList.remove('hidden');
         }
@@ -475,12 +487,11 @@
 
             if (line.hasSubMachines) {
                 if (selectedSubMachineIndex === null) {
-                    // แสดงการ์ด 3 กลุ่มเครื่องจักรใหญ่ (400T, 200T, 100T)
                     contentHTML += `
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
                             <div>
                                 <p class="text-xs text-blue-400 font-semibold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">คลิกที่การ์ดกลุ่มเครื่องจักรด้านล่างเพื่อเข้าไปตั้งค่าเลือกรุ่นผลิต (Model)</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">คลิกที่การ์ดกลุ่มเครื่องจักรเพื่อตั้งค่ารุ่น (Model) และเพิ่มกระบวนการทำงานพร้อมกำหนดเวลา</p>
                             </div>
                             <span class="text-xs bg-purple-600/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/30">3 Machine Groups</span>
                         </div>
@@ -489,6 +500,7 @@
 
                     line.subMachines.forEach((sub, subIdx) => {
                         let modelCount = sub.selectedModels ? sub.selectedModels.length : 0;
+                        let processCount = sub.processes ? sub.processes.length : 0;
                         let subColors = ['border-purple-500/40 bg-purple-950/20 text-purple-300', 'border-blue-500/40 bg-blue-950/20 text-blue-300', 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300'];
 
                         contentHTML += `
@@ -496,14 +508,14 @@
                                 <div>
                                     <div class="flex justify-between items-start mb-2">
                                         <span class="font-bold text-sm text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
-                                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${modelCount} รุ่น</span>
+                                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${modelCount} รุ่น | ${processCount} กระบวนการ</span>
                                     </div>
                                     <div class="text-[11px] text-slate-400 space-y-1 mt-2 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 max-h-28 overflow-y-auto">
                         `;
 
                         if (modelCount > 0) {
                             sub.selectedModels.forEach(m => {
-                                contentHTML += `<div>• ${m}</div>`;
+                                contentHTML += `<div>• Model: ${m}</div>`;
                             });
                         } else {
                             contentHTML += `<div class="italic text-slate-500">ยังไม่ได้เลือกรุ่นผลิต</div>`;
@@ -513,7 +525,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-4 pt-2 border-t border-slate-800/80 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
-                                    ตั้งค่ารุ่นผลิต ➔
+                                    ตั้งค่ารุ่นและกระบวนการ ➔
                                 </div>
                             </div>
                         `;
@@ -521,36 +533,73 @@
 
                     contentHTML += `</div>`;
                 } else {
-                    // หน้าเลือก Model สำหรับกลุ่มเครื่องจักรย่อย (400T, 200T หรือ 100T)
                     let sub = line.subMachines[selectedSubMachineIndex];
+                    if (!sub.processes) sub.processes = [];
+
                     contentHTML += `
-                        <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 flex-wrap gap-3">
                             <div class="flex items-center gap-3">
                                 <button onclick="backToSubMachineList()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                    ⬅️ กลับสู่ 3 กลุ่มเครื่องจักร
+                                    ⬅️ กลับสู่หน้าเลือกกลุ่มเครื่อง
                                 </button>
                                 <div>
-                                    <p class="text-xs text-cyan-400 font-bold">⚙️ กำลังตั้งค่ารุ่นผลิตสำหรับ: ${sub.name}</p>
-                                    <p class="text-[11px] text-slate-400">ติ๊กเลือก Model ที่กลุ่มเครื่องจักรนี้รับผิดชอบ</p>
+                                    <p class="text-xs text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
+                                    <p class="text-[11px] text-slate-400">จัดการกระบวนการทำงาน เวลา และเลือกรุ่นผลิต</p>
                                 </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg">เลือกทั้งหมด</button>
-                                <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg">ล้างค่า</button>
                             </div>
                         </div>
 
-                        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                            <div class="overflow-x-auto max-h-[50vh] overflow-y-auto">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
-                                            <th class="p-3 pl-4 text-center w-16">เลือก</th>
-                                            <th class="p-3">Product Group</th>
-                                            <th class="p-3">Model</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-800/50 text-xs">
+                        <!-- ส่วนจัดการกระบวนการทำงานและเวลา -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-200 flex items-center gap-2">🛠️ กระบวนการทำงานและเวลาประจำเครื่อง (${sub.name})</span>
+                                <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all">+ เพิ่มกระบวนการ</button>
+                            </div>
+                            
+                            <div class="space-y-2 max-h-40 overflow-y-auto">
+                    `;
+
+                    if (sub.processes.length > 0) {
+                        sub.processes.forEach((proc, pIdx) => {
+                            contentHTML += `
+                                <div class="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                                    <input type="text" value="${proc.name}" placeholder="ชื่อกระบวนการ (เช่น Blanking)" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+                                    <div class="flex items-center gap-1">
+                                        <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-24 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white text-center focus:outline-none focus:border-blue-500">
+                                        <span class="text-[10px] text-slate-400 whitespace-nowrap">วินาที/ชิ้น</span>
+                                    </div>
+                                    <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 hover:text-rose-300 p-1.5 rounded-lg bg-rose-950/40 border border-rose-900/50" title="ลบกระบวนการ">🗑️</button>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        contentHTML += `<div class="text-xs text-slate-500 italic text-center py-2">ยังไม่มีการเพิ่มกระบวนการทำงาน</div>`;
+                    }
+
+                    contentHTML += `
+                            </div>
+                        </div>
+
+                        <!-- ส่วนเลือก Model -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center px-1">
+                                <span class="text-xs font-bold text-slate-200">📋 เลือกรุ่น (Model) ที่ผลิตในเครื่องนี้</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1 rounded-lg">เลือกทั้งหมด</button>
+                                    <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1 rounded-lg">ล้างค่า</button>
+                                </div>
+                            </div>
+                            <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                                <div class="overflow-x-auto max-h-[40vh] overflow-y-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                                <th class="p-3 pl-4 text-center w-16">เลือก</th>
+                                                <th class="p-3">Product Group</th>
+                                                <th class="p-3">Model</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-800/50 text-xs">
                     `;
 
                     productStructure.forEach(group => {
@@ -569,14 +618,14 @@
                     });
 
                     contentHTML += `
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     `;
                 }
             } else {
-                // สำหรับไลน์การผลิตอื่นๆ ที่ไม่มีเครื่องจักรย่อย
                 contentHTML += `
                     <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
@@ -633,6 +682,34 @@
 
         function backToSubMachineList() {
             selectedSubMachineIndex = null;
+            renderModalContent();
+        }
+
+        function addProcessToSubMachine(subIdx) {
+            let line = productionLines[currentActiveLineIndex];
+            let sub = line.subMachines[subIdx];
+            if (!sub.processes) sub.processes = [];
+            sub.processes.push({ name: "กระบวนการใหม่", timePerUnit: 10 });
+            manualSaveDataSilent();
+            renderModalContent();
+        }
+
+        function updateProcessName(subIdx, pIdx, val) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes[pIdx].name = val;
+            manualSaveDataSilent();
+        }
+
+        function updateProcessTime(subIdx, pIdx, val) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes[pIdx].timePerUnit = parseFloat(val) || 0;
+            manualSaveDataSilent();
+        }
+
+        function removeProcessFromSubMachine(subIdx, pIdx) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes.splice(pIdx, 1);
+            manualSaveDataSilent();
             renderModalContent();
         }
 
@@ -867,6 +944,9 @@
                                     savedLine.subMachines.forEach((savedSub, subIdx) => {
                                         if (productionLines[idx].subMachines[subIdx]) {
                                             productionLines[idx].subMachines[subIdx].selectedModels = savedSub.selectedModels;
+                                            if (savedSub.processes) {
+                                                productionLines[idx].subMachines[subIdx].processes = savedSub.processes;
+                                            }
                                         }
                                     });
                                 }
