@@ -68,13 +68,13 @@
                     </div>
                 </div>
 
-                <!-- Settings Card -->
+                <!-- Settings & Save Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                            ⚙️ ตั้งค่าการคำนวณกำลังการผลิต
+                            ⚙️ ตั้งค่าและการบันทึกข้อมูล
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงการทำงานต่อวันเพื่อใช้คำนวณค่า UPH (Units Per Hour)</p>
+                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช</p>
                     </div>
                     
                     <div class="space-y-4">
@@ -87,7 +87,16 @@
                                 <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
                             </div>
                         </div>
-                        <p class="text-[11px] text-slate-500">* เปลี่ยนค่า UPH จะคำนวณใหม่ทันทีแบบ Real-time</p>
+
+                        <!-- Action Buttons -->
+                        <div class="flex items-center gap-2 pt-2">
+                            <button onclick="manualSaveData()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                                💾 บันทึกข้อมูล
+                            </button>
+                            <button onclick="clearSavedData()" class="bg-rose-900/40 hover:bg-rose-900 text-rose-300 font-semibold text-xs py-3 px-4 rounded-xl border border-rose-800 transition-all" title="ล้างข้อมูลที่บันทึกไว้">
+                                🗑️ ล้างข้อมูล
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,7 +174,7 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // กำหนดกลุ่ม 9 Line ตามที่คุณกำหนด
+        // กำหนดกลุ่ม 9 Line ตามที่คุณต้องการ
         const productionLines = [
             { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", groups: ["159", "199", "TM545", "G3 ECO"] },
             { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", groups: ["TM10/12", "TM14", "TM19", "TM21"] },
@@ -183,6 +192,7 @@
         let activeTab = 'matrix';
 
         window.addEventListener('DOMContentLoaded', () => {
+            loadSavedData(); // โหลดข้อมูลที่บันทึกไว้ (ถ้ามี)
             initMatrixTable(currentDates);
             initOverviewDateDropdown();
             renderLineOverview();
@@ -410,8 +420,9 @@
                     }
 
                     const count = smartParseExcelData(rawExcelData);
+                    manualSaveData(); // บันทึกลง LocalStorage ทันทีหลังอัปโหลดเสร็จ
 
-                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
+                    alert(`นำเข้าและบันทึกไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
                 } catch (error) {
                     console.error(error);
                     alert('เกิดข้อผิดพลาดในการอ่านไฟล์: ' + error.message);
@@ -502,6 +513,49 @@
             initOverviewDateDropdown();
             renderLineOverview();
             return updatedCount;
+        }
+
+        // ระบบบันทึกข้อมูลลงใน Browser (localStorage)
+        function manualSaveData() {
+            const dataToSave = {
+                planDatabase: planDatabase,
+                currentDates: currentDates,
+                workingHours: document.getElementById('working-hours').value
+            };
+            localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
+            alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว! ข้อมูลจะไม่หายแม้รีเฟรชหน้าเว็บ');
+        }
+
+        // โหลดข้อมูลที่บันทึกไว้ตอนเปิดเว็บ
+        function loadSavedData() {
+            const saved = localStorage.getItem('production_dashboard_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.planDatabase) planDatabase = parsed.planDatabase;
+                    if (parsed.currentDates) currentDates = parsed.currentDates;
+                    if (parsed.workingHours) {
+                        document.getElementById('working-hours').value = parsed.workingHours;
+                    }
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+
+        // ล้างข้อมูลที่บันทึกไว้
+        function clearSavedData() {
+            if (confirm('คุณต้องการล้างข้อมูลที่บันทึกไว้ทั้งหมดใช่หรือไม่?')) {
+                localStorage.removeItem('production_dashboard_data');
+                planDatabase = {};
+                currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
+                document.getElementById('working-hours').value = 8;
+                document.getElementById('file-label-text').innerText = "คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่";
+                initMatrixTable(currentDates);
+                initOverviewDateDropdown();
+                renderLineOverview();
+                alert('🗑️ ล้างข้อมูลเรียบร้อยแล้ว');
+            }
         }
 
         function recalculateAll() {
