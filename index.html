@@ -31,6 +31,9 @@
                     <button onclick="switchTab('overview')" id="tab-btn-overview" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
                         🏢 Line Overview
                     </button>
+                    <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                        ⚙️ จัดการชิ้นส่วน & KPI
+                    </button>
                 </div>
 
                 <div class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800">
@@ -132,6 +135,62 @@
             </div>
         </div>
 
+        <div id="page-partsconfig" class="space-y-6 hidden">
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เพิ่ม/ลบชิ้นส่วนอิสระ และดูผลลัพธ์เชื่อมโยงกับ KPI Card แบบเรียลไทม์</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
+                        <select id="config-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
+                            </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="kpi-cards-container">
+                    </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">📋 เลือกรุ่นสินค้า (Models)</h3>
+                        <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2" id="model-selector-list">
+                            </div>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-slate-950 border border-slate-800 p-6 rounded-xl space-y-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+                                <div>
+                                    <span class="text-[10px] text-blue-400 font-mono bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">Active Model</span>
+                                    <h3 id="active-model-title" class="text-xl font-extrabold text-white mt-1">-</h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] text-slate-400 block">ตัวคูณชิ้นส่วนรวม (Multiplier)</span>
+                                    <span id="active-model-multiplier" class="text-xl font-extrabold text-amber-400">x 1</span>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อยที่รุ่นนี้ผลิต พร้อมระบุจำนวนชิ้นต่อชุด และกดบันทึก</p>
+
+                            <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2" id="active-model-parts-editor">
+                                </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                            <button onclick="addNewPartToActiveModel()" class="bg-slate-800 hover:bg-slate-700 text-blue-300 text-xs font-semibold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                                + เพิ่มชิ้นส่วนย่อยใหม่
+                            </button>
+                            <button onclick="saveActiveModelConfig()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all">
+                                บันทึกการเปลี่ยนแปลงรุ่นนี้
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
@@ -226,6 +285,7 @@
         ];
 
         let modelSubParts = {};
+        let activeSelectedModelForConfig = "159C";
 
         function initDefaultSubParts() {
             productStructure.forEach(g => {
@@ -252,27 +312,40 @@
             loadSavedData(); 
             initMatrixTable(currentDates);
             initOverviewDateDropdown();
+            initConfigDateDropdown();
             renderLineOverview();
+            renderPartsConfigPage();
         });
 
         function switchTab(tabName) {
             activeTab = tabName;
             const btnMatrix = document.getElementById('tab-btn-matrix');
             const btnOverview = document.getElementById('tab-btn-overview');
+            const btnPartsConfig = document.getElementById('tab-btn-partsconfig');
             const pageMatrix = document.getElementById('page-matrix');
             const pageOverview = document.getElementById('page-overview');
+            const pagePartsConfig = document.getElementById('page-partsconfig');
+
+            // Reset classes
+            btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+            btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+            btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+            
+            pageMatrix.classList.add('hidden');
+            pageOverview.classList.add('hidden');
+            pagePartsConfig.classList.add('hidden');
 
             if (tabName === 'matrix') {
                 btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
-                btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 pageMatrix.classList.remove('hidden');
-                pageOverview.classList.add('hidden');
-            } else {
+            } else if (tabName === 'overview') {
                 btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
-                btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 pageOverview.classList.remove('hidden');
-                pageMatrix.classList.add('hidden');
                 renderLineOverview();
+            } else if (tabName === 'partsconfig') {
+                btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                pagePartsConfig.classList.remove('hidden');
+                renderPartsConfigPage();
             }
         }
 
@@ -346,7 +419,6 @@
                         tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
                     }
                     
-                    // เอาข้อความชิ้นส่วนย่อยออก เหลือเฉพาะชื่อ Model
                     tbodyHTML += `
                         <td class="p-3.5 font-medium text-slate-300">
                             <div>${model}</div>
@@ -357,7 +429,6 @@
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
                         let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
-                        // เอาวงเล็บตัวเลขยอดชิ้นส่วนย่อยด้านหลังออก
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
                                 <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'}</div>
@@ -375,6 +446,7 @@
 
         function initOverviewDateDropdown() {
             const select = document.getElementById('overview-date-select');
+            if (!select) return;
             let html = '';
             currentDates.forEach(date => {
                 html += `<option value="${date}">${date}</option>`;
@@ -382,11 +454,184 @@
             select.innerHTML = html;
         }
 
+        function initConfigDateDropdown() {
+            const select = document.getElementById('config-date-select');
+            if (!select) return;
+            let html = '';
+            currentDates.forEach(date => {
+                html += `<option value="${date}">${date}</option>`;
+            });
+            select.innerHTML = html;
+        }
+
+        // ================= NEW PAGE 3 LOGIC (PARTS CONFIG & KPI LINK) =================
+        function renderPartsConfigPage() {
+            const dateSelect = document.getElementById('config-date-select');
+            const selectedDate = dateSelect ? dateSelect.value : currentDates[0];
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+
+            // 1. Calculate KPI Values
+            let totalModelsConfigured = 0;
+            let totalPartsOutputAll = 0;
+            let totalMasterPlanTarget = 0;
+
+            productStructure.forEach(g => {
+                g.models.forEach(m => {
+                    let baseTarget = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
+                    totalMasterPlanTarget += baseTarget;
+                    let mult = getMultiplier(m);
+                    totalPartsOutputAll += (baseTarget * mult);
+                    if (modelSubParts[m] && modelSubParts[m].length > 0) {
+                        totalModelsConfigured++;
+                    }
+                });
+            });
+
+            let avgUphAll = workingHours > 0 ? Math.round(totalPartsOutputAll / workingHours) : 0;
+
+            // Render KPI Cards
+            const kpiContainer = document.getElementById('kpi-cards-container');
+            if (kpiContainer) {
+                kpiContainer.innerHTML = `
+                    <div class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-xl font-bold">🎯</div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
+                            <h4 class="text-xl font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-xs font-normal text-slate-400">ชิ้น (Model)</span></h4>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl font-bold">⚙️</div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดรวมชิ้นส่วนย่อยทั้งหมด</span>
+                            <h4 class="text-xl font-extrabold text-amber-400">${totalPartsOutputAll.toLocaleString()} <span class="text-xs font-normal text-slate-400">ชิ้นย่อย</span></h4>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xl font-bold">⚡</div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">UPH รวมภาพรวมระบบ</span>
+                            <h4 class="text-xl font-extrabold text-cyan-300">${avgUphAll.toLocaleString()} <span class="text-xs font-normal text-slate-400">ชิ้น/ชม.</span></h4>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render Model Selector List
+            const selectorListContainer = document.getElementById('model-selector-list');
+            if (selectorListContainer) {
+                let listHTML = '';
+                productStructure.forEach(group => {
+                    group.models.forEach(model => {
+                        let isSelected = (activeSelectedModelForConfig === model);
+                        let mult = getMultiplier(model);
+                        listHTML += `
+                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 block">${group.group}</span>
+                                    <span class="font-bold text-xs">${model}</span>
+                                </div>
+                                <span class="text-xs font-mono bg-slate-950 px-2.5 py-1 rounded-lg text-amber-400 border border-slate-800">x${mult}</span>
+                            </div>
+                        `;
+                    });
+                });
+                selectorListContainer.innerHTML = listHTML;
+            }
+
+            // Render Active Model Editor
+            renderActiveModelEditor();
+        }
+
+        function selectModelForConfig(modelName) {
+            activeSelectedModelForConfig = modelName;
+            renderPartsConfigPage();
+        }
+
+        function renderActiveModelEditor() {
+            const titleEl = document.getElementById('active-model-title');
+            const multEl = document.getElementById('active-model-multiplier');
+            const editorContainer = document.getElementById('active-model-parts-editor');
+
+            if (!titleEl || !editorContainer) return;
+
+            titleEl.innerText = activeSelectedModelForConfig;
+            let mult = getMultiplier(activeSelectedModelForConfig);
+            if (multEl) multEl.innerText = `x ${mult}`;
+
+            if (!modelSubParts[activeSelectedModelForConfig]) {
+                modelSubParts[activeSelectedModelForConfig] = [{ name: "Door F", ratio: 1 }];
+            }
+
+            let parts = modelSubParts[activeSelectedModelForConfig];
+            let html = '';
+
+            parts.forEach((part, pIdx) => {
+                html += `
+                    <div class="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                        <div class="w-8 h-8 rounded-lg bg-slate-950 flex items-center justify-center text-xs font-bold text-slate-400">${pIdx + 1}</div>
+                        <input type="text" value="${part.name}" placeholder="ชื่อชิ้นส่วนย่อย" onchange="updateActiveModelPartName(${pIdx}, this.value)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-xs font-medium">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs text-slate-400">จำนวน:</span>
+                            <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updateActiveModelPartRatio(${pIdx}, this.value)" class="w-20 bg-slate-950 border border-slate-700 rounded-lg px-2 py-2 text-white text-center font-bold text-xs">
+                            <span class="text-xs text-slate-400">ชิ้น</span>
+                        </div>
+                        <button onclick="removeActiveModelPart(${pIdx})" class="bg-rose-950/40 border border-rose-900/60 text-rose-300 p-2 rounded-lg hover:bg-rose-900 transition-all" title="ลบชิ้นส่วนนี้">🗑️</button>
+                    </div>
+                `;
+            });
+
+            editorContainer.innerHTML = html;
+        }
+
+        function addNewPartToActiveModel() {
+            if (!modelSubParts[activeSelectedModelForConfig]) {
+                modelSubParts[activeSelectedModelForConfig] = [];
+            }
+            modelSubParts[activeSelectedModelForConfig].push({ name: "ชิ้นส่วนย่อยใหม่", ratio: 1 });
+            renderActiveModelEditor();
+            document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
+        }
+
+        function updateActiveModelPartName(pIdx, val) {
+            if (modelSubParts[activeSelectedModelForConfig] && modelSubParts[activeSelectedModelForConfig][pIdx]) {
+                modelSubParts[activeSelectedModelForConfig][pIdx].name = val;
+            }
+        }
+
+        function updateActiveModelPartRatio(pIdx, val) {
+            if (modelSubParts[activeSelectedModelForConfig] && modelSubParts[activeSelectedModelForConfig][pIdx]) {
+                modelSubParts[activeSelectedModelForConfig][pIdx].ratio = parseFloat(val) || 0;
+                document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
+            }
+        }
+
+        function removeActiveModelPart(pIdx) {
+            if (modelSubParts[activeSelectedModelForConfig]) {
+                if (modelSubParts[activeSelectedModelForConfig].length <= 1) {
+                    alert("ต้องมีชิ้นส่วนย่อยอย่างน้อย 1 ชิ้น");
+                    return;
+                }
+                modelSubParts[activeSelectedModelForConfig].splice(pIdx, 1);
+                renderActiveModelEditor();
+                document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
+            }
+        }
+
+        function saveActiveModelConfig() {
+            manualSaveDataSilent();
+            initMatrixTable(currentDates);
+            renderLineOverview();
+            renderPartsConfigPage();
+            alert(`✅ บันทึกชิ้นส่วนย่อยของรุ่น ${activeSelectedModelForConfig} และอัปเดต KPI Card สำเร็จ!`);
+        }
+
         function renderLineOverview() {
             const container = document.getElementById('line-cards-container');
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
+            if (!container) return;
             let cardsHTML = '';
 
             productionLines.forEach((line, idx) => {
@@ -833,6 +1078,7 @@
             manualSaveDataSilent();
             initMatrixTable(currentDates);
             renderLineOverview();
+            renderPartsConfigPage();
         }
 
         function removeSubPartItem(model, pIdx) {
@@ -846,6 +1092,7 @@
             manualSaveDataSilent();
             initMatrixTable(currentDates);
             renderLineOverview();
+            renderPartsConfigPage();
         }
 
         function updateSubPartProp(model, pIdx, field, value) {
@@ -863,6 +1110,7 @@
             manualSaveDataSilent();
             initMatrixTable(currentDates);
             renderLineOverview();
+            renderPartsConfigPage();
         }
 
         function updateModelTargetValue(modelName, dateStr, val) {
@@ -884,6 +1132,7 @@
             manualSaveDataSilent();
             initMatrixTable(currentDates);
             renderLineOverview();
+            renderPartsConfigPage();
         }
 
         function generateModelCheckboxTableHTML(selectedModels, changeCallbackName, selectAllFnName, clearAllFnName) {
@@ -1060,6 +1309,7 @@
         function closeLineModal() {
             document.getElementById('line-modal').classList.add('hidden');
             renderLineOverview();
+            renderPartsConfigPage();
         }
 
         function handleExcelUpload(event) {
@@ -1170,7 +1420,9 @@
 
             initMatrixTable(currentDates);
             initOverviewDateDropdown();
+            initConfigDateDropdown();
             renderLineOverview();
+            renderPartsConfigPage();
             return updatedCount;
         }
 
@@ -1243,7 +1495,9 @@
                 document.getElementById('file-label-text').innerText = "คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่";
                 initMatrixTable(currentDates);
                 initOverviewDateDropdown();
+                initConfigDateDropdown();
                 renderLineOverview();
+                renderPartsConfigPage();
                 alert('🗑️ ล้างข้อมูลเรียบร้อยแล้ว');
             }
         }
@@ -1251,6 +1505,7 @@
         function recalculateAll() {
             initMatrixTable(currentDates);
             renderLineOverview();
+            renderPartsConfigPage();
         }
     </script>
 </body>
