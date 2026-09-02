@@ -23,7 +23,7 @@
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (เพิ่มจัดการกระบวนการและเวลาใน Press Machine ได้)</p>
+                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -244,6 +244,7 @@
         let activeTab = 'matrix';
         let currentActiveLineIndex = null;
         let selectedSubMachineIndex = null; 
+        let subMachineSubTab = 'process'; // 'process' หรือ 'model'
 
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedData(); 
@@ -470,6 +471,7 @@
         function openLineModal(lineIndex) {
             currentActiveLineIndex = lineIndex;
             selectedSubMachineIndex = null; 
+            subMachineSubTab = 'process';
             renderModalContent();
             document.getElementById('line-modal').classList.remove('hidden');
         }
@@ -540,90 +542,103 @@
                         <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800 flex-wrap gap-3">
                             <div class="flex items-center gap-3">
                                 <button onclick="backToSubMachineList()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
-                                    ⬅️ กลับสู่หน้าเลือกกลุ่มเครื่อง
+                                    ⬅️ กลับหน้าเลือกกลุ่มเครื่อง
                                 </button>
-                                <div>
+                                <div class="border-l border-slate-800 pl-3">
                                     <p class="text-xs text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
-                                    <p class="text-[11px] text-slate-400">จัดการกระบวนการทำงาน เวลา และเลือกรุ่นผลิต</p>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- ส่วนจัดการกระบวนการทำงานและเวลา -->
-                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-slate-200 flex items-center gap-2">🛠️ กระบวนการทำงานและเวลาประจำเครื่อง (${sub.name})</span>
-                                <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition-all">+ เพิ่มกระบวนการ</button>
+                            <!-- ปุ่มสลับหน้า (Sub Tabs) ภายในเครื่องย่อย -->
+                            <div class="bg-slate-900 p-1 rounded-xl border border-slate-800 flex items-center gap-1">
+                                <button onclick="switchSubMachineSubTab('process')" id="subtab-btn-process" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'process' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    🛠️ กระบวนการทำงานและเวลา
+                                </button>
+                                <button onclick="switchSubMachineSubTab('model')" id="subtab-btn-model" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'model' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    📋 เลือกรุ่น (Model)
+                                </button>
                             </div>
-                            
-                            <div class="space-y-2 max-h-40 overflow-y-auto">
+                        </div>
                     `;
 
-                    if (sub.processes.length > 0) {
-                        sub.processes.forEach((proc, pIdx) => {
-                            contentHTML += `
-                                <div class="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                                    <input type="text" value="${proc.name}" placeholder="ชื่อกระบวนการ (เช่น Blanking)" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
-                                    <div class="flex items-center gap-1">
-                                        <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-24 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white text-center focus:outline-none focus:border-blue-500">
-                                        <span class="text-[10px] text-slate-400 whitespace-nowrap">วินาที/ชิ้น</span>
+                    if (subMachineSubTab === 'process') {
+                        contentHTML += `
+                            <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-bold text-slate-200 flex items-center gap-2">🛠️ กระบวนการทำงานและเวลาประจำเครื่อง (${sub.name})</span>
+                                    <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-xl font-semibold transition-all shadow-lg">+ เพิ่มกระบวนการ</button>
+                                </div>
+                                
+                                <div class="space-y-2.5 max-h-[50vh] overflow-y-auto">
+                        `;
+
+                        if (sub.processes.length > 0) {
+                            sub.processes.forEach((proc, pIdx) => {
+                                contentHTML += `
+                                    <div class="flex items-center gap-3 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                                        <input type="text" value="${proc.name}" placeholder="ชื่อกระบวนการ (เช่น Blanking)" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-28 bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-white text-center focus:outline-none focus:border-blue-500">
+                                            <span class="text-[11px] text-slate-400 whitespace-nowrap">วินาที/ชิ้น</span>
+                                        </div>
+                                        <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 hover:text-rose-300 p-2 rounded-lg bg-rose-950/40 border border-rose-900/50 transition-all" title="ลบกระบวนการ">🗑️</button>
                                     </div>
-                                    <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 hover:text-rose-300 p-1.5 rounded-lg bg-rose-950/40 border border-rose-900/50" title="ลบกระบวนการ">🗑️</button>
+                                `;
+                            });
+                        } else {
+                            contentHTML += `<div class="text-xs text-slate-500 italic text-center py-6">ยังไม่มีการเพิ่มกระบวนการทำงาน คลิกปุ่ม "+ เพิ่มกระบวนการ" ด้านบน</div>`;
+                        }
+
+                        contentHTML += `
                                 </div>
-                            `;
-                        });
+                            </div>
+                        `;
                     } else {
-                        contentHTML += `<div class="text-xs text-slate-500 italic text-center py-2">ยังไม่มีการเพิ่มกระบวนการทำงาน</div>`;
-                    }
-
-                    contentHTML += `
-                            </div>
-                        </div>
-
-                        <!-- ส่วนเลือก Model -->
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center px-1">
-                                <span class="text-xs font-bold text-slate-200">📋 เลือกรุ่น (Model) ที่ผลิตในเครื่องนี้</span>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1 rounded-lg">เลือกทั้งหมด</button>
-                                    <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1 rounded-lg">ล้างค่า</button>
+                        contentHTML += `
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                                    <span class="text-xs font-bold text-slate-200">📋 เลือกรุ่น (Model) ที่ผลิตในเครื่องนี้</span>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all">เลือกทั้งหมด</button>
+                                        <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg transition-all">ล้างค่า</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                                <div class="overflow-x-auto max-h-[40vh] overflow-y-auto">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
-                                                <th class="p-3 pl-4 text-center w-16">เลือก</th>
-                                                <th class="p-3">Product Group</th>
-                                                <th class="p-3">Model</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-slate-800/50 text-xs">
-                    `;
+                                <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                                    <div class="overflow-x-auto max-h-[50vh] overflow-y-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                                    <th class="p-3 pl-4 text-center w-16">เลือก</th>
+                                                    <th class="p-3">Product Group</th>
+                                                    <th class="p-3">Model</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-slate-800/50 text-xs">
+                        `;
 
-                    productStructure.forEach(group => {
-                        group.models.forEach(model => {
-                            let isChecked = sub.selectedModels && sub.selectedModels.includes(model);
-                            contentHTML += `
-                                <tr class="hover:bg-slate-900/50">
-                                    <td class="p-3 text-center">
-                                        <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleSubMachineCheckboxChange(this, ${selectedSubMachineIndex}, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                                    </td>
-                                    <td class="p-3 font-semibold text-blue-400">${group.group}</td>
-                                    <td class="p-3 font-medium text-slate-300">${model}</td>
-                                </tr>
-                            `;
+                        productStructure.forEach(group => {
+                            group.models.forEach(model => {
+                                let isChecked = sub.selectedModels && sub.selectedModels.includes(model);
+                                contentHTML += `
+                                    <tr class="hover:bg-slate-900/50">
+                                        <td class="p-3 text-center">
+                                            <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleSubMachineCheckboxChange(this, ${selectedSubMachineIndex}, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                        </td>
+                                        <td class="p-3 font-semibold text-blue-400">${group.group}</td>
+                                        <td class="p-3 font-medium text-slate-300">${model}</td>
+                                    </tr>
+                                `;
+                            });
                         });
-                    });
 
-                    contentHTML += `
-                                        </tbody>
-                                    </table>
+                        contentHTML += `
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 }
             } else {
                 contentHTML += `
@@ -677,11 +692,17 @@
 
         function selectSubMachineToEdit(subIdx) {
             selectedSubMachineIndex = subIdx;
+            subMachineSubTab = 'process';
             renderModalContent();
         }
 
         function backToSubMachineList() {
             selectedSubMachineIndex = null;
+            renderModalContent();
+        }
+
+        function switchSubMachineSubTab(subTabName) {
+            subMachineSubTab = subTabName;
             renderModalContent();
         }
 
