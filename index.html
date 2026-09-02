@@ -755,4 +755,294 @@
             renderLineOverview();
         }
 
-        function update
+        function updateProcessName(subIdx, pIdx, val) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes[pIdx].name = val;
+            manualSaveDataSilent();
+        }
+
+        function updateProcessTime(subIdx, pIdx, val) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes[pIdx].timePerUnit = parseFloat(val) || 0;
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function removeProcessFromSubMachine(subIdx, pIdx) {
+            let line = productionLines[currentActiveLineIndex];
+            line.subMachines[subIdx].processes.splice(pIdx, 1);
+            manualSaveDataSilent();
+            renderModalContent();
+            renderLineOverview();
+        }
+
+        function handleSubMachineCheckboxChange(checkbox, subIdx, modelName) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            let sub = line.subMachines[subIdx];
+            if (!sub.selectedModels) sub.selectedModels = [];
+
+            if (checkbox.checked) {
+                if (!sub.selectedModels.includes(modelName)) {
+                    sub.selectedModels.push(modelName);
+                }
+            } else {
+                sub.selectedModels = sub.selectedModels.filter(m => m !== modelName);
+            }
+
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function toggleSubMachineModels(subIdx, selectState) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            let sub = line.subMachines[subIdx];
+
+            if (selectState) {
+                sub.selectedModels = [];
+                productStructure.forEach(g => {
+                    g.models.forEach(m => sub.selectedModels.push(m));
+                });
+            } else {
+                sub.selectedModels = [];
+            }
+
+            manualSaveDataSilent();
+            renderModalContent();
+            renderLineOverview();
+        }
+
+        function handleModelCheckboxChange(checkbox, modelName) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            if (!line.selectedModels) line.selectedModels = [];
+
+            if (checkbox.checked) {
+                if (!line.selectedModels.includes(modelName)) {
+                    line.selectedModels.push(modelName);
+                }
+            } else {
+                line.selectedModels = line.selectedModels.filter(m => m !== modelName);
+            }
+
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function toggleAllModelsInModal(selectState) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            
+            if (selectState) {
+                line.selectedModels = [];
+                productStructure.forEach(g => {
+                    g.models.forEach(m => line.selectedModels.push(m));
+                });
+            } else {
+                line.selectedModels = [];
+            }
+
+            renderModalContent();
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function closeLineModal() {
+            document.getElementById('line-modal').classList.add('hidden');
+            renderLineOverview();
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    let rawExcelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    if (!rawExcelData || rawExcelData.length === 0) {
+                        alert('ไฟล์ Excel ว่างเปล่า ไม่มีข้อมูล');
+                        return;
+                    }
+
+                    const count = smartParseExcelData(rawExcelData);
+                    manualSaveData(); 
+
+                    alert(`นำเข้าและบันทึกไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function smartParseExcelData(rows) {
+            let headerRowIndex = 0;
+            let dateColStartIndex = -1;
+            let datesFound = [];
+
+            for (let r = 0; r < Math.min(rows.length, 15); r++) {
+                let row = rows[r];
+                if (!row) continue;
+                for (let c = 0; c < row.length; c++) {
+                    let val = String(row[c] || "").trim();
+                    if (val.includes('/') || (typeof row[c] === 'number' && row[c] > 30000)) {
+                        headerRowIndex = r;
+                        dateColStartIndex = c;
+                        break;
+                    }
+                }
+                if (dateColStartIndex !== -1) break;
+            }
+
+            if (dateColStartIndex === -1) {
+                dateColStartIndex = 2;
+            }
+
+            let headerRow = rows[headerRowIndex] || rows[0];
+            for (let c = dateColStartIndex; c < headerRow.length; c++) {
+                let cell = headerRow[c];
+                if (cell !== undefined && cell !== null && String(cell).trim() !== "") {
+                    datesFound.push(formatExcelDate(cell));
+                }
+            }
+
+            if (datesFound.length > 0) {
+                currentDates = datesFound;
+            }
+
+            let updatedCount = 0;
+
+            for (let i = headerRowIndex + 1; i < rows.length; i++) {
+                let r = rows[i];
+                if (!r || r.length === 0) continue;
+
+                let matchedModel = "";
+                for (let c = 0; c < dateColStartIndex; c++) {
+                    let cellText = String(r[c] || "").trim();
+                    if (!cellText) continue;
+
+                    let cellTextLower = cellText.toLowerCase().replace(/[\s\-_]+/g, '');
+
+                    productStructure.forEach(group => {
+                        group.models.forEach(m => {
+                            let targetClean = m.toLowerCase().replace(/[\s\-_]+/g, '');
+                            let normalizedCell = cellTextLower.replace(/c$/, 'cafe');
+                            let normalizedTarget = targetClean.replace(/c$/, 'cafe');
+
+                            if (cellTextLower === targetClean || normalizedCell === normalizedTarget || cellTextLower.includes(targetClean)) {
+                                matchedModel = m;
+                            }
+                        });
+                    });
+                    if (matchedModel) break;
+                }
+
+                if (!matchedModel) continue;
+
+                if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
+
+                currentDates.forEach((dateText, idx) => {
+                    let valIndex = dateColStartIndex + idx;
+                    let rawTarget = parseFloat(r[valIndex]) || 0;
+                    let targetVal = Math.round(rawTarget);
+
+                    if (targetVal > 0) {
+                        planDatabase[matchedModel][dateText] = targetVal;
+                        updatedCount++;
+                    }
+                });
+            }
+
+            initMatrixTable(currentDates);
+            initOverviewDateDropdown();
+            renderLineOverview();
+            return updatedCount;
+        }
+
+        function manualSaveData() {
+            const dataToSave = {
+                planDatabase: planDatabase,
+                currentDates: currentDates,
+                workingHours: document.getElementById('working-hours').value,
+                productionLines: productionLines
+            };
+            localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
+            alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว! ข้อมูลและการตั้งค่าจะไม่หายแม้รีเฟรชหน้าเว็บ');
+        }
+
+        function manualSaveDataSilent() {
+            const dataToSave = {
+                planDatabase: planDatabase,
+                currentDates: currentDates,
+                workingHours: document.getElementById('working-hours').value,
+                productionLines: productionLines
+            };
+            localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('production_dashboard_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.planDatabase) planDatabase = parsed.planDatabase;
+                    if (parsed.currentDates) currentDates = parsed.currentDates;
+                    if (parsed.workingHours) {
+                        document.getElementById('working-hours').value = parsed.workingHours;
+                    }
+                    if (parsed.productionLines) {
+                        parsed.productionLines.forEach((savedLine, idx) => {
+                            if (productionLines[idx]) {
+                                if (savedLine.hasSubMachines && productionLines[idx].hasSubMachines) {
+                                    savedLine.subMachines.forEach((savedSub, subIdx) => {
+                                        if (productionLines[idx].subMachines[subIdx]) {
+                                            productionLines[idx].subMachines[subIdx].selectedModels = savedSub.selectedModels;
+                                            if (savedSub.processes) {
+                                                productionLines[idx].subMachines[subIdx].processes = savedSub.processes;
+                                            }
+                                        }
+                                    });
+                                }
+                                if (savedLine.selectedModels) {
+                                    productionLines[idx].selectedModels = savedLine.selectedModels;
+                                }
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+
+        function clearSavedData() {
+            if (confirm('คุณต้องการล้างข้อมูลที่บันทึกไว้ทั้งหมดใช่หรือไม่?')) {
+                localStorage.removeItem('production_dashboard_data');
+                planDatabase = {};
+                currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
+                document.getElementById('working-hours').value = 8;
+                document.getElementById('file-label-text').innerText = "คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่";
+                initMatrixTable(currentDates);
+                initOverviewDateDropdown();
+                renderLineOverview();
+                alert('🗑️ ล้างข้อมูลเรียบร้อยแล้ว');
+            }
+        }
+
+        function recalculateAll() {
+            initMatrixTable(currentDates);
+            renderLineOverview();
+        }
+    </script>
+</body>
+</html>
