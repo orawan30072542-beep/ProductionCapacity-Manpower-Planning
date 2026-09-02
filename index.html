@@ -102,7 +102,7 @@
             <!-- Matrix Table Section -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (คำนวณตามชิ้นส่วนย่อยแต่ละรุ่น)</h3>
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (แสดงตามจำนวนอเดอร์ที่ส่งเข้าในระบบ)</h3>
                     <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
                 </div>
                 
@@ -243,7 +243,6 @@
             { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false, selectedModels: [] }
         ];
 
-        // โครงสร้างชิ้นส่วนย่อยประจำรุ่น (สามารถเพิ่ม/ลด/แก้ไขชื่อชิ้นส่วนย่อยของแต่ละรุ่นได้อิสระ)
         let modelSubParts = {};
 
         function initDefaultSubParts() {
@@ -326,8 +325,7 @@
                     group.models.forEach(model => {
                         if (planDatabase[model] && planDatabase[model][date]) {
                             let baseVal = planDatabase[model][date];
-                            let mult = getMultiplier(model);
-                            sumTarget += (baseVal * mult);  // คูณจำนวนชิ้นส่วนย่อยเข้ารวมยอด
+                            sumTarget += baseVal; // ใช้ค่าอเดอร์ดิบโดยตรง ไม่คูณ mult ในหน้า Matrix View
                         }
                     });
                 });
@@ -344,7 +342,7 @@
             let tbodyHTML = `
                 <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
                     <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
-                    <td class="p-3.5 text-blue-300">Total Output (All Sub-parts)</td>
+                    <td class="p-3.5 text-blue-300">Total Output (Order Sets)</td>
             `;
 
             dates.forEach(date => {
@@ -378,12 +376,11 @@
 
                     dates.forEach(date => {
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        let totalPartsVal = baseVal * mult; // นำตัวคูณมาชูยอดในช่องแสดงผล
-                        let calculatedUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
+                        let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
-                                <div class="font-bold text-white">${totalPartsVal > 0 ? totalPartsVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(set: ${baseVal})</span></div>
+                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(set: ${baseVal})</span></div>
                                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
                             </td>
                         `;
@@ -707,7 +704,7 @@
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
                     <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <span class="text-xs font-bold text-slate-200">🎯 กรอกเป้าหมายจำนวนรุ่น ประจำวันที่: <span class="text-amber-400">${dateStr}</span> (ระบบคูณชิ้นส่วนย่อยตามที่ตั้งค่าไว้ของแต่ละรุ่น)</span>
+                            <span class="text-xs font-bold text-slate-200">🎯 กรอกเป้าหมายจำนวนรุ่น ประจำวันที่: <span class="text-amber-400">${dateStr}</span></span>
                         </div>
                     </div>
                     
