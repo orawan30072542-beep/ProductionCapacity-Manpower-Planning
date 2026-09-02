@@ -244,14 +244,12 @@
         ];
 
         // โครงสร้างชิ้นส่วนย่อยประจำรุ่น (สามารถเพิ่ม/ลด/แก้ไขชื่อชิ้นส่วนย่อยของแต่ละรุ่นได้อิสระ)
-        // รูปแบบ modelSubParts[modelName] = [{name: "ชื่อชิ้นส่วน 1", ratio: จำนวน}, {name: "ชื่อชิ้นส่วน 2", ratio: จำนวน}, ...]
         let modelSubParts = {};
 
         function initDefaultSubParts() {
             productStructure.forEach(g => {
                 g.models.forEach(m => {
                     if (!modelSubParts[m]) {
-                        // กำหนดค่าเริ่มต้นเป็น Door F และ Door R (หรือสามารถแก้ไขอิสระในหน้าจอได้)
                         modelSubParts[m] = [
                             { name: "Door F", ratio: 1 },
                             { name: "Door R", ratio: 1 }
@@ -329,7 +327,7 @@
                         if (planDatabase[model] && planDatabase[model][date]) {
                             let baseVal = planDatabase[model][date];
                             let mult = getMultiplier(model);
-                            sumTarget += (baseVal * mult);
+                            sumTarget += (baseVal * mult);  // คูณจำนวนชิ้นส่วนย่อยเข้ารวมยอด
                         }
                     });
                 });
@@ -380,12 +378,12 @@
 
                     dates.forEach(date => {
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        let totalPartsVal = baseVal * mult;
+                        let totalPartsVal = baseVal * mult; // นำตัวคูณมาชูยอดในช่องแสดงผล
                         let calculatedUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
 
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
-                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() : '-'} <span class="text-[10px] text-slate-400">(${totalPartsVal.toLocaleString()} ชิ้น)</span></div>
+                                <div class="font-bold text-white">${totalPartsVal > 0 ? totalPartsVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(set: ${baseVal})</span></div>
                                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
                             </td>
                         `;
@@ -773,7 +771,6 @@
             return html;
         }
 
-        // หน้าจอแก้ไขชื่อชิ้นส่วนย่อยอิสระของแต่ละรุ่น พร้อมปุ่มเพิ่ม/ลบชิ้นส่วน
         function generatePartsConfigTableHTML(selectedModels) {
             let html = `
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
