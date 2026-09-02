@@ -130,7 +130,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตาม 9 ไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดแต่ละไลน์เพื่อตั้งค่าเลือกรุ่น (Model) ที่ผลิตจริงในไลน์นั้นๆ</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ดแต่ละไลน์เพื่อตั้งค่าเลือกรุ่น (Model) แยกรายเครื่องจักรในไลน์นั้นๆ</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -149,7 +149,7 @@
 
     </div>
 
-    <!-- ================= MODAL DETAIL & MODEL SELECTOR ================= -->
+    <!-- ================= MODAL DETAIL & MACHINE SELECTOR ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <!-- Modal Header -->
@@ -164,34 +164,8 @@
             </div>
             
             <!-- Modal Body Content -->
-            <div class="p-6 overflow-y-auto space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <div>
-                        <p class="text-xs text-slate-300 font-semibold">💡 กำหนดรุ่น (Model) สำหรับไลน์นี้:</p>
-                        <p class="text-[11px] text-slate-400">ติ๊กเลือก Model ที่สายการผลิตนี้รับผิดชอบ ระบบจะนำไปคำนวณ Target และ UPH อัตโนมัติ</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="toggleAllModelsInModal(true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all">เลือกทั้งหมด</button>
-                        <button onclick="toggleAllModelsInModal(false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg transition-all">ยกเลิกทั้งหมด</button>
-                    </div>
-                </div>
-                
-                <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse" id="modal-detail-table">
-                            <thead>
-                                <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800" id="modal-thead">
-                                    <th class="p-3 pl-4 text-center w-16">เลือก</th>
-                                    <th class="p-3">Product Group</th>
-                                    <th class="p-3">Model</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-tbody" class="divide-y divide-slate-800/50 text-xs">
-                                <!-- สร้างด้วย JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="p-6 overflow-y-auto space-y-6" id="modal-body-content">
+                <!-- ถูกสร้างด้วย JavaScript แยกตามเครื่องจักร -->
             </div>
 
             <!-- Modal Footer -->
@@ -231,17 +205,33 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // กำหนดกลุ่ม 9 Line พร้อม Model เริ่มต้น
+        // กำหนดกลุ่ม 9 Line พร้อมโครงสร้างเครื่องจักรย่อย (สำหรับ Press Machine มี 3 ส่วน)
         const productionLines = [
-            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", selectedModels: ["159C", "159F", "199C", "199F", "TM545#212", "TM545#235", "G3 ECO 320", "G3 ECO 350"] },
-            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
-            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ", selectedModels: [] },
-            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
-            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
-            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
-            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", selectedModels: ["BM23", "BM23 Café", "BM23 DND", "BM T-Door 23 Café", "BM T-Door 23", "BM29", "BM29 Café", "BM29 DND", "BM T-Door 28 Café", "BM T-Door 28"] },
-            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", selectedModels: [] },
-            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", selectedModels: [] }
+            { 
+                name: "Press Machine", 
+                description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", 
+                hasSubMachines: true,
+                subMachines: [
+                    { name: "400T #1", selectedModels: ["159C", "159F"] },
+                    { name: "200T #1", selectedModels: ["199C"] },
+                    { name: "200T #2", selectedModels: ["199F"] },
+                    { name: "200T #3", selectedModels: ["TM545#212"] },
+                    { name: "200T #4", selectedModels: ["TM545#235"] },
+                    { name: "100T #1", selectedModels: ["G3 ECO 320"] },
+                    { name: "100T #2", selectedModels: ["G3 ECO 350"] },
+                    { name: "100T #3", selectedModels: [] },
+                    { name: "100T #4", selectedModels: [] },
+                    { name: "100T #5", selectedModels: [] }
+                ]
+            },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", hasSubMachines: false, selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
+            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ", hasSubMachines: false, selectedModels: [] },
+            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", hasSubMachines: false, selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
+            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", hasSubMachines: false, selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
+            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", hasSubMachines: false, selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", hasSubMachines: false, selectedModels: ["BM23", "BM23 Café", "BM23 DND", "BM T-Door 23 Café", "BM T-Door 23", "BM29", "BM29 Café", "BM29 DND", "BM T-Door 28 Café", "BM T-Door 28"] },
+            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", hasSubMachines: false, selectedModels: [] },
+            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false, selectedModels: [] }
         ];
 
         let planDatabase = {};
@@ -378,19 +368,35 @@
                 let lineTotalTarget = 0;
                 let groupSummaryMap = {};
 
-                // คำนวณเฉพาะ Model ที่เลือกไว้ใน Line นี้
-                if (line.selectedModels && line.selectedModels.length > 0) {
-                    line.selectedModels.forEach(modelName => {
-                        let targetVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
-                        lineTotalTarget += targetVal;
+                if (line.hasSubMachines) {
+                    // รวมยอดจากทุกเครื่องจักรย่อย
+                    line.subMachines.forEach(sub => {
+                        if (sub.selectedModels) {
+                            sub.selectedModels.forEach(modelName => {
+                                let targetVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
+                                lineTotalTarget += targetVal;
 
-                        // หา Product Group ของ Model นี้
-                        let parentGroup = productStructure.find(g => g.models.includes(modelName));
-                        let groupName = parentGroup ? parentGroup.group : "อื่นๆ";
+                                let parentGroup = productStructure.find(g => g.models.includes(modelName));
+                                let groupName = parentGroup ? parentGroup.group : "อื่นๆ";
 
-                        if (!groupSummaryMap[groupName]) groupSummaryMap[groupName] = 0;
-                        groupSummaryMap[groupName] += targetVal;
+                                if (!groupSummaryMap[groupName]) groupSummaryMap[groupName] = 0;
+                                groupSummaryMap[groupName] += targetVal;
+                            });
+                        }
                     });
+                } else {
+                    if (line.selectedModels && line.selectedModels.length > 0) {
+                        line.selectedModels.forEach(modelName => {
+                            let targetVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
+                            lineTotalTarget += targetVal;
+
+                            let parentGroup = productStructure.find(g => g.models.includes(modelName));
+                            let groupName = parentGroup ? parentGroup.group : "อื่นๆ";
+
+                            if (!groupSummaryMap[groupName]) groupSummaryMap[groupName] = 0;
+                            groupSummaryMap[groupName] += targetVal;
+                        });
+                    }
                 }
 
                 let lineUph = workingHours > 0 ? Math.round(lineTotalTarget / workingHours) : 0;
@@ -418,7 +424,7 @@
                             <p class="text-xs text-slate-400 mb-4">${line.description}</p>
                             
                             <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60 max-h-32 overflow-y-auto">
-                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดผลิตแยกตามกลุ่ม (ที่เลือก):</div>
+                                <div class="text-[11px] text-slate-400 font-semibold mb-1">${line.hasSubMachines ? 'ยอดผลิตรวม 10 เครื่องจักร (400T/200T/100T):' : 'ยอดผลิตแยกตามกลุ่ม (ที่เลือก):'}</div>
                 `;
 
                 let groupKeys = Object.keys(groupSummaryMap);
@@ -456,7 +462,7 @@
             container.innerHTML = cardsHTML;
         }
 
-        // เปิด Modal รายละเอียดและเลือก Model
+        // เปิด Modal แยกตามประเภทของ Line
         function openLineModal(lineIndex) {
             currentActiveLineIndex = lineIndex;
             const line = productionLines[lineIndex];
@@ -466,42 +472,152 @@
             document.getElementById('modal-line-badge').innerText = `Line #${lineIndex + 1}`;
             document.getElementById('modal-footer-date').innerText = selectedDate;
 
-            // สร้างหัวตาราง Modal
-            const modalThead = document.getElementById('modal-thead');
-            let theadHTML = `<th class="p-3 pl-4 text-center w-16">เลือก</th><th class="p-3">Product Group</th><th class="p-3">Model</th>`;
-            currentDates.forEach(d => {
-                theadHTML += `<th class="p-3 text-center">${d}</th>`;
-            });
-            modalThead.innerHTML = theadHTML;
+            const modalBody = document.getElementById('modal-body-content');
+            let contentHTML = '';
 
-            // สร้างรายการ Model ทั้งหมดให้ติ๊กเลือก
-            const modalTbody = document.getElementById('modal-tbody');
-            let tbodyHTML = '';
+            if (line.hasSubMachines) {
+                contentHTML += `
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <p class="text-xs text-slate-300 font-semibold">⚙️ ตั้งค่ารุ่นผลิตแยกตามเครื่องจักร (Press Machine 400T / 200T / 100T):</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">เลือกติ๊ก Model ที่เครื่องจักรแต่ละเครื่องรับผิดชอบ</p>
+                    </div>
+                `;
 
-            productStructure.forEach(group => {
-                group.models.forEach(model => {
-                    let isChecked = line.selectedModels && line.selectedModels.includes(model);
-
-                    tbodyHTML += `<tr class="hover:bg-slate-900/50">`;
-                    tbodyHTML += `
-                        <td class="p-3 text-center">
-                            <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleModelCheckboxChange(this, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                        </td>
+                line.subMachines.forEach((sub, subIdx) => {
+                    contentHTML += `
+                        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden mb-4">
+                            <div class="p-3.5 bg-slate-900/90 border-b border-slate-800 flex justify-between items-center">
+                                <span class="font-bold text-sm text-blue-400 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> เครื่องจักร: ${sub.name}
+                                </span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleSubMachineModels(${subIdx}, true)" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-2.5 py-1 rounded">เลือกทั้งหมด</button>
+                                    <button onclick="toggleSubMachineModels(${subIdx}, false)" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-2.5 py-1 rounded">ยกเลิก</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-900/50 text-slate-400 text-xs border-b border-slate-800">
+                                            <th class="p-2.5 pl-4 text-center w-16">เลือก</th>
+                                            <th class="p-2.5">Product Group</th>
+                                            <th class="p-2.5">Model</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/40 text-xs">
                     `;
-                    tbodyHTML += `<td class="p-3 font-semibold text-blue-400">${group.group}</td>`;
-                    tbodyHTML += `<td class="p-3 font-medium text-slate-300">${model}</td>`;
 
-                    currentDates.forEach(date => {
-                        let val = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        tbodyHTML += `<td class="p-3 text-center text-white font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
+                    productStructure.forEach(group => {
+                        group.models.forEach(model => {
+                            let isChecked = sub.selectedModels && sub.selectedModels.includes(model);
+                            contentHTML += `
+                                <tr class="hover:bg-slate-900/40">
+                                    <td class="p-2.5 text-center">
+                                        <input type="checkbox" data-subidx="${subIdx}" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleSubMachineCheckboxChange(this, ${subIdx}, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                    </td>
+                                    <td class="p-2.5 font-semibold text-blue-300">${group.group}</td>
+                                    <td class="p-2.5 font-medium text-slate-300">${model}</td>
+                                </tr>
+                            `;
+                        });
                     });
 
-                    tbodyHTML += `</tr>`;
+                    contentHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
                 });
-            });
+            } else {
+                // สำหรับ Line ปกติทั่วไป
+                contentHTML += `
+                    <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div>
+                            <p class="text-xs text-slate-300 font-semibold">💡 กำหนดรุ่น (Model) สำหรับไลน์นี้:</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleAllModelsInModal(true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all">เลือกทั้งหมด</button>
+                            <button onclick="toggleAllModelsInModal(false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg transition-all">ยกเลิกทั้งหมด</button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800">
+                                        <th class="p-3 pl-4 text-center w-16">เลือก</th>
+                                        <th class="p-3">Product Group</th>
+                                        <th class="p-3">Model</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/50 text-xs">
+                `;
 
-            modalTbody.innerHTML = tbodyHTML;
+                productStructure.forEach(group => {
+                    group.models.forEach(model => {
+                        let isChecked = line.selectedModels && line.selectedModels.includes(model);
+                        contentHTML += `
+                            <tr class="hover:bg-slate-900/50">
+                                <td class="p-3 text-center">
+                                    <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleModelCheckboxChange(this, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                </td>
+                                <td class="p-3 font-semibold text-blue-400">${group.group}</td>
+                                <td class="p-3 font-medium text-slate-300">${model}</td>
+                            </tr>
+                        `;
+                    });
+                });
+
+                contentHTML += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = contentHTML;
             document.getElementById('line-modal').classList.remove('hidden');
+        }
+
+        function handleSubMachineCheckboxChange(checkbox, subIdx, modelName) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            let sub = line.subMachines[subIdx];
+            if (!sub.selectedModels) sub.selectedModels = [];
+
+            if (checkbox.checked) {
+                if (!sub.selectedModels.includes(modelName)) {
+                    sub.selectedModels.push(modelName);
+                }
+            } else {
+                sub.selectedModels = sub.selectedModels.filter(m => m !== modelName);
+            }
+
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function toggleSubMachineModels(subIdx, selectState) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            let sub = line.subMachines[subIdx];
+
+            if (selectState) {
+                sub.selectedModels = [];
+                productStructure.forEach(g => {
+                    g.models.forEach(m => sub.selectedModels.push(m));
+                });
+            } else {
+                sub.selectedModels = [];
+            }
+
+            const checkboxes = document.querySelectorAll(`input[data-subidx="${subIdx}"]`);
+            checkboxes.forEach(cb => cb.checked = selectState);
+
+            manualSaveDataSilent();
+            renderLineOverview();
         }
 
         function handleModelCheckboxChange(checkbox, modelName) {
@@ -517,7 +633,6 @@
                 line.selectedModels = line.selectedModels.filter(m => m !== modelName);
             }
 
-            // บันทึกและรีเฟรชหน้าภาพรวมทันที
             manualSaveDataSilent();
             renderLineOverview();
         }
@@ -535,11 +650,8 @@
                 line.selectedModels = [];
             }
 
-            // อัปเดตสถานะ checkbox ในตาราง Modal
-            const checkboxes = document.querySelectorAll('#modal-tbody input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                cb.checked = selectState;
-            });
+            const checkboxes = document.querySelectorAll('#modal-body-content input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = selectState);
 
             manualSaveDataSilent();
             renderLineOverview();
@@ -698,10 +810,18 @@
                         document.getElementById('working-hours').value = parsed.workingHours;
                     }
                     if (parsed.productionLines) {
-                        // ผสานข้อมูลการเลือก Model ของแต่ละไลน์
                         parsed.productionLines.forEach((savedLine, idx) => {
-                            if (productionLines[idx] && savedLine.selectedModels) {
-                                productionLines[idx].selectedModels = savedLine.selectedModels;
+                            if (productionLines[idx]) {
+                                if (savedLine.hasSubMachines && productionLines[idx].hasSubMachines) {
+                                    savedLine.subMachines.forEach((savedSub, subIdx) => {
+                                        if (productionLines[idx].subMachines[subIdx]) {
+                                            productionLines[idx].subMachines[subIdx].selectedModels = savedSub.selectedModels;
+                                        }
+                                    });
+                                }
+                                if (savedLine.selectedModels) {
+                                    productionLines[idx].selectedModels = savedLine.selectedModels;
+                                }
                             }
                         });
                     }
