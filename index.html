@@ -118,7 +118,7 @@
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             📁 อัปโหลดไฟล์แผนผลิต (Excel)
                         </h2>
-                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ .xlsx ระบบจะแปลงวันที่เป็น วัน/เดือน และแปลง Order/UPH เป็นจำนวนเต็มให้อัตโนมัติ</p>
+                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
                         
                         <div class="mt-3 flex items-center gap-3">
                             <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-5 cursor-pointer bg-blue-950/30 transition-all">
@@ -178,18 +178,15 @@
                     <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20 max-h-[600px]">
                         <table class="w-full text-left border-collapse text-xs" id="matrix-table">
                             <thead>
-                                <!-- แถวหัวข้อหลัก -->
                                 <tr class="bg-blue-950/95 text-blue-300 uppercase border-b border-blue-900 sticky top-0 z-30" id="matrix-header-row">
                                     <th class="py-3 px-3 font-semibold sticky left-0 bg-blue-950 z-40 w-28">Product</th>
                                     <th class="py-3 px-3 font-semibold sticky left-[90px] bg-blue-950 z-40 border-r border-blue-900 w-36">Model</th>
                                 </tr>
-                                <!-- แถวผลรวม Order รวมรายวัน -->
                                 <tr id="total-order-row" class="bg-blue-950/90 font-bold border-b border-blue-900">
                                     <td colspan="2" class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-20 border-r border-blue-900">
                                         <div>รวม Order รายวัน (Total Order)</div>
                                     </td>
                                 </tr>
-                                <!-- แถวผลรวม UPH รวมรายวัน -->
                                 <tr id="total-uph-row" class="bg-blue-900/60 font-bold border-b-2 border-blue-600">
                                     <td colspan="2" class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-20 border-r border-blue-900">
                                         <div>รวม UPH รายวัน (Total UPH)</div>
@@ -197,7 +194,6 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950 text-gray-300" id="matrix-tbody">
-                                <!-- ตารางจะถูกสร้างโครงสร้าง Product & Model อัตโนมัติ -->
                             </tbody>
                         </table>
                     </div>
@@ -215,7 +211,6 @@
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9", "6/9", "7/9"];
         let planDatabase = {}; 
 
-        // โครงสร้าง Product และ Model ย่อยทั้งหมด
         const productStructure = [
             { product: "159", models: ["159C", "159F"] },
             { product: "199", models: ["199C", "199F"] },
@@ -401,9 +396,9 @@
 
             const headerRow = rows[0];
             let dates = [];
-            let dateStartIndex = 2; // ค่าเริ่มต้นสมมติ Col 0=Product, Col 1=Model
+            let dateStartIndex = 2;
 
-            // ค้นหาว่าคอลัมน์ไหนเริ่มเป็นวันที่ (เช็คจากหัวตารางที่มีเครื่องหมาย / หรือตัวเลข)
+            // ค้นหาตำแหน่งคอลัมน์ที่เป็นวันที่จากหัวตาราง
             for (let c = 0; c < headerRow.length; c++) {
                 let cellVal = String(headerRow[c] || "").trim();
                 if (cellVal.includes('/') || (typeof headerRow[c] === 'number' && headerRow[c] > 30000)) {
@@ -427,31 +422,38 @@
             const tbody = document.getElementById('matrix-tbody');
             const modelRows = tbody.querySelectorAll('tr');
 
+            // วนลูปอ่านข้อมูลแต่ละแถวในไฟล์ Excel
             for (let i = 1; i < rows.length; i++) {
                 const r = rows[i];
                 if (!r || r.length === 0) continue;
 
-                // ตรวจหา Model จากคอลัมน์ (ลองเช็คทั้ง Col 1 และ Col 0 เผื่อไฟล์ Excel มีรูปแบบต่างกัน)
-                let excelModel = "";
-                if (dateStartIndex > 1 && r[dateStartIndex - 1] !== undefined) {
-                    excelModel = String(r[dateStartIndex - 1]).trim();
-                } else if (r[1] !== undefined) {
-                    excelModel = String(r[1]).trim();
-                } else if (r[0] !== undefined) {
-                    excelModel = String(r[0]).trim();
+                // ค้นหาข้อความในแถวนี้ที่ตรงกับชื่อ Model ในระบบ (เช็คทุกคอลัมน์ตั้งแต่ 0 ถึงก่อนช่องวันที่)
+                let matchedModel = "";
+                for (let c = 0; c < dateStartIndex; c++) {
+                    let cellText = String(r[c] || "").trim();
+                    // ตรวจสอบว่าตรงกับ Model ย่อยตัวไหนในโครงสร้างบ้าง
+                    productStructure.forEach(group => {
+                        group.models.forEach(m => {
+                            if (m.toLowerCase() === cellText.toLowerCase()) {
+                                matchedModel = m;
+                            }
+                        });
+                    });
+                    if (matchedModel) break;
                 }
 
-                if (!excelModel) continue;
-                if (!planDatabase[excelModel]) planDatabase[excelModel] = {};
-                
+                if (!matchedModel) continue; // ถ้าไม่เจอชื่อ Model ข้ามแถวนี้ไป
+
+                if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
+
                 modelRows.forEach(row => {
                     const fixedModel = row.getAttribute('data-model');
-                    if (fixedModel && fixedModel.toLowerCase() === excelModel.toLowerCase()) {
+                    if (fixedModel && fixedModel.toLowerCase() === matchedModel.toLowerCase()) {
                         currentDates.forEach((dateText, idx) => {
                             const rawTarget = parseFloat(r[dateStartIndex + idx]) || 0;
                             const targetVal = Math.round(rawTarget);
                             if (targetVal > 0) {
-                                planDatabase[excelModel][dateText] = targetVal;
+                                planDatabase[matchedModel][dateText] = targetVal;
                                 const calculatedUph = workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
                                 row.cells[idx + 2].innerHTML = `
                                     <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
@@ -463,6 +465,7 @@
                     }
                 });
             }
+
             calculateTotals();
             return updatedCount;
         }
@@ -485,7 +488,7 @@
                     const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
                     const count = renderMatrixWithData(rawExcelData, workingHours);
 
-                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูล ${count || 0} รายการ`);
+                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
                 } catch (error) {
                     console.error(error);
                     alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
