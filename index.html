@@ -23,6 +23,7 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         
+        <!-- Header Section & Tab Switcher -->
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
@@ -51,6 +52,7 @@
             </div>
         </header>
 
+        <!-- ================= TAB 1: OVERVIEW DASHBOARD ================= -->
         <div id="content-overview" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
@@ -107,9 +109,11 @@
             </div>
         </div>
 
+        <!-- ================= TAB 2: UPLOAD & MATRIX TABLE ================= -->
         <div id="content-add-plan" class="space-y-6 hidden">
             <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-7xl mx-auto border border-blue-900/85 space-y-6">
                 
+                <!-- ส่วนอัปโหลดไฟล์ Excel และเลือกเวลาการทำงาน -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                     <div class="md:col-span-2">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -117,4 +121,302 @@
                         </h2>
                         <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะดึงข้อมูลวันที่และคำนวณ UPH ให้อัตโนมัติ</p>
                         
-                        <div class="mt-3 flex items-center gap-3
+                        <div class="mt-3 flex items-center gap-3">
+                            <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-5 cursor-pointer bg-blue-950/30 transition-all">
+                                <span class="text-sm text-blue-300 font-medium" id="file-label-text">คลิกเลือกไฟล์ Excel หรือลากมาวางที่นี่</span>
+                                <span class="text-xs text-gray-400 mt-1">(.xlsx, .xls)</span>
+                                <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-4 rounded-xl border border-blue-800/60 bg-blue-950/40">
+                        <label class="block text-xs font-semibold text-blue-300 mb-2">⏱️ กำหนดเวลาการทำงาน (ชั่วโมง/วัน):</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="working-hours" value="8" min="1" max="24" class="w-20 bg-blue-950 border border-blue-800 rounded-lg px-3 py-2 text-sm text-white text-center font-bold focus:outline-none focus:border-blue-500">
+                            <span class="text-xs text-gray-300">ชม. / วัน</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-2">* ใช้คำนวณ UPH อัตโนมัติ</p>
+                    </div>
+                </div>
+
+                <!-- ฟอร์มกรอกเพิ่ม/บันทึกแผนรายชิ้น -->
+                <div class="space-y-4 pt-4 border-t border-blue-900/50">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">รุ่นสินค้า (MODEL NAME)</label>
+                            <input type="text" id="input-model" placeholder="เช่น 159, TM545" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">วันที่ (เช่น 1 ก.ย., 2 ก.ย.)</label>
+                            <input type="text" id="input-date" placeholder="1 ก.ย." class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">ORDER รายวัน (TARGET)</label>
+                            <input type="number" id="input-target" value="0" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">เวลาทำงานเฉพาะรายการนี้ (ชม.)</label>
+                            <input type="number" id="input-hours" value="8" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button onclick="clearForm()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-950 text-blue-300 border border-blue-900 hover:bg-blue-900 cursor-pointer">ล้างค่า</button>
+                        <button onclick="saveManualPlan()" class="px-6 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 shadow-lg cursor-pointer">บันทึกข้อมูลแผนผลิต</button>
+                    </div>
+                </div>
+
+                <!-- ส่วนแสดงผลตาราง Matrix ด้านล่าง -->
+                <div class="space-y-3 pt-4 border-t border-blue-900/50">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base font-bold text-white">📊 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้า</h3>
+                        <span class="text-xs text-gray-400">UPH = Order / เวลาการทำงาน</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20 max-h-[600px]">
+                        <table class="w-full text-left border-collapse text-xs" id="matrix-table">
+                            <thead>
+                                <tr class="bg-blue-950/90 text-blue-300 uppercase border-b border-blue-900 sticky top-0 z-20" id="matrix-header-row">
+                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-30">วันที่ / รุ่นสินค้า</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-950 text-gray-300" id="matrix-tbody">
+                                <tr data-model="159"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">159</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="199"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">199</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TM545"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM545</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="G3 ECO"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">G3 ECO</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TD 456"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 456</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TM10/12"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM10/12</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TD 469"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 469</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TD 520"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 520</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="SBS 550"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">SBS 550</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="SBS 620"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">SBS 620</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="BM23"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM23</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="BM29"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM29</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="BM T-Door"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM T-Door</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TM"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TM19"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM19</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="TM21"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM21</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="FUF14"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF14</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="FUF18"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF18</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                                <tr data-model="FUF22"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF22</div><div class="text-[10px] text-gray-400">UPH</div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
+
+        let rawExcelData = null;
+        let currentDates = ["1 ก.ย.", "2 ก.ย.", "3 ก.ย.", "4 ก.ย.", "5 ก.ย.", "6 ก.ย.", "7 ก.ย."];
+
+        window.onload = function() {
+            initMatrixTable(currentDates);
+        };
+
+        function initMatrixTable(datesArray) {
+            const headerTr = document.getElementById('matrix-header-row');
+            headerTr.innerHTML = '<th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-30">วันที่ / รุ่นสินค้า</th>';
+            datesArray.forEach(d => {
+                headerTr.innerHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/50">${d}</th>`;
+            });
+
+            const tbody = document.getElementById('matrix-tbody');
+            const modelRows = tbody.querySelectorAll('tr');
+            
+            modelRows.forEach(row => {
+                let modelNameCell = row.cells[0].innerHTML;
+                row.innerHTML = `<td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">${modelNameCell}</td>`;
+                datesArray.forEach(() => {
+                    row.innerHTML += `<td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>`;
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            const overviewContent = document.getElementById('content-overview');
+            const addPlanContent = document.getElementById('content-add-plan');
+            const tabOverview = document.getElementById('tab-overview');
+            const tabAddPlan = document.getElementById('tab-add-plan');
+
+            if (tabId === 'overview') {
+                overviewContent.classList.remove('hidden');
+                addPlanContent.classList.add('hidden');
+                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg cursor-pointer";
+                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white cursor-pointer";
+            } else {
+                overviewContent.classList.add('hidden');
+                addPlanContent.classList.remove('hidden');
+                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg cursor-pointer";
+                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white cursor-pointer";
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('input-model').value = '';
+            document.getElementById('input-date').value = '';
+            document.getElementById('input-target').value = '0';
+            document.getElementById('input-hours').value = '8';
+        }
+
+        function renderMatrixWithData(rows, workingHours) {
+            if (!rows || rows.length <= 1) return;
+
+            const headerRow = rows[0];
+            let dates = [];
+            for (let c = 1; c < headerRow.length; c++) {
+                if (headerRow[c]) {
+                    dates.push(String(headerRow[c]).trim());
+                }
+            }
+
+            if (dates.length > 0) {
+                currentDates = dates;
+                initMatrixTable(currentDates);
+            }
+
+            let updatedCount = 0;
+            const tbody = document.getElementById('matrix-tbody');
+            const modelRows = tbody.querySelectorAll('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || !r[0]) continue;
+
+                const excelModel = String(r[0]).trim();
+                
+                modelRows.forEach(row => {
+                    const fixedModel = row.getAttribute('data-model');
+                    if (fixedModel && excelModel.toLowerCase().includes(fixedModel.toLowerCase())) {
+                        currentDates.forEach((dateText, idx) => {
+                            const targetVal = parseFloat(r[idx + 1]) || 0;
+
+                            if (targetVal > 0) {
+                                const calculatedUph = (targetVal / workingHours).toFixed(1);
+                                row.cells[idx + 1].innerHTML = `
+                                    <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
+                                    <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
+                                `;
+                                updatedCount++;
+                            }
+                        });
+                    }
+                });
+            }
+            return updatedCount;
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    rawExcelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+                    const count = renderMatrixWithData(rawExcelData, workingHours);
+
+                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูล ${count || 0} รายการ`);
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function saveManualPlan() {
+            const modelInput = document.getElementById('input-model').value.trim();
+            const dateInput = document.getElementById('input-date').value.trim();
+            const target = parseFloat(document.getElementById('input-target').value) || 0;
+            const hours = parseFloat(document.getElementById('input-hours').value) || 8;
+
+            if (!modelInput || !dateInput) {
+                alert('กรุณากรอกรุ่นสินค้าและวันที่ให้ครบถ้วน');
+                return;
+            }
+
+            // ค้นหารุ่นสินค้าที่ตรงกัน
+            const tbody = document.getElementById('matrix-tbody');
+            const rows = tbody.getElementsByTagName('tr');
+            let targetRow = null;
+
+            for (let r of rows) {
+                const fixedModel = r.getAttribute('data-model');
+                if (fixedModel && modelInput.toLowerCase().includes(fixedModel.toLowerCase())) {
+                    targetRow = r;
+                    break;
+                }
+            }
+
+            if (!targetRow) {
+                alert('ไม่พบรุ่นสินค้าดังกล่าวในตาราง Matrix กรุณากรอกรุ่นให้ตรงกับแถว (เช่น 159, TM545)');
+                return;
+            }
+
+            // ตรวจสอบว่ามีวันที่นี้ในหัวตารางหรือยัง ถ้ายังไม่มี -> ทำการเพิ่มคอลัมน์วันที่ให้อัตโนมัติทันที
+            let headers = document.getElementById('matrix-table').rows[0].cells;
+            let colIndex = -1;
+
+            for (let i = 1; i < headers.length; i++) {
+                if (headers[i].innerText.trim().toLowerCase() === dateInput.toLowerCase()) {
+                    colIndex = i;
+                    break;
+                }
+            }
+
+            if (colIndex === -1) {
+                // เพิ่มวันที่ใหม่เข้าไปในอาร์เรย์ currentDates ทันที
+                currentDates.push(dateInput);
+                initMatrixTable(currentDates);
+                
+                // ค้นหาตำแหน่งคอลัมน์ใหม่อีกรอบหลังสร้างตารางเสร็จ
+                headers = document.getElementById('matrix-table').rows[0].cells;
+                for (let i = 1; i < headers.length; i++) {
+                    if (headers[i].innerText.trim().toLowerCase() === dateInput.toLowerCase()) {
+                        colIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // ดึงแถวของรุ่นสินค้าใหม่อีกครั้งหลังจากตารางถูกรีเฟรช
+            const updatedRows = tbody.getElementsByTagName('tr');
+            for (let r of updatedRows) {
+                const fixedModel = r.getAttribute('data-model');
+                if (fixedModel && modelInput.toLowerCase().includes(fixedModel.toLowerCase())) {
+                    targetRow = r;
+                    break;
+                }
+            }
+
+            const calculatedUph = hours > 0 ? (target / hours).toFixed(1) : 0;
+            targetRow.cells[colIndex].innerHTML = `
+                <div class="font-bold text-white">${target.toLocaleString()}</div>
+                <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
+            `;
+
+            alert('บันทึกข้อมูลแผนผลิตลงตารางสำเร็จ!');
+            clearForm();
+        }
+    </script>
+</body>
+</html>
