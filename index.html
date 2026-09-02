@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Capacity & Manpower Planning Dashboard</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS สำหรับอ่านไฟล์ Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -15,15 +17,17 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         
+        <!-- Header & Navigation Tabs Section -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (คูณ 2 ชิ้นส่วนย่อยต่อ 1 รุ่น)</p>
+                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (กำหนดชิ้นส่วนย่อยอิสระ)</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
+                <!-- Navigation Tabs -->
                 <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
                     <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg">
                         📋 Matrix View
@@ -39,8 +43,10 @@
             </div>
         </header>
 
+        <!-- ================= PAGE 1: MATRIX VIEW ================= -->
         <div id="page-matrix" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Upload Excel Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
@@ -61,6 +67,7 @@
                     </div>
                 </div>
 
+                <!-- Settings & Save Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
@@ -92,9 +99,10 @@
                 </div>
             </div>
 
+            <!-- Matrix Table Section -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (คำนวณคูณ 2 ชิ้นส่วนย่อย)</h3>
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (คำนวณตามชิ้นส่วนย่อยแต่ละรุ่น)</h3>
                     <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
                 </div>
                 
@@ -107,40 +115,47 @@
                             </tr>
                         </thead>
                         <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
-                            </tbody>
+                            <!-- JS Generated -->
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- ================= PAGE 2: LINE OVERVIEW ================= -->
         <div id="page-overview" class="space-y-6 hidden">
+            <!-- Line Cards Container -->
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, ตั้งค่าชิ้นส่วนย่อย (Door F / Door R) และเป้าหมายการผลิต</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิต</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
                         <select id="overview-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
-                            </select>
+                            <!-- JS Generated -->
+                        </select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="line-cards-container">
-                    </div>
+                    <!-- JS Generated -->
+                </div>
             </div>
         </div>
 
     </div>
 
+    <!-- ================= FULL SCREEN MODAL DETAIL ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
+        <!-- Top Navigation / Header -->
         <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
             <div class="flex items-center gap-3">
                 <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
                 <div>
                     <h3 id="modal-line-title" class="text-xl font-bold text-white">ชื่อไลน์การผลิต</h3>
-                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อย (2 ชิ้น/รุ่น) และเป้าหมายการผลิต</p>
+                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยอิสระต่อรุ่น และเป้าหมายการผลิต</p>
                 </div>
             </div>
             
@@ -155,9 +170,12 @@
             </div>
         </div>
         
+        <!-- Main Content Area -->
         <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full" id="modal-body-content">
-            </div>
+            <!-- JS Generated -->
+        </div>
 
+        <!-- Footer Bar -->
         <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-between items-center px-8">
             <div class="text-xs text-slate-400">
                 ระบบจัดการสายการผลิตอัจฉริยะ (Production Line Multi-Part View)
@@ -225,15 +243,15 @@
             { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false, selectedModels: [] }
         ];
 
-        // โครงสร้างชิ้นส่วนย่อยประจำรุ่น (เริ่มต้นกำหนดให้ทุกรุ่นมี 2 ชิ้นส่วนหลัก เช่น Door F และ Door R หรือกำหนดเองได้)
-        // รูปแบบ modelSubParts[modelName] = [{name: "Door F", ratio: 1}, {name: "Door R", ratio: 1}]
+        // โครงสร้างชิ้นส่วนย่อยประจำรุ่น (สามารถเพิ่ม/ลด/แก้ไขชื่อชิ้นส่วนย่อยของแต่ละรุ่นได้อิสระ)
+        // รูปแบบ modelSubParts[modelName] = [{name: "ชื่อชิ้นส่วน 1", ratio: จำนวน}, {name: "ชื่อชิ้นส่วน 2", ratio: จำนวน}, ...]
         let modelSubParts = {};
 
         function initDefaultSubParts() {
             productStructure.forEach(g => {
                 g.models.forEach(m => {
                     if (!modelSubParts[m]) {
-                        // กำหนดค่าเริ่มต้น 2 ชิ้นส่วน (ค่าเริ่มต้นสอดคล้องกับตัวอย่าง TM10/12 ที่มี Door F และ Door R)
+                        // กำหนดค่าเริ่มต้นเป็น Door F และ Door R (หรือสามารถแก้ไขอิสระในหน้าจอได้)
                         modelSubParts[m] = [
                             { name: "Door F", ratio: 1 },
                             { name: "Door R", ratio: 1 }
@@ -290,7 +308,7 @@
         }
 
         function getMultiplier(model) {
-            if (!modelSubParts[model]) return 1;
+            if (!modelSubParts[model] || !Array.isArray(modelSubParts[model])) return 1;
             let sum = 0;
             modelSubParts[model].forEach(p => {
                 sum += (parseFloat(p.ratio) || 0);
@@ -319,7 +337,7 @@
                 dailyTotals[date] = { target: sumTarget, uph: sumUph };
             });
 
-            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model (Parts)</th>`;
+            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model (Sub-parts)</th>`;
             dates.forEach(date => {
                 headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date}</th>`;
             });
@@ -328,7 +346,7 @@
             let tbodyHTML = `
                 <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
                     <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
-                    <td class="p-3.5 text-blue-300">Order x 2 Parts Total</td>
+                    <td class="p-3.5 text-blue-300">Total Output (All Sub-parts)</td>
             `;
 
             dates.forEach(date => {
@@ -356,7 +374,7 @@
                     tbodyHTML += `
                         <td class="p-3.5 font-medium text-slate-300">
                             <div>${model}</div>
-                            <div class="text-[10px] text-slate-400">ชิ้นส่วน: ${parts.map(p => `${p.name}(${p.ratio})`).join(', ')}</div>
+                            <div class="text-[10px] text-cyan-400">ชิ้นส่วน: ${parts.map(p => `${p.name}(${p.ratio})`).join(', ')} (x${mult})</div>
                         </td>
                     `;
 
@@ -409,7 +427,7 @@
                     if (line.selectedModels) modelsToCheck.push(...line.selectedModels);
                 }
 
-                modelsToCheck = [...new Set(modelsToCheck)]; // ลบตัวซ้ำ
+                modelsToCheck = [...new Set(modelsToCheck)];
 
                 modelsToCheck.forEach(modelName => {
                     let baseVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
@@ -449,7 +467,7 @@
                             <p class="text-xs text-slate-400 mb-4">${line.description}</p>
                             
                             <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60 max-h-32 overflow-y-auto">
-                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดผลิตชิ้นส่วนรวม (คูณ 2):</div>
+                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดรวมชิ้นส่วนย่อย:</div>
                 `;
 
                 let groupKeys = Object.keys(groupSummaryMap);
@@ -477,7 +495,7 @@
                             </div>
                             <div class="text-right">
                                 <span class="text-[10px] text-slate-400 block">กำลังผลิต UPH</span>
-                                <span class="text-lg font-extrabold text-cyan-300">${lineUph > 0 ? lineUph.toLocaleString() : '0'} <span class="text-[10px] font-normal text-slate-400">อ/ชม.</span></span>
+                                <span class="text-lg font-extrabold text-cyan-300">${lineUph > 0 ? lineUph.toLocaleString() : '0'} <span class="text-[10px] font-normal text-slate-400">ชิ้น/ชม.</span></span>
                             </div>
                         </div>
                     </div>
@@ -507,18 +525,18 @@
 
             if (tab === 'target') {
                 btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-                if(btnParts) btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
             } else if (tab === 'parts') {
-                if(btnParts) btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
                 btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
             } else {
                 btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
                 btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                if(btnParts) btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
             }
         }
@@ -540,7 +558,7 @@
                         <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
                             <div>
                                 <p class="text-sm text-blue-400 font-bold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
-                                <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อย (เช่น Door F / Door R), กรอกเป้าหมาย และเวลา</p>
+                                <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละกลุ่ม</p>
                             </div>
                             <span class="text-xs bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full border border-purple-500/30 font-semibold">3 Machine Groups</span>
                         </div>
@@ -605,7 +623,7 @@
                                     🎯 กรอกเป้าหมาย (${selectedDate})
                                 </button>
                                 <button onclick="switchSubMachineSubTab('parts')" id="subtab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'parts' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
-                                    ⚙️ จัดการชิ้นส่วน (2 ชิ้น/รุ่น)
+                                    ⚙️ จัดการชิ้นส่วนย่อย
                                 </button>
                                 <button onclick="switchSubMachineSubTab('process')" id="subtab-btn-process" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'process' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
                                     ⏱️ กระบวนการ & เวลา
@@ -656,14 +674,14 @@
                     <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
                         <div>
                             <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${line.name}</p>
-                            <p class="text-xs text-slate-400 mt-0.5">กำหนดจำนวนชิ้นส่วนย่อย (เช่น Door F / Door R) และเป้าหมายการผลิตสำหรับวันที่ <span class="text-amber-400 font-bold">${selectedDate}</span></p>
+                            <p class="text-xs text-slate-400 mt-0.5">กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิตสำหรับวันที่ <span class="text-amber-400 font-bold">${selectedDate}</span></p>
                         </div>
                         <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
                             <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow">
                                 🎯 กรอกเป้าหมายผลิต
                             </button>
                             <button onclick="switchLineSubTab('parts')" id="linetab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
-                                ⚙️ จัดการชิ้นส่วน (2 ชิ้น/รุ่น)
+                                ⚙️ จัดการชิ้นส่วนย่อย
                             </button>
                             <button onclick="switchLineSubTab('model')" id="linetab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
                                 📋 เลือกรุ่น (Model)
@@ -691,7 +709,7 @@
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
                     <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <span class="text-xs font-bold text-slate-200">🎯 กรอกเป้าหมายจำนวนรุ่น ประจำวันที่: <span class="text-amber-400">${dateStr}</span> (ระบบจะคูณชิ้นส่วนย่อยอัตโนมัติ)</span>
+                            <span class="text-xs font-bold text-slate-200">🎯 กรอกเป้าหมายจำนวนรุ่น ประจำวันที่: <span class="text-amber-400">${dateStr}</span> (ระบบคูณชิ้นส่วนย่อยตามที่ตั้งค่าไว้ของแต่ละรุ่น)</span>
                         </div>
                     </div>
                     
@@ -701,9 +719,9 @@
                                 <thead>
                                     <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
                                         <th class="p-3.5 pl-6">Product Group</th>
-                                        <th class="p-3.5">Model & Parts</th>
+                                        <th class="p-3.5">Model & Sub-parts Config</th>
                                         <th class="p-3.5 text-center">เป้าหมายรุ่น (ชุด)</th>
-                                        <th class="p-3.5 text-center">รวมชิ้นส่วน (คูณ 2)</th>
+                                        <th class="p-3.5 text-center">รวมชิ้นส่วนย่อย</th>
                                         <th class="p-3.5 text-center">UPH รวม</th>
                                     </tr>
                                 </thead>
@@ -720,14 +738,14 @@
                     let mult = getMultiplier(model);
                     let totalPartsVal = currentTarget * mult;
                     let calcUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
-                    let partsDesc = modelSubParts[model] ? modelSubParts[model].map(p => `${p.name}`).join(' + ') : '2 Parts';
+                    let partsDesc = modelSubParts[model] ? modelSubParts[model].map(p => `${p.name}(${p.ratio})`).join(', ') : '2 Parts';
 
                     html += `
                         <tr class="hover:bg-slate-900/50">
                             <td class="p-3.5 pl-6 font-semibold text-blue-400">${groupName}</td>
                             <td class="p-3.5 font-medium text-slate-300">
                                 <div>${model}</div>
-                                <div class="text-[10px] text-cyan-400">ชิ้นส่วน: ${partsDesc} (รวมคูณ ${mult})</div>
+                                <div class="text-[10px] text-cyan-400">ชิ้นส่วน: ${partsDesc} (ตัวคูณรวม: x${mult})</div>
                             </td>
                             <td class="p-3.5 text-center">
                                 <input type="number" min="0" value="${currentTarget > 0 ? currentTarget : ''}" placeholder="0" 
@@ -755,13 +773,15 @@
             return html;
         }
 
-        // หน้าต่างสำหรับปรับแต่งชื่อชิ้นส่วนย่อย (เช่น TM10/12 เป็น Door F และ Door R)
+        // หน้าจอแก้ไขชื่อชิ้นส่วนย่อยอิสระของแต่ละรุ่น พร้อมปุ่มเพิ่ม/ลบชิ้นส่วน
         function generatePartsConfigTableHTML(selectedModels) {
             let html = `
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชื่อชิ้นส่วนย่อย (Sub-parts) ต่อ 1 รุ่น</span>
-                        <p class="text-[11px] text-slate-400 mt-0.5">ตัวอย่าง: รุ่น TM10/12 กำหนดเป็น Door F (จำนวน 1) และ Door R (จำนวน 1) รวมเป็น 2 ชิ้นต่อรุ่น</p>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น</span>
+                            <p class="text-[11px] text-slate-400 mt-0.5">คุณสามารถเปลี่ยนชื่อชิ้นส่วน ปรับจำนวน หรือกดเพิ่ม/ลบชิ้นส่วนย่อยของแต่ละรุ่นได้ตามจริง</p>
+                        </div>
                     </div>
                     
                     <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
@@ -769,43 +789,55 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
-                                        <th class="p-3.5 pl-6">Model</th>
-                                        <th class="p-3.5">ชิ้นส่วนที่ 1 (Name & Qty)</th>
-                                        <th class="p-3.5">ชิ้นส่วนที่ 2 (Name & Qty)</th>
-                                        <th class="p-3.5 text-center">ตัวคูณรวม</th>
+                                        <th class="p-3.5 pl-6 w-44">Model</th>
+                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (ชื่อ & จำนวนต่อ 1 ชุด)</th>
+                                        <th class="p-3.5 text-center w-32">ตัวคูณรวม</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-800/50 text-xs">
             `;
 
             if (!selectedModels || selectedModels.length === 0) {
-                html += `<tr><td colspan="4" class="p-8 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
+                html += `<tr><td colspan="3" class="p-8 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
             } else {
                 selectedModels.forEach(model => {
-                    if (!modelSubParts[model]) {
-                        modelSubParts[model] = [{name: "Door F", ratio: 1}, {name: "Door R", ratio: 1}];
+                    if (!modelSubParts[model] || !Array.isArray(modelSubParts[model])) {
+                        modelSubParts[model] = [
+                            { name: "Door F", ratio: 1 },
+                            { name: "Door R", ratio: 1 }
+                        ];
                     }
-                    let p1 = modelSubParts[model][0] || {name: "Door F", ratio: 1};
-                    let p2 = modelSubParts[model][1] || {name: "Door R", ratio: 1};
-                    let totalRatio = (parseFloat(p1.ratio) || 0) + (parseFloat(p2.ratio) || 0);
+                    let partsList = modelSubParts[model];
+                    let mult = getMultiplier(model);
 
                     html += `
-                        <tr class="hover:bg-slate-900/50">
-                            <td class="p-3.5 pl-6 font-bold text-blue-400">${model}</td>
-                            <td class="p-3.5">
-                                <div class="flex items-center gap-2">
-                                    <input type="text" value="${p1.name}" onchange="updatePartDetail('${model}', 0, 'name', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white w-36">
-                                    <input type="number" min="0" step="0.5" value="${p1.ratio}" onchange="updatePartDetail('${model}', 0, 'ratio', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-center w-16 font-bold">
+                        <tr class="hover:bg-slate-900/50 align-top">
+                            <td class="p-4 pl-6 font-bold text-blue-400 pt-5">${model}</td>
+                            <td class="p-3">
+                                <div class="space-y-2" id="parts-container-${model}">
+                    `;
+
+                    partsList.forEach((part, pIdx) => {
+                        html += `
+                            <div class="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-800">
+                                <input type="text" value="${part.name}" placeholder="ชื่อชิ้นส่วน" onchange="updateSubPartProp('${model}', ${pIdx}, 'name', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white flex-1 text-xs">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] text-slate-400">จำนวน:</span>
+                                    <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updateSubPartProp('${model}', ${pIdx}, 'ratio', this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-center w-16 font-bold text-xs">
                                 </div>
-                            </td>
-                            <td class="p-3.5">
-                                <div class="flex items-center gap-2">
-                                    <input type="text" value="${p2.name}" onchange="updatePartDetail('${model}', 1, 'name', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white w-36">
-                                    <input type="number" min="0" step="0.5" value="${p2.ratio}" onchange="updatePartDetail('${model}', 1, 'ratio', this.value)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-center w-16 font-bold">
+                                <button onclick="removeSubPartItem('${model}', ${pIdx})" class="text-rose-400 hover:text-rose-300 p-1.5 rounded-lg bg-rose-950/50 border border-rose-900/50" title="ลบชิ้นส่วนนี้">🗑️</button>
+                            </div>
+                        `;
+                    });
+
+                    html += `
                                 </div>
+                                <button onclick="addSubPartItem('${model}')" class="mt-2 text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all font-semibold flex items-center gap-1">
+                                    + เพิ่มชิ้นส่วนย่อย
+                                </button>
                             </td>
-                            <td class="p-3.5 text-center font-extrabold text-amber-400 text-sm" id="multiplier-display-${model}">
-                                x ${totalRatio}
+                            <td class="p-4 text-center font-extrabold text-amber-400 text-base pt-5" id="multiplier-display-${model}">
+                                x ${mult}
                             </td>
                         </tr>
                     `;
@@ -822,14 +854,34 @@
             return html;
         }
 
-        function updatePartDetail(model, partIndex, field, value) {
-            if (!modelSubParts[model]) {
-                modelSubParts[model] = [{name: "Door F", ratio: 1}, {name: "Door R", ratio: 1}];
+        function addSubPartItem(model) {
+            if (!modelSubParts[model]) modelSubParts[model] = [];
+            modelSubParts[model].push({ name: "ชิ้นส่วนใหม่", ratio: 1 });
+            renderModalContent();
+            manualSaveDataSilent();
+            initMatrixTable(currentDates);
+            renderLineOverview();
+        }
+
+        function removeSubPartItem(model, pIdx) {
+            if (!modelSubParts[model]) return;
+            if (modelSubParts[model].length <= 1) {
+                alert("ต้องมีชิ้นส่วนย่อยอย่างน้อย 1 ชิ้น");
+                return;
             }
+            modelSubParts[model].splice(pIdx, 1);
+            renderModalContent();
+            manualSaveDataSilent();
+            initMatrixTable(currentDates);
+            renderLineOverview();
+        }
+
+        function updateSubPartProp(model, pIdx, field, value) {
+            if (!modelSubParts[model]) return;
             if (field === 'name') {
-                modelSubParts[model][partIndex].name = value;
+                modelSubParts[model][pIdx].name = value;
             } else {
-                modelSubParts[model][partIndex].ratio = parseFloat(value) || 0;
+                modelSubParts[model][pIdx].ratio = parseFloat(value) || 0;
             }
 
             let mult = getMultiplier(model);
