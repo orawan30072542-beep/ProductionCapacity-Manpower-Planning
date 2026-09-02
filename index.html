@@ -26,7 +26,7 @@
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
-                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตแยกตาม Line การผลิต (Order, UPH & Shifts)</p>
+                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตแยกตามกลุ่มสินค้า (Order, UPH & Shifts)</p>
             </div>
             
             <div class="flex flex-col md:flex-row items-center gap-4">
@@ -127,26 +127,14 @@
                     </div>
 
                     <div>
-                        <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตตาม Line ผลิต</h2>
-                        <p class="text-xs text-blue-400 mt-1">กรอกข้อมูลเพื่อเพิ่มแถวรุ่นสินค้าและยอดผลิตรายวันลงในตารางด้านล่าง</p>
+                        <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
+                        <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่นสินค้า</p>
                     </div>
 
                     <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">Production Line</label>
-                                <select id="prodLine" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
-                                    <option value="Door Press">Door Press</option>
-                                    <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
-                                    <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
-                                    <option value="Door A">Door A</option>
-                                    <option value="Door B">Door B</option>
-                                    <option value="Door C">Door C</option>
-                                    <option value="Door In Door">Door In Door</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">รุ่นสินค้า (Model Name)</label>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">รุ่นสินค้า (MODEL NAME)</label>
                                 <input type="text" id="modelName" placeholder="เช่น One Door, TM545" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
@@ -157,7 +145,7 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">Order (เป้าหมาย)</label>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ORDER รายวัน (TARGET)</label>
                                 <input type="number" id="dailyOrder" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
@@ -165,11 +153,11 @@
                                 <input type="number" id="uphValue" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต Day</label>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต DAY SHIFT</label>
                                 <input type="number" id="dayShift" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต Night</label>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต NIGHT SHIFT</label>
                                 <input type="number" id="nightShift" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                         </div>
@@ -179,7 +167,7 @@
                                 ล้างค่า
                             </button>
                             <button type="submit" class="px-6 py-2 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all cursor-pointer">
-                                บันทึกและอัปเดตตารางด้านล่าง
+                                บันทึกข้อมูลแผนผลิต
                             </button>
                         </div>
                     </form>
@@ -187,15 +175,15 @@
 
                 <div class="space-y-3 pt-2">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-base font-bold text-white">📊 ตารางแสดงแผนผลิตรายวัน (แยกตามรุ่นสินค้าและวันที่)</h3>
-                        <span class="text-xs text-gray-400">แถวแรก: รุ่นสินค้า / แถวถัดไป: ยอดผลิตรายวันและ UPH</span>
+                        <h3 class="text-base font-bold text-white">📊 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้า</h3>
+                        <span class="text-xs text-gray-400">ยอดที่ต้องผลิต (Order) และอัตราต่อชั่วโมง (UPH) ของแต่ละกลุ่มสินค้าในแต่ละวัน</span>
                     </div>
 
                     <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20">
                         <table class="w-full text-left border-collapse text-xs" id="matrix-table">
                             <thead>
                                 <tr class="bg-blue-950/90 text-blue-300 uppercase border-b border-blue-900">
-                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-10">รุ่นสินค้า / Line</th>
+                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-10">วันที่ / รุ่นสินค้า</th>
                                     <th class="py-3 px-3 text-center border-l border-blue-900/50">20 ส.ค.</th>
                                     <th class="py-3 px-3 text-center border-l border-blue-900/50">21 ส.ค.</th>
                                     <th class="py-3 px-3 text-center border-l border-blue-900/50">22 ส.ค.</th>
@@ -208,31 +196,31 @@
                                 <tr class="hover:bg-blue-900/20">
                                     <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
                                         <div class="font-bold text-blue-200">One Door</div>
-                                        <div class="text-[10px] text-gray-400">Door Press</div>
+                                        <div class="text-[10px] text-gray-400">UPH</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,150</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 52</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,150</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 52</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,150</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 52</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,300</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 59</div>
+                                        <div class="text-[10px] text-blue-400">59</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,253</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 57</div>
+                                        <div class="text-[10px] text-blue-400">57</div>
                                     </td>
                                     <td class="py-3 px-3 text-center border-l border-blue-900/30">
                                         <div class="font-bold text-white">1,087</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 49</div>
+                                        <div class="text-[10px] text-blue-400">49</div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -271,7 +259,6 @@
         function handleFormSubmit(event) {
             event.preventDefault();
             
-            const line = document.getElementById('prodLine').value;
             const model = document.getElementById('modelName').value || 'Model-General';
             const date = document.getElementById('prodDate').value || '1 ก.ย.';
             const target = parseInt(document.getElementById('dailyOrder').value) || 0;
@@ -279,14 +266,14 @@
             const day = parseInt(document.getElementById('dayShift').value) || 0;
             const night = parseInt(document.getElementById('nightShift').value) || 0;
             
-            addRowToOverviewTable(line, model, date, target, uph, day, night);
-            addOrUpdateMatrixRow(line, model, date, target, uph);
+            addRowToOverviewTable(model, date, target, uph, day, night);
+            addOrUpdateMatrixRow(model, date, target, uph);
 
-            alert('เพิ่มแผนการผลิตและอัปเดตตารางสำเร็จ!');
+            alert('บันทึกข้อมูลแผนผลิตสำเร็จ!');
             document.getElementById('planForm').reset();
         }
 
-        function addRowToOverviewTable(line, model, date, target, uph, day, night) {
+        function addRowToOverviewTable(model, date, target, uph, day, night) {
             const total = day + night;
             const percentage = target > 0 ? ((total / target) * 100).toFixed(1) : 0;
             const tbody = document.getElementById('overview-table-body');
@@ -298,7 +285,7 @@
             newRow.innerHTML = `
                 <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>${line} ${model ? `<span class="text-xs text-blue-400 font-normal ml-1">(${model})</span>` : ''}</span>
+                    <span>${model}</span>
                 </td>
                 <td class="py-4 px-6 text-center text-blue-300 font-medium">${date}</td>
                 <td class="py-4 px-6 text-center font-semibold text-white">${target.toLocaleString()}</td>
@@ -312,7 +299,7 @@
             tbody.appendChild(newRow);
         }
 
-        function addOrUpdateMatrixRow(line, model, date, target, uph) {
+        function addOrUpdateMatrixRow(model, date, target, uph) {
             const tbody = document.getElementById('matrix-tbody');
             let existingRow = null;
 
@@ -331,7 +318,7 @@
                 existingRow.innerHTML = `
                     <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
                         <div class="font-bold text-blue-200">${model}</div>
-                        <div class="text-[10px] text-gray-400">${line}</div>
+                        <div class="text-[10px] text-gray-400">UPH</div>
                     </td>
                     <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
                     <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
@@ -355,7 +342,7 @@
             if (colIndex !== -1) {
                 existingRow.cells[colIndex].innerHTML = `
                     <div class="font-bold text-white">${target.toLocaleString()}</div>
-                    <div class="text-[10px] text-blue-400">UPH: ${uph}</div>
+                    <div class="text-[10px] text-blue-400">${uph}</div>
                 `;
             }
         }
@@ -382,8 +369,7 @@
 
                     let count = 0;
                     jsonRows.forEach(row => {
-                        const line = row['Production Line'] || row['Line'] || 'Door Press';
-                        const model = row['Model'] || row['รุ่น'] || 'Model-A';
+                        const model = row['Model'] || row['รุ่น'] || row['Model Name'] || 'Model-A';
                         const date = row['Date'] || row['วันที่'] || '1 ก.ย.';
                         const target = parseInt(row['Target'] || row['Order'] || 0);
                         const uph = parseInt(row['UPH'] || 0);
@@ -391,8 +377,8 @@
                         const night = parseInt(row['Night'] || 0);
 
                         if (target > 0 || uph > 0) {
-                            addRowToOverviewTable(line, model, date, target, uph, day, night);
-                            addOrUpdateMatrixRow(line, model, date, target, uph);
+                            addRowToOverviewTable(model, date, target, uph, day, night);
+                            addOrUpdateMatrixRow(model, date, target, uph);
                             count++;
                         }
                     });
