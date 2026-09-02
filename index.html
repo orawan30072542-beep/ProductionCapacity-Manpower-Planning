@@ -26,7 +26,7 @@
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
-                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตจากแผนผลิต (รายวัน & รายชั่วโมง)</p>
+                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตรายวันตามกลุ่มสินค้า (Order & UPH)</p>
             </div>
             
             <div class="flex flex-col md:flex-row items-center gap-4">
@@ -69,119 +69,52 @@
 
             <div class="glass-panel rounded-2xl shadow-2xl overflow-hidden">
                 <div class="p-5 border-b border-blue-900/50 bg-blue-950/30 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-white">ตารางสรุปยอดผลิตแยกตาม Line การผลิต (รายวัน / รุ่นสินค้า)</h2>
+                    <h2 class="text-lg font-semibold text-white">📅 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้าและรุ่น (Order & UPH)</h2>
                     <span class="text-xs text-gray-400">* หน่วยนับ: ชิ้น (pcs)</span>
                 </div>
                 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse text-sm">
                         <thead>
                             <tr class="bg-blue-950/80 text-blue-300 uppercase text-xs tracking-wider border-b border-blue-900">
-                                <th class="py-4 px-6 font-semibold">Production Line & Model</th>
-                                <th class="py-4 px-6 font-semibold text-center">Order รายวัน (Target)</th>
-                                <th class="py-4 px-6 font-semibold text-center bg-blue-900/30">ยอดผลิตรายชั่วโมง (Day Shift)</th>
-                                <th class="py-4 px-6 font-semibold text-center bg-indigo-950/30">ยอดผลิตรายชั่วโมง (Night Shift)</th>
-                                <th class="py-4 px-6 font-semibold text-center">ยอดรวมสะสม</th>
+                                <th class="py-4 px-6 font-semibold">กลุ่มสินค้า / รุ่น (Model)</th>
+                                <th class="py-4 px-6 font-semibold text-center">วันที่ (ระบุวัน)</th>
+                                <th class="py-4 px-6 font-semibold text-center">Order (เป้าหมาย)</th>
+                                <th class="py-4 px-6 font-semibold text-center bg-blue-900/30">UPH (อัตราต่อชั่วโมง)</th>
+                                <th class="py-4 px-6 font-semibold text-center">ยอดผลิตจริง (Day)</th>
+                                <th class="py-4 px-6 font-semibold text-center">ยอดผลิตจริง (Night)</th>
                                 <th class="py-4 px-6 font-semibold text-center">% Achievement</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-blue-950 text-sm text-gray-300" id="overview-table-body">
+                        <tbody class="divide-y divide-blue-950 text-gray-300" id="overview-table-body">
                             
                             <tr class="hover:bg-blue-900/20 transition-colors">
                                 <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
                                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door Press <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
+                                    <span>One Door</span>
                                 </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
+                                <td class="py-4 px-6 text-center text-blue-300 font-medium">1 ก.ย.</td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">1,300</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">59</td>
+                                <td class="py-4 px-6 text-center text-emerald-400">650</td>
+                                <td class="py-4 px-6 text-center text-indigo-400">620</td>
                                 <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.6%</span>
                                 </td>
                             </tr>
 
                             <tr class="hover:bg-blue-900/20 transition-colors">
                                 <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
                                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Back plate&Bottom Plate <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
+                                    <span>TM545</span>
                                 </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">1,000</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">950</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,950</td>
+                                <td class="py-4 px-6 text-center text-blue-300 font-medium">1 ก.ย.</td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">610</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">28</td>
+                                <td class="py-4 px-6 text-center text-emerald-400">300</td>
+                                <td class="py-4 px-6 text-center text-indigo-400">305</td>
                                 <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.5%</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door Frame&Door Glass <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">1,500</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">720</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">700</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,420</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">94.6%</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door A <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">1,600</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">800</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">800</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,600</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">100.0%</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door B <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door C <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">950</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,850</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">92.5%</span>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Door In Door <span class="text-xs text-blue-400 font-normal">(Model-Default)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">1,750</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">900</td>
-                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">740</td>
-                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,640</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">93.7%</span>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">99.1%</span>
                                 </td>
                             </tr>
 
@@ -196,9 +129,9 @@
                 
                 <div class="border-b border-blue-900/50 pb-5">
                     <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                        📁 อัปโหลดไฟล์แผนผลิตรายวัน (Excel)
                     </h2>
-                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อนำเข้าข้อมูลแผนผลิตพร้อมรุ่นเข้าตารางรายวันอัตโนมัติ</p>
+                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อนำเข้าตารางสรุปรายวันตามกลุ่มสินค้าอัตโนมัติ</p>
                     
                     <div class="mt-4 flex items-center gap-3">
                         <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-4 cursor-pointer bg-blue-950/30 transition-all">
@@ -208,179 +141,3 @@
                         </label>
                     </div>
                 </div>
-
-                <div>
-                    <div class="pb-4 mb-5">
-                        <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
-                        <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่น</p>
-                    </div>
-
-                    <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Production Line</label>
-                                <select id="prodLine" required class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                                    <option value="" disabled selected>-- เลือก Line ผลิต --</option>
-                                    <option value="Door Press">Door Press</option>
-                                    <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
-                                    <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
-                                    <option value="Door A">Door A</option>
-                                    <option value="Door B">Door B</option>
-                                    <option value="Door C">Door C</option>
-                                    <option value="Door In Door">Door In Door</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">รุ่นสินค้า (Model Name)</label>
-                                <input type="text" id="modelName" required placeholder="เช่น Model-A1" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Order รายวัน (Target)</label>
-                                <input type="number" id="dailyOrder" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Day Shift</label>
-                                <input type="number" id="dayShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Night Shift</label>
-                                <input type="number" id="nightShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                            </div>
-                        </div>
-
-                        <div class="pt-4 flex justify-end space-x-3">
-                            <button type="reset" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white bg-blue-950/40 border border-blue-900 transition-all">
-                                ล้างค่า
-                            </button>
-                            <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all">
-                                บันทึกข้อมูลแผนผลิต
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // แสดงวันที่ปัจจุบันอัตโนมัติ
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
-
-        // ฟังก์ชันสลับหน้า Tab ระหว่าง Overview และ เพิ่มแผนผลิต
-        function switchTab(tabId) {
-            const overviewContent = document.getElementById('content-overview');
-            const addPlanContent = document.getElementById('content-add-plan');
-            const tabOverview = document.getElementById('tab-overview');
-            const tabAddPlan = document.getElementById('tab-add-plan');
-
-            if (tabId === 'overview') {
-                overviewContent.classList.remove('hidden');
-                addPlanContent.classList.add('hidden');
-                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
-                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white";
-            } else {
-                overviewContent.classList.add('hidden');
-                addPlanContent.classList.remove('hidden');
-                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
-                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white";
-            }
-        }
-
-        // จัดการเมื่อกดบันทึกข้อมูลแผนผลิตจากฟอร์มเดี่ยว
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            const line = document.getElementById('prodLine').value;
-            const model = document.getElementById('modelName').value;
-            const target = parseInt(document.getElementById('dailyOrder').value) || 0;
-            const day = parseInt(document.getElementById('dayShift').value) || 0;
-            const night = parseInt(document.getElementById('nightShift').value) || 0;
-            
-            addRowToTable(line, model, target, day, night);
-            alert('เพิ่มแผนการผลิตรายวันเรียบร้อยแล้ว!');
-            document.getElementById('planForm').reset();
-            switchTab('overview');
-        }
-
-        // ฟังก์ชันเพิ่มแถวลงในตารางหลัก (แสดงชื่อ Line และ Model ควบคู่กันในแถวเดียว)
-        function addRowToTable(line, model, target, day, night) {
-            const total = day + night;
-            const percentage = target > 0 ? ((total / target) * 100).toFixed(1) : 0;
-
-            const tbody = document.getElementById('overview-table-body');
-            const newRow = document.createElement('tr');
-            newRow.className = "hover:bg-blue-900/20 transition-colors";
-            
-            const badgeColor = percentage >= 95 ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-amber-950 text-amber-400 border-amber-800';
-
-            newRow.innerHTML = `
-                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>${line} ${model ? `<span class="text-xs text-blue-400 font-normal">(${model})</span>` : ''}</span>
-                </td>
-                <td class="py-4 px-6 text-center font-semibold text-white">${target.toLocaleString()}</td>
-                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">${day.toLocaleString()}</td>
-                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">${night.toLocaleString()}</td>
-                <td class="py-4 px-6 text-center font-bold text-emerald-400">${total.toLocaleString()}</td>
-                <td class="py-4 px-6 text-center">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor} border">${percentage}%</span>
-                </td>
-            `;
-            tbody.appendChild(newRow);
-        }
-
-        // ฟังก์ชันอ่านไฟล์ Excel และแสดงแผนผลิตรายวันพร้อมรุ่น
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
-
-                    if (jsonRows.length === 0) {
-                        alert('ไม่พบข้อมูลภายในไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
-                        return;
-                    }
-
-                    let successCount = 0;
-                    jsonRows.forEach(row => {
-                        // รองรับชื่อคอลัมน์จาก Excel ทั้งภาษาไทยและอังกฤษ
-                        const line = row['Production Line'] || row['Line'] || row['ไลน์ผลิต'] || 'Door Press';
-                        const model = row['Model'] || row['รุ่นสินค้า'] || row['Model Name'] || 'Model-Excel';
-                        const target = parseInt(row['Target'] || row['Order รายวัน'] || row['Daily Order'] || row['Order'] || 0);
-                        const day = parseInt(row['Day Shift'] || row['ยอดผลิต Day'] || row['Day'] || 0);
-                        const night = parseInt(row['Night Shift'] || row['ยอดผลิต Night'] || row['Night'] || 0);
-
-                        if (target > 0 || day > 0 || night > 0) {
-                            addRowToTable(line, model, target, day, night);
-                            successCount++;
-                        }
-                    });
-
-                    alert(`นำเข้าแผนการผลิตรายวันจาก Excel สำเร็จจำนวน ${successCount} รายการ!`);
-                    switchTab('overview');
-                } catch (error) {
-                    console.error(error);
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบโครงสร้างข้อมูล');
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    </script>
-</body>
-</html>
