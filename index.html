@@ -119,7 +119,7 @@
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             📁 อัปโหลดไฟล์แผนผลิต (Excel)
                         </h2>
-                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะดึงข้อมูลวันที่และคำนวณ UPH ให้อัตโนมัติ</p>
+                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะแปลงวันที่และคำนวณ UPH เป็นจำนวนเต็มให้อัตโนมัติ</p>
                         
                         <div class="mt-3 flex items-center gap-3">
                             <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-5 cursor-pointer bg-blue-950/30 transition-all">
@@ -133,10 +133,10 @@
                     <div class="glass-panel p-4 rounded-xl border border-blue-800/60 bg-blue-950/40">
                         <label class="block text-xs font-semibold text-blue-300 mb-2">⏱️ กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
                         <div class="flex items-center gap-2">
-                            <input type="number" id="working-hours" value="8" min="1" max="24" onchange="syncWorkingHours()" class="w-20 bg-blue-950 border border-blue-800 rounded-lg px-3 py-2 text-sm text-white text-center font-bold focus:outline-none focus:border-blue-500">
+                            <input type="number" id="working-hours" value="8" min="1" max="24" oninput="onWorkingHoursChange()" class="w-20 bg-blue-950 border border-blue-800 rounded-lg px-3 py-2 text-sm text-white text-center font-bold focus:outline-none focus:border-blue-500">
                             <span class="text-xs text-gray-300">ชม. / วัน</span>
                         </div>
-                        <p class="text-[11px] text-gray-400 mt-2">* ใช้กำหนดเวลาทำงานเริ่มต้นสำหรับคำนวณ UPH</p>
+                        <p class="text-[11px] text-gray-400 mt-2">* เปลี่ยนค่านี้ UPH จะคำนวณใหม่ทันทีแบบ Real-time</p>
                     </div>
                 </div>
 
@@ -217,12 +217,23 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
 
-        let rawExcelData = null;
         let currentDates = ["1 ก.ย.", "2 ก.ย.", "3 ก.ย.", "4 ก.ย.", "5 ก.ย.", "6 ก.ย.", "7 ก.ย."];
+        let planDatabase = {}; // เก็บข้อมูล Order ดิบ เพื่อใช้คำนวณ UPH ใหม่แบบ Real-time เมื่อเปลี่ยนเวลา
 
         window.onload = function() {
             initMatrixTable(currentDates);
         };
+
+        // แปลง Excel Serial Date เป็นรูปแบบวันที่ไทยอ่านง่าย (เช่น 1 ก.ย. 68)
+        function excelSerialToDate(serial) {
+            if (typeof serial === 'number' && serial > 30000) {
+                const utcDays = Math.floor(serial - 25569);
+                const utcValue = utcDays * 86400;
+                const dateInfo = new Date(utcValue * 1000);
+                return dateInfo.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+            }
+            return String(serial).trim();
+        }
 
         function initMatrixTable(datesArray) {
             const headerTr = document.getElementById('matrix-header-row');
@@ -270,10 +281,39 @@
             document.getElementById('input-hours').value = defaultHours;
         }
 
-        // ฟังก์ชันซิงค์เวลาทำงานหลัก ไปยังช่องกรอกฟอร์มรายชิ้นอัตโนมัติ
-        function syncWorkingHours() {
-            const mainHours = document.getElementById('working-hours').value;
-            document.getElementById('input-hours').value = mainHours;
+        // ฟังก์ชันคำนวณและอัปเดตตารางใหม่แบบ Real-time ทันทีที่เปลี่ยนเวลาการทำงาน
+        function onWorkingHoursChange() {
+            const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+            document.getElementById('input-hours').value = workingHours;
+            
+            // วาดตารางใหม่จากฐานข้อมูลดิบ (planDatabase) ที่เก็บบันทึกไว้
+            redrawMatrixFromDatabase(workingHours);
+        }
+
+        function redrawMatrixFromDatabase(workingHours) {
+            initMatrixTable(currentDates);
+            const tbody = document.getElementById('matrix-tbody');
+            const modelRows = tbody.querySelectorAll('tr');
+
+            for (let model in planDatabase) {
+                modelRows.forEach(row => {
+                    const fixedModel = row.getAttribute('data-model');
+                    if (fixedModel && model.toLowerCase().includes(fixedModel.toLowerCase())) {
+                        currentDates.forEach((dateText, idx) => {
+                            if (planDatabase[model] && planDatabase[model][dateText]) {
+                                const targetVal = planDatabase[model][dateText];
+                                if (targetVal > 0) {
+                                    const calculatedUph = workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
+                                    row.cells[idx + 1].innerHTML = `
+                                        <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
+                                        <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
+                                    `;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
         }
 
         function renderMatrixWithData(rows, workingHours) {
@@ -282,8 +322,8 @@
             const headerRow = rows[0];
             let dates = [];
             for (let c = 1; c < headerRow.length; c++) {
-                if (headerRow[c]) {
-                    dates.push(String(headerRow[c]).trim());
+                if (headerRow[c] !== undefined && headerRow[c] !== null && String(headerRow[c]).trim() !== "") {
+                    dates.push(excelSerialToDate(headerRow[c]));
                 }
             }
 
@@ -301,15 +341,15 @@
                 if (!r || !r[0]) continue;
 
                 const excelModel = String(r[0]).trim();
+                if (!planDatabase[excelModel]) planDatabase[excelModel] = {};
                 
                 modelRows.forEach(row => {
                     const fixedModel = row.getAttribute('data-model');
                     if (fixedModel && excelModel.toLowerCase().includes(fixedModel.toLowerCase())) {
                         currentDates.forEach((dateText, idx) => {
                             const targetVal = parseFloat(r[idx + 1]) || 0;
-
                             if (targetVal > 0) {
-                                // ปัดเศษ UPH เป็นจำนวนเต็มโดยใช้ Math.round()
+                                planDatabase[excelModel][dateText] = targetVal;
                                 const calculatedUph = workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
                                 row.cells[idx + 1].innerHTML = `
                                     <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
@@ -411,8 +451,13 @@
                 }
             }
 
-            // คำนวณ UPH เป็นจำนวนเต็มโดยใช้ Math.round()
-            const calculatedUph = hours > 0 ? Math.round(target / hours) : 0;
+            // บันทึกลงฐานข้อมูลดิบ
+            if (!planDatabase[modelInput]) planDatabase[modelInput] = {};
+            planDatabase[modelInput][dateInput] = target;
+
+            const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+            const calculatedUph = workingHours > 0 ? Math.round(target / workingHours) : 0;
+            
             targetRow.cells[colIndex].innerHTML = `
                 <div class="font-bold text-white">${target.toLocaleString()}</div>
                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
