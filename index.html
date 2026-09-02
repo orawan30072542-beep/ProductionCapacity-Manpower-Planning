@@ -114,7 +114,7 @@
                     <h2 class="text-xl font-bold text-white flex items-center gap-2">
                         📁 อัปโหลดไฟล์แผนผลิต (Excel)
                     </h2>
-                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะนำเข้าข้อมูลวันที่และออเดอร์ลงตารางด้านล่างให้อัตโนมัติ</p>
+                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะดึงข้อมูลวันที่และออเดอร์ลงตารางด้านล่างให้อัตโนมัติ</p>
                     
                     <div class="mt-3 flex items-center gap-3">
                         <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-6 cursor-pointer bg-blue-950/30 transition-all">
@@ -125,7 +125,35 @@
                     </div>
                 </div>
 
-                <div class="space-y-3 pt-2 border-t border-blue-900/50">
+                <div class="space-y-4 pt-4 border-t border-blue-900/50">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">รุ่นสินค้า (MODEL NAME)</label>
+                            <input type="text" id="input-model" placeholder="เช่น 159, TM545" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">วันที่ (เช่น 1 ก.ย., 20 ส.ค.)</label>
+                            <input type="text" id="input-date" placeholder="1 ก.ย." class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">ORDER รายวัน (TARGET)</label>
+                            <input type="number" id="input-target" value="0" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-blue-300 mb-1">UPH (อัตรา/ชม.)</label>
+                            <input type="number" id="input-uph" value="0" class="w-full bg-blue-950/60 border border-blue-900 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-2">
+                        <button onclick="clearForm()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-950 text-blue-300 border border-blue-900 hover:bg-blue-900 cursor-pointer">ล้างค่า</button>
+                        <button onclick="saveManualPlan()" class="px-6 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 shadow-lg cursor-pointer">บันทึกข้อมูลแผนผลิต</button>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-blue-900/50">
                     <div class="flex justify-between items-center">
                         <h3 class="text-base font-bold text-white">📊 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้า</h3>
                         <span class="text-xs text-gray-400">ยอดที่ต้องผลิต (Order) และอัตราต่อชั่วโมง (UPH) ของแต่ละกลุ่มสินค้าในแต่ละวัน</span>
@@ -140,26 +168,25 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950 text-gray-300" id="matrix-tbody">
-                                <tr data-model="One Door" class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">One Door</div><div class="text-[10px] text-gray-400">UPH</div></td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                                </tr>
-                                <tr data-model="TM545" class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM545</div><div class="text-[10px] text-gray-400">UPH</div></td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                                </tr>
-                                <tr data-model="FUF22" class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF22</div><div class="text-[10px] text-gray-400">UPH</div></td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                                </tr>
-                                <tr data-model="SBS 550" class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">SBS 550</div><div class="text-[10px] text-gray-400">UPH</div></td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                                </tr>
-                                <tr data-model="G3 ECO" class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">G3 ECO</div><div class="text-[10px] text-gray-400">UPH</div></td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                                </tr>
+                                <tr data-model="159" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">159</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="199" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">199</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TM545" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM545</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="G3 ECO" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">G3 ECO</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TD 456" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 456</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TM10/12" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM10/12</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TD 469" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 469</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TD 520" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TD 520</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="SBS 550" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">SBS 550</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="SBS 620" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">SBS 620</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="BM23" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM23</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="BM29" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM29</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="BM T-Door" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">BM T-Door</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TM" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TM19" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM19</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="TM21" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">TM21</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="FUF14" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF14</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="FUF18" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF18</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
+                                <tr data-model="FUF22" class="hover:bg-blue-900/20"><td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10"><div class="font-bold text-blue-200">FUF22</div><div class="text-[10px] text-gray-400">UPH</div></td><td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -193,6 +220,61 @@
             }
         }
 
+        function clearForm() {
+            document.getElementById('input-model').value = '';
+            document.getElementById('input-date').value = '';
+            document.getElementById('input-target').value = '0';
+            document.getElementById('input-uph').value = '0';
+        }
+
+        function updateMatrixCell(model, date, target, uph) {
+            const tbody = document.getElementById('matrix-tbody');
+            const rows = tbody.getElementsByTagName('tr');
+            let targetRow = null;
+
+            for (let r of rows) {
+                const fixedModel = r.getAttribute('data-model');
+                if (fixedModel && model.toLowerCase().includes(fixedModel.toLowerCase())) {
+                    targetRow = r;
+                    break;
+                }
+            }
+
+            if (!targetRow) return;
+
+            const headers = document.getElementById('matrix-table').rows[0].cells;
+            let colIndex = -1;
+            for (let i = 1; i < headers.length; i++) {
+                if (headers[i].innerText.trim() === date.trim()) {
+                    colIndex = i;
+                    break;
+                }
+            }
+
+            if (colIndex !== -1) {
+                targetRow.cells[colIndex].innerHTML = `
+                    <div class="font-bold text-white">${Number(target).toLocaleString()}</div>
+                    <div class="text-[10px] text-blue-400">${uph}</div>
+                `;
+            }
+        }
+
+        function saveManualPlan() {
+            const model = document.getElementById('input-model').value.trim();
+            const date = document.getElementById('input-date').value.trim();
+            const target = parseInt(document.getElementById('input-target').value) || 0;
+            const uph = parseInt(document.getElementById('input-uph').value) || 0;
+
+            if (!model || !date) {
+                alert('กรุณากรอกรุ่นสินค้าและวันที่ให้ครบถ้วน');
+                return;
+            }
+
+            updateMatrixCell(model, date, target, uph);
+            alert('บันทึกข้อมูลแผนผลิตลงตารางสำเร็จ!');
+            clearForm();
+        }
+
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -213,7 +295,7 @@
                         return;
                     }
 
-                    // สมมติฐาน: แถวแรก (index 0) คือหัวตารางวันที่ เริ่มตั้งแต่คอลัมน์ที่ 2 (index 1) เป็นต้นไป
+                    // ค้นหาแถวหัวตารางวันที่ (สมมติว่าเป็นแถวแรก หรือแถวที่มีวันที่)
                     const headerRow = rows[0];
                     let dates = [];
                     for (let c = 1; c < headerRow.length; c++) {
@@ -222,14 +304,18 @@
                         }
                     }
 
-                    // 1. สร้างหัวตาราง (Dates) ใหม่ตามไฟล์ Excel
+                    if (dates.length === 0) {
+                        alert('ไม่พบข้อมูลหัวคอลัมน์วันที่ในไฟล์ Excel');
+                        return;
+                    }
+
+                    // สร้างหัวตารางวันที่ใหม่
                     const headerTr = document.getElementById('matrix-header-row');
                     headerTr.innerHTML = '<th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-10">วันที่ / รุ่นสินค้า</th>';
                     dates.forEach(d => {
                         headerTr.innerHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/50">${d.dateText}</th>`;
                     });
 
-                    // 2. เคลียร์ข้อมูลในตาราง Matrix ให้สอดคล้องกับจำนวนวันที่ใหม่
                     const tbody = document.getElementById('matrix-tbody');
                     const modelRows = tbody.querySelectorAll('tr');
                     
@@ -241,7 +327,6 @@
                         });
                     });
 
-                    // 3. วนลูปอ่านข้อมูลแต่ละรุ่นสินค้าใน Excel (แถวที่ 2 เป็นต้นไป)
                     let updatedCount = 0;
                     for (let i = 1; i < rows.length; i++) {
                         const r = rows[i];
@@ -249,37 +334,29 @@
 
                         const excelModel = String(r[0]).trim();
                         
-                        // ค้นหาแถวรุ่นสินค้าที่ตรงกับโครงสร้างฟิกซ์ไว้ด้านซ้าย
-                        let targetRow = null;
                         modelRows.forEach(row => {
                             const fixedModel = row.getAttribute('data-model');
-                            if (excelModel.toLowerCase().includes(fixedModel.toLowerCase())) {
-                                targetRow = row;
+                            if (fixedModel && excelModel.toLowerCase().includes(fixedModel.toLowerCase())) {
+                                dates.forEach((d, idx) => {
+                                    const targetVal = r[d.colIndex] || 0;
+                                    const uphVal = r[d.colIndex + 1] || '-'; 
+
+                                    if (targetVal > 0) {
+                                        row.cells[idx + 1].innerHTML = `
+                                            <div class="font-bold text-white">${Number(targetVal).toLocaleString()}</div>
+                                            <div class="text-[10px] text-blue-400">${uphVal}</div>
+                                        `;
+                                        updatedCount++;
+                                    }
+                                });
                             }
                         });
-
-                        if (targetRow) {
-                            // นำข้อมูล Order และ UPH ลงตามช่องวันที่
-                            dates.forEach((d, idx) => {
-                                // สมมติว่าค่า Target และ UPH อยู่ในตำแหน่งคอลัมน์ที่สอดคล้องกับวันที่
-                                const targetVal = r[d.colIndex] || 0;
-                                const uphVal = r[d.colIndex + 1] || 50; // ตัวอย่างช่อง UPH เผื่อไว้ หรือปรับตามโครงสร้างจริง
-
-                                if (targetVal > 0) {
-                                    targetRow.cells[idx + 1].innerHTML = `
-                                        <div class="font-bold text-white">${Number(targetVal).toLocaleString()}</div>
-                                        <div class="text-[10px] text-blue-400">${uphVal}</div>
-                                    `;
-                                    updatedCount++;
-                                }
-                            });
-                        }
                     }
 
-                    alert(`โหลดข้อมูลสำเร็จ! อัปเดตตารางตามวันที่ในไฟล์ Excel เรียบร้อย`);
+                    alert(`นำเข้าข้อมูลจากไฟล์ Excel สำเร็จ! อัปเดตข้อมูล ${updatedCount} รายการเรียบร้อย`);
                 } catch (error) {
                     console.error(error);
-                    alert('เกิดข้อผิดพลาดในการอ่านโครงสร้างไฟล์ Excel');
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel');
                 }
             };
             reader.readAsArrayBuffer(file);
