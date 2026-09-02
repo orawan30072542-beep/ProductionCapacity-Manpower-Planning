@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Capacity & Manpower Planning Dashboard</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SheetJS สำหรับอ่านไฟล์ Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -17,7 +15,6 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Header & Navigation Tabs Section -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
@@ -27,7 +24,6 @@
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
-                <!-- Navigation Tabs -->
                 <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
                     <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg">
                         📋 Matrix View
@@ -43,10 +39,8 @@
             </div>
         </header>
 
-        <!-- ================= PAGE 1: MATRIX VIEW ================= -->
         <div id="page-matrix" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Upload Excel Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
@@ -67,7 +61,6 @@
                     </div>
                 </div>
 
-                <!-- Settings & Save Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
@@ -99,10 +92,9 @@
                 </div>
             </div>
 
-            <!-- Matrix Table Section -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (แสดงตามจำนวนอเดอร์ที่ส่งเข้าในระบบ)</h3>
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น</h3>
                     <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
                 </div>
                 
@@ -115,16 +107,13 @@
                             </tr>
                         </thead>
                         <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
-                            <!-- JS Generated -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= PAGE 2: LINE OVERVIEW ================= -->
         <div id="page-overview" class="space-y-6 hidden">
-            <!-- Line Cards Container -->
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
@@ -134,22 +123,18 @@
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
                         <select id="overview-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
-                            <!-- JS Generated -->
-                        </select>
+                            </select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="line-cards-container">
-                    <!-- JS Generated -->
-                </div>
+                    </div>
             </div>
         </div>
 
     </div>
 
-    <!-- ================= FULL SCREEN MODAL DETAIL ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
-        <!-- Top Navigation / Header -->
         <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
             <div class="flex items-center gap-3">
                 <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
@@ -170,12 +155,9 @@
             </div>
         </div>
         
-        <!-- Main Content Area -->
         <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full" id="modal-body-content">
-            <!-- JS Generated -->
-        </div>
+            </div>
 
-        <!-- Footer Bar -->
         <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-between items-center px-8">
             <div class="text-xs text-slate-400">
                 ระบบจัดการสายการผลิตอัจฉริยะ (Production Line Multi-Part View)
@@ -325,7 +307,7 @@
                     group.models.forEach(model => {
                         if (planDatabase[model] && planDatabase[model][date]) {
                             let baseVal = planDatabase[model][date];
-                            sumTarget += baseVal; // ใช้ค่าอเดอร์ดิบโดยตรง ไม่คูณ mult ในหน้า Matrix View
+                            sumTarget += baseVal; 
                         }
                     });
                 });
@@ -333,7 +315,7 @@
                 dailyTotals[date] = { target: sumTarget, uph: sumUph };
             });
 
-            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model (Sub-parts)</th>`;
+            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
             dates.forEach(date => {
                 headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date}</th>`;
             });
@@ -342,7 +324,7 @@
             let tbodyHTML = `
                 <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
                     <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
-                    <td class="p-3.5 text-blue-300">Total Output (Order Sets)</td>
+                    <td class="p-3.5 text-blue-300">Total Output</td>
             `;
 
             dates.forEach(date => {
@@ -367,10 +349,11 @@
                         tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
                     }
                     
+                    // เอาคำว่า "ชิ้นส่วน:" ออก และแสดงผลเฉพาะ ชื่อและค่าในวงเล็บ
                     tbodyHTML += `
                         <td class="p-3.5 font-medium text-slate-300">
                             <div>${model}</div>
-                            <div class="text-[10px] text-cyan-400">ชิ้นส่วน: ${parts.map(p => `${p.name}(${p.ratio})`).join(', ')} (x${mult})</div>
+                            <div class="text-[10px] text-cyan-400">${parts.map(p => `${p.name}(${p.ratio})`).join(', ')} (x${mult})</div>
                         </td>
                     `;
 
@@ -378,9 +361,10 @@
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
                         let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
+                        // เอาคำว่า "set:" ออก และแสดงผลเฉพาะตัวเลข
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
-                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(set: ${baseVal})</span></div>
+                                <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(${baseVal})</span></div>
                                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
                             </td>
                         `;
@@ -740,7 +724,7 @@
                             <td class="p-3.5 pl-6 font-semibold text-blue-400">${groupName}</td>
                             <td class="p-3.5 font-medium text-slate-300">
                                 <div>${model}</div>
-                                <div class="text-[10px] text-cyan-400">ชิ้นส่วน: ${partsDesc} (ตัวคูณรวม: x${mult})</div>
+                                <div class="text-[10px] text-cyan-400">${partsDesc} (ตัวคูณรวม: x${mult})</div>
                             </td>
                             <td class="p-3.5 text-center">
                                 <input type="number" min="0" value="${currentTarget > 0 ? currentTarget : ''}" placeholder="0" 
