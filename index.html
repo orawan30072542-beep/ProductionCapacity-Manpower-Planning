@@ -130,7 +130,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตาม 9 ไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">สรุปยอดแผนผลิตรวมและกำลังการผลิตเฉลี่ยของแต่ละไลน์การผลิตหลัก</p>
+                        <p class="text-xs text-slate-400">คลิกที่การ์ดของแต่ละไลน์เพื่อดูรายละเอียดข้อมูลเชิงลึกรายรุ่น</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -147,6 +147,56 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ================= MODAL DETAIL POPUP ================= -->
+    <div id="line-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                <div>
+                    <span id="modal-line-badge" class="text-[10px] bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full font-mono">Line Detail</span>
+                    <h3 id="modal-line-title" class="text-xl font-bold text-white mt-1">ชื่อไลน์การผลิต</h3>
+                </div>
+                <button onclick="closeLineModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-9 h-9 rounded-xl flex items-center justify-center transition-all">
+                    ✕
+                </button>
+            </div>
+            
+            <!-- Modal Body Content -->
+            <div class="p-6 overflow-y-auto space-y-4">
+                <p id="modal-line-desc" class="text-xs text-slate-400"></p>
+                
+                <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                    <div class="p-4 bg-slate-900/50 border-b border-slate-800 font-semibold text-xs text-slate-300">
+                        📋 รายละเอียดแผนการผลิตแยกตามรุ่น (Model) ในไลน์นี้
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse" id="modal-detail-table">
+                            <thead>
+                                <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800" id="modal-thead">
+                                    <th class="p-3 pl-4">Product Group</th>
+                                    <th class="p-3">Model</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modal-tbody" class="divide-y divide-slate-800/50 text-xs">
+                                <!-- สร้างด้วย JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-between items-center">
+                <div class="text-xs text-slate-400">
+                    กำลังแสดงผลข้อมูลวันที่: <span id="modal-footer-date" class="font-bold text-amber-400">-</span>
+                </div>
+                <button onclick="closeLineModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -192,7 +242,7 @@
         let activeTab = 'matrix';
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadSavedData(); // โหลดข้อมูลที่บันทึกไว้ (ถ้ามี)
+            loadSavedData(); 
             initMatrixTable(currentDates);
             initOverviewDateDropdown();
             renderLineOverview();
@@ -350,11 +400,12 @@
                     'border-indigo-500/30', 'border-teal-500/30', 'border-orange-500/30'
                 ];
 
+                // เพิ่ม onclick เรียกฟังก์ชัน openLineModal พร้อมส่งชื่อไลน์
                 cardsHTML += `
-                    <div class="bg-gradient-to-br ${colors[idx % colors.length]} border ${borderColors[idx % borderColors.length]} p-5 rounded-2xl shadow-lg flex flex-col justify-between">
+                    <div onclick="openLineModal(${idx})" class="bg-gradient-to-br ${colors[idx % colors.length]} border ${borderColors[idx % borderColors.length]} p-5 rounded-2xl shadow-lg flex flex-col justify-between cursor-pointer hover:scale-[1.02] hover:border-blue-400 transition-all group">
                         <div>
                             <div class="flex justify-between items-start mb-2">
-                                <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                                <h3 class="font-bold text-base text-slate-100 flex items-center gap-2 group-hover:text-blue-300 transition-colors">
                                     <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> ${line.name}
                                 </h3>
                                 <span class="text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-full text-slate-300 font-mono">Line #${idx + 1}</span>
@@ -399,6 +450,70 @@
             container.innerHTML = cardsHTML;
         }
 
+        // เปิด Modal รายละเอียดของ Line นั้นๆ
+        function openLineModal(lineIndex) {
+            const line = productionLines[lineIndex];
+            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+
+            document.getElementById('modal-line-title').innerText = line.name;
+            document.getElementById('modal-line-badge').innerText = `Line #${lineIndex + 1}`;
+            document.getElementById('modal-line-desc').innerText = line.description;
+            document.getElementById('modal-footer-date').innerText = selectedDate;
+
+            // สร้างหัวตาราง Modal (แสดงวันที่ทั้งหมดที่มีในระบบ)
+            const modalThead = document.getElementById('modal-thead');
+            let theadHTML = `<th class="p-3 pl-4">Product Group</th><th class="p-3">Model</th>`;
+            currentDates.forEach(d => {
+                theadHTML += `<th class="p-3 text-center">${d}</th>`;
+            });
+            theadHTML += `<th class="p-3 text-center bg-slate-900/90 text-cyan-300">UPH (${selectedDate})</th>`;
+            modalThead.innerHTML = theadHTML;
+
+            // สร้างเนื้อหาตาราง Modal
+            const modalTbody = document.getElementById('modal-tbody');
+            let tbodyHTML = '';
+
+            if (!line.groups || line.groups.length === 0) {
+                tbodyHTML = `<tr><td colspan="${currentDates.length + 3}" class="p-6 text-center text-slate-500 italic">ไลน์นี้ยังไม่มีกลุ่มผลิตภัณฑ์ที่เชื่อมโยง</td></tr>`;
+            } else {
+                let hasData = false;
+                line.groups.forEach(groupName => {
+                    let groupObj = productStructure.find(g => g.group === groupName);
+                    if (groupObj) {
+                        groupObj.models.forEach(model => {
+                            hasData = true;
+                            tbodyHTML += `<tr class="hover:bg-slate-900/50">`;
+                            tbodyHTML += `<td class="p-3 pl-4 font-semibold text-blue-400">${groupName}</td>`;
+                            tbodyHTML += `<td class="p-3 font-medium text-slate-300">${model}</td>`;
+
+                            currentDates.forEach(date => {
+                                let val = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                                tbodyHTML += `<td class="p-3 text-center text-white font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
+                            });
+
+                            let targetOnSelected = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
+                            let uphVal = targetOnSelected > 0 && workingHours > 0 ? Math.round(targetOnSelected / workingHours) : 0;
+                            tbodyHTML += `<td class="p-3 text-center font-extrabold text-cyan-300 bg-slate-950/40">${uphVal > 0 ? uphVal.toLocaleString() : '0'}</td>`;
+
+                            tbodyHTML += `</tr>`;
+                        });
+                    }
+                });
+
+                if (!hasData) {
+                    tbodyHTML = `<tr><td colspan="${currentDates.length + 3}" class="p-6 text-center text-slate-500 italic">ยังไม่มีข้อมูลแผนการผลิตสำหรับกลุ่มผลิตภัณฑ์ในไลน์นี้</td></tr>`;
+                }
+            }
+
+            modalTbody.innerHTML = tbodyHTML;
+            document.getElementById('line-modal').classList.remove('hidden');
+        }
+
+        function closeLineModal() {
+            document.getElementById('line-modal').classList.add('hidden');
+        }
+
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -420,7 +535,7 @@
                     }
 
                     const count = smartParseExcelData(rawExcelData);
-                    manualSaveData(); // บันทึกลง LocalStorage ทันทีหลังอัปโหลดเสร็จ
+                    manualSaveData(); 
 
                     alert(`นำเข้าและบันทึกไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
                 } catch (error) {
@@ -515,7 +630,6 @@
             return updatedCount;
         }
 
-        // ระบบบันทึกข้อมูลลงใน Browser (localStorage)
         function manualSaveData() {
             const dataToSave = {
                 planDatabase: planDatabase,
@@ -526,7 +640,6 @@
             alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว! ข้อมูลจะไม่หายแม้รีเฟรชหน้าเว็บ');
         }
 
-        // โหลดข้อมูลที่บันทึกไว้ตอนเปิดเว็บ
         function loadSavedData() {
             const saved = localStorage.getItem('production_dashboard_data');
             if (saved) {
@@ -543,7 +656,6 @@
             }
         }
 
-        // ล้างข้อมูลที่บันทึกไว้
         function clearSavedData() {
             if (confirm('คุณต้องการล้างข้อมูลที่บันทึกไว้ทั้งหมดใช่หรือไม่?')) {
                 localStorage.removeItem('production_dashboard_data');
