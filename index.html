@@ -179,23 +179,23 @@
                     <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20 max-h-[600px]">
                         <table class="w-full text-left border-collapse text-xs" id="matrix-table">
                             <thead>
-                                <!-- แถวที่ 1: ผลรวม Order รายวัน (Total Order) -->
-                                <tr id="total-order-row" class="bg-blue-950 font-bold border-b border-blue-900 sticky top-0 z-40 shadow-md">
-                                    <th class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-50">
+                                <!-- แถวหัวข้อ: รุ่นสินค้า & วันที่ต่างๆ -->
+                                <tr class="bg-blue-950/95 text-blue-300 uppercase border-b border-blue-900 sticky top-0 z-30" id="matrix-header-row">
+                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-40">รุ่นสินค้า / วันที่</th>
+                                </tr>
+                                <!-- แถวผลรวม Order รวมรายวัน -->
+                                <tr id="total-order-row" class="bg-blue-950/90 font-bold border-b border-blue-900">
+                                    <td class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-20">
                                         <div>รวม Order รายวัน</div>
                                         <div class="text-[10px] text-blue-400">Total Order</div>
-                                    </th>
+                                    </td>
                                 </tr>
-                                <!-- แถวที่ 2: ผลรวม UPH รายวัน (Total UPH) -->
-                                <tr id="total-uph-row" class="bg-blue-900/70 font-bold border-b-2 border-blue-600 sticky top-[41px] z-40 shadow-md">
-                                    <th class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-50">
+                                <!-- แถวผลรวม UPH รวมรายวัน -->
+                                <tr id="total-uph-row" class="bg-blue-900/60 font-bold border-b-2 border-blue-600">
+                                    <td class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-20">
                                         <div>รวม UPH รายวัน</div>
                                         <div class="text-[10px] text-emerald-400">Total UPH</div>
-                                    </th>
-                                </tr>
-                                <!-- แถวหัวข้อ วันที่ / รุ่นสินค้า (Sticky ด้านล่างแถวรวม) -->
-                                <tr class="bg-blue-950/95 text-blue-300 uppercase border-b border-blue-900 sticky top-[82px] z-30" id="matrix-header-row">
-                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-30">วันที่ / รุ่นสินค้า</th>
+                                    </td>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950 text-gray-300" id="matrix-tbody">
@@ -233,7 +233,7 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
 
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9", "6/9", "7/9"];
-        let planDatabase = {}; // เก็บข้อมูล Order ดิบ เพื่อใช้คำนวณ Order และ UPH รวมใหม่แบบ Real-time
+        let planDatabase = {}; 
 
         window.onload = function() {
             initMatrixTable(currentDates);
@@ -253,7 +253,7 @@
 
         function initMatrixTable(datesArray) {
             const headerTr = document.getElementById('matrix-header-row');
-            headerTr.innerHTML = '<th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-30">วันที่ / รุ่นสินค้า</th>';
+            headerTr.innerHTML = '<th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-40">รุ่นสินค้า / วันที่</th>';
             datesArray.forEach(d => {
                 headerTr.innerHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/50">${d}</th>`;
             });
@@ -269,23 +269,21 @@
                 });
             });
 
-            // สร้างเซลล์ว่างสำหรับแถวผลรวมด้านบน
             const totalOrderRow = document.getElementById('total-order-row');
-            let orderRowHTML = `<th class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-50"><div>รวม Order รายวัน</div><div class="text-[10px] text-blue-400">Total Order</div></th>`;
+            let orderRowHTML = `<td class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-20"><div>รวม Order รายวัน</div><div class="text-[10px] text-blue-400">Total Order</div></td>`;
             datesArray.forEach(() => {
-                orderRowHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/40 text-blue-300 font-bold">-</th>`;
+                orderRowHTML += `<td class="py-3 px-3 text-center border-l border-blue-900/30 text-blue-300 font-bold">-</td>`;
             });
             totalOrderRow.innerHTML = orderRowHTML;
 
             const totalUphRow = document.getElementById('total-uph-row');
-            let uphRowHTML = `<th class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-50"><div>รวม UPH รายวัน</div><div class="text-[10px] text-emerald-400">Total UPH</div></th>`;
+            let uphRowHTML = `<td class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-20"><div>รวม UPH รายวัน</div><div class="text-[10px] text-emerald-400">Total UPH</div></td>`;
             datesArray.forEach(() => {
-                uphRowHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/40 text-emerald-300 font-bold">-</th>`;
+                uphRowHTML += `<td class="py-3 px-3 text-center border-l border-blue-900/30 text-emerald-300 font-bold">-</td>`;
             });
             totalUphRow.innerHTML = uphRowHTML;
         }
 
-        // คำนวณผลรวม Order และ UPH ในแต่ละคอลัมน์ (วัน) แล้วแสดงผลที่แถวด้านบนสุด
         function calculateTotals() {
             const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             const totalOrderRow = document.getElementById('total-order-row');
@@ -294,7 +292,6 @@
             let orderSums = new Array(currentDates.length).fill(0);
             let uphSums = new Array(currentDates.length).fill(0);
 
-            // วนลูปอ่านค่า Order จากฐานข้อมูลดิบ (planDatabase) เพื่อรวม Order และ UPH
             for (let model in planDatabase) {
                 currentDates.forEach((dateText, colIdx) => {
                     if (planDatabase[model] && planDatabase[model][dateText]) {
@@ -308,17 +305,15 @@
                 });
             }
 
-            // อัปเดต HTML แถวรวม Order
-            let orderRowHTML = `<th class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-50"><div>รวม Order รายวัน</div><div class="text-[10px] text-blue-400">Total Order</div></th>`;
+            let orderRowHTML = `<td class="py-3 px-4 text-blue-200 sticky left-0 bg-[#0a1128] z-20"><div>รวม Order รายวัน</div><div class="text-[10px] text-blue-400">Total Order</div></td>`;
             orderSums.forEach((val, colIdx) => {
-                orderRowHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/40 text-blue-300 font-bold">${val > 0 ? val.toLocaleString() : '-'}</th>`;
+                orderRowHTML += `<td class="py-3 px-3 text-center border-l border-blue-900/30 text-blue-300 font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
             });
             totalOrderRow.innerHTML = orderRowHTML;
 
-            // อัปเดต HTML แถวรวม UPH
-            let uphRowHTML = `<th class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-50"><div>รวม UPH รายวัน</div><div class="text-[10px] text-emerald-400">Total UPH</div></th>`;
+            let uphRowHTML = `<td class="py-3 px-4 text-emerald-300 sticky left-0 bg-[#0c1633] z-20"><div>รวม UPH รายวัน</div><div class="text-[10px] text-emerald-400">Total UPH</div></td>`;
             uphSums.forEach((val, colIdx) => {
-                uphRowHTML += `<th class="py-3 px-3 text-center border-l border-blue-900/40 text-emerald-300 font-bold">${val > 0 ? val.toLocaleString() : '-'}</th>`;
+                uphRowHTML += `<td class="py-3 px-3 text-center border-l border-blue-900/30 text-emerald-300 font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
             });
             totalUphRow.innerHTML = uphRowHTML;
         }
@@ -487,7 +482,6 @@
                 return;
             }
 
-            // ค้นหาคอลัมน์ของวันที่
             let headers = document.getElementById('matrix-header-row').cells;
             let colIndex = -1;
 
