@@ -106,7 +106,7 @@
     </div>
 
     <script>
-        // โครงสร้าง Product และ Model อ้างอิงตามข้อมูลล่าสุดที่ระบุ
+        // โครงสร้าง Product และ Model รวมกลุ่ม FUF และ TM ที่ซ้ำกันให้เป็นชุดเดียวเรียบร้อยแล้ว
         const productStructure = [
             { group: "159", models: ["159C", "159F"] },
             { group: "199", models: ["199C", "199F"] },
@@ -127,10 +127,7 @@
             { group: "BM T-Door (2)", models: ["BM T-Door 28 C", "BM T-Door 28"] },
             { group: "TM14", models: ["TM14"] },
             { group: "TM19", models: ["TM-19 K", "TM-19 L"] },
-            { group: "TM21", models: ["TM-21 K", "TM-21 T"] },
-            { group: "FUF14 (2)", models: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S"] },
-            { group: "FUF18 (2)", models: ["FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S"] },
-            { group: "FUF22 (2)", models: ["FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] }
+            { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
         // ฐานข้อมูลเก็บค่า Target แผนการผลิต [Model][Date] = TargetValue
