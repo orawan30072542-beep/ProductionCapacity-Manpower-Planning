@@ -87,7 +87,6 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-blue-950 text-gray-300" id="overview-table-body">
-                            
                             <tr class="hover:bg-blue-900/20 transition-colors">
                                 <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
                                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
@@ -102,22 +101,6 @@
                                     <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
                                 </td>
                             </tr>
-
-                            <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                    <span>Back plate&Bottom Plate <span class="text-xs text-blue-400 font-normal ml-1">(TM545)</span></span>
-                                </td>
-                                <td class="py-4 px-6 text-center text-blue-300 font-medium">1 ก.ย.</td>
-                                <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
-                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">85</td>
-                                <td class="py-4 px-6 text-center text-emerald-400">1,000</td>
-                                <td class="py-4 px-6 text-center text-indigo-400">950</td>
-                                <td class="py-4 px-6 text-center">
-                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.5%</span>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -152,8 +135,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">Production Line</label>
-                                <select id="prodLine" required class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
-                                    <option value="" disabled selected>-- เลือก Line ผลิต --</option>
+                                <select id="prodLine" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                                     <option value="Door Press">Door Press</option>
                                     <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
                                     <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
@@ -165,30 +147,30 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">รุ่นสินค้า (Model Name)</label>
-                                <input type="text" id="modelName" required placeholder="เช่น One Door, TM545" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="text" id="modelName" placeholder="เช่น One Door, TM545" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">วันที่ (เช่น 1 ก.ย., 20 ส.ค.)</label>
-                                <input type="text" id="prodDate" required placeholder="1 ก.ย." class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="text" id="prodDate" placeholder="1 ก.ย." class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">Order (เป้าหมาย)</label>
-                                <input type="number" id="dailyOrder" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="number" id="dailyOrder" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">UPH (อัตรา/ชม.)</label>
-                                <input type="number" id="uphValue" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="number" id="uphValue" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต Day</label>
-                                <input type="number" id="dayShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="number" id="dayShift" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-blue-300 uppercase mb-1">ยอดผลิต Night</label>
-                                <input type="number" id="nightShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <input type="number" id="nightShift" value="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
                             </div>
                         </div>
 
@@ -206,7 +188,7 @@
                 <div class="space-y-3 pt-2">
                     <div class="flex justify-between items-center">
                         <h3 class="text-base font-bold text-white">📊 ตารางแสดงแผนผลิตรายวัน (แยกตามรุ่นสินค้าและวันที่)</h3>
-                        <span class="text-xs text-gray-400">แถวบน: รุ่นสินค้า / แถวล่าง: ยอดผลิตรายวัน (Order) และ UPH</span>
+                        <span class="text-xs text-gray-400">แถวแรก: รุ่นสินค้า / แถวถัดไป: ยอดผลิตรายวันและ UPH</span>
                     </div>
 
                     <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20">
@@ -253,37 +235,6 @@
                                         <div class="text-[10px] text-blue-400">UPH: 49</div>
                                     </td>
                                 </tr>
-
-                                <tr class="hover:bg-blue-900/20">
-                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
-                                        <div class="font-bold text-blue-200">TM545</div>
-                                        <div class="text-[10px] text-gray-400">Back plate&Bottom Plate</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">699</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 32</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">520</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 24</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">520</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 24</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">610</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 28</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">610</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 28</div>
-                                    </td>
-                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
-                                        <div class="font-bold text-white">610</div>
-                                        <div class="text-[10px] text-blue-400">UPH: 28</div>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -295,11 +246,9 @@
     </div>
 
     <script>
-        // แสดงวันที่ปัจจุบันอัตโนมัติ
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
 
-        // ฟังก์ชันสลับหน้า Tab
         function switchTab(tabId) {
             const overviewContent = document.getElementById('content-overview');
             const addPlanContent = document.getElementById('content-add-plan');
@@ -319,29 +268,24 @@
             }
         }
 
-        // จัดการเมื่อกดบันทึกข้อมูลจากฟอร์มเดี่ยว
         function handleFormSubmit(event) {
             event.preventDefault();
             
             const line = document.getElementById('prodLine').value;
-            const model = document.getElementById('modelName').value;
-            const date = document.getElementById('prodDate').value;
+            const model = document.getElementById('modelName').value || 'Model-General';
+            const date = document.getElementById('prodDate').value || '1 ก.ย.';
             const target = parseInt(document.getElementById('dailyOrder').value) || 0;
             const uph = parseInt(document.getElementById('uphValue').value) || 0;
             const day = parseInt(document.getElementById('dayShift').value) || 0;
             const night = parseInt(document.getElementById('nightShift').value) || 0;
             
-            // เพิ่มข้อมูลลงในตาราง Overview หลักด้วย
             addRowToOverviewTable(line, model, date, target, uph, day, night);
-            
-            // เพิ่มข้อมูลลงในตาราง Matrix (หน้าเพิ่มแผนผลิต)
             addOrUpdateMatrixRow(line, model, date, target, uph);
 
             alert('เพิ่มแผนการผลิตและอัปเดตตารางสำเร็จ!');
             document.getElementById('planForm').reset();
         }
 
-        // ฟังก์ชันอัปเดตตาราง Overview ฝั่งหน้าแรก
         function addRowToOverviewTable(line, model, date, target, uph, day, night) {
             const total = day + night;
             const percentage = target > 0 ? ((total / target) * 100).toFixed(1) : 0;
@@ -368,12 +312,10 @@
             tbody.appendChild(newRow);
         }
 
-        // ฟังก์ชันจัดการตาราง Matrix (เพิ่มแถวรุ่นสินค้า หรือแทรกข้อมูลตามวันที่ในตาราง)
         function addOrUpdateMatrixRow(line, model, date, target, uph) {
             const tbody = document.getElementById('matrix-tbody');
             let existingRow = null;
 
-            // ตรวจสอบว่ามีรุ่นสินค้านี้ในตาราง Matrix หรือยัง
             const rows = tbody.getElementsByTagName('tr');
             for (let r of rows) {
                 const modelText = r.cells[0].innerText;
@@ -384,7 +326,6 @@
             }
 
             if (!existingRow) {
-                // สร้างแถวใหม่ถ้ายังไม่มีรุ่นนี้
                 existingRow = document.createElement('tr');
                 existingRow.className = "hover:bg-blue-900/20";
                 existingRow.innerHTML = `
@@ -397,4 +338,73 @@
                     <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
                     <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
                     <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
-                    <td class="py-
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                `;
+                tbody.appendChild(existingRow);
+            }
+
+            const headers = document.getElementById('matrix-table').rows[0].cells;
+            let colIndex = -1;
+            for (let i = 1; i < headers.length; i++) {
+                if (headers[i].innerText.trim() === date.trim()) {
+                    colIndex = i;
+                    break;
+                }
+            }
+
+            if (colIndex !== -1) {
+                existingRow.cells[colIndex].innerHTML = `
+                    <div class="font-bold text-white">${target.toLocaleString()}</div>
+                    <div class="text-[10px] text-blue-400">UPH: ${uph}</div>
+                `;
+            }
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonRows.length === 0) {
+                        alert('ไม่พบข้อมูลภายในไฟล์ Excel');
+                        return;
+                    }
+
+                    let count = 0;
+                    jsonRows.forEach(row => {
+                        const line = row['Production Line'] || row['Line'] || 'Door Press';
+                        const model = row['Model'] || row['รุ่น'] || 'Model-A';
+                        const date = row['Date'] || row['วันที่'] || '1 ก.ย.';
+                        const target = parseInt(row['Target'] || row['Order'] || 0);
+                        const uph = parseInt(row['UPH'] || 0);
+                        const day = parseInt(row['Day'] || 0);
+                        const night = parseInt(row['Night'] || 0);
+
+                        if (target > 0 || uph > 0) {
+                            addRowToOverviewTable(line, model, date, target, uph, day, night);
+                            addOrUpdateMatrixRow(line, model, date, target, uph);
+                            count++;
+                        }
+                    });
+
+                    alert(`นำเข้าข้อมูลจาก Excel สำเร็จ ${count} รายการ!`);
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
