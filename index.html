@@ -130,7 +130,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตาม 9 ไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดแต่ละไลน์เพื่อตั้งค่าเลือกรุ่น (Model) แยกรายเครื่องจักรในไลน์นั้นๆ</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ด KPI แต่ละไลน์เพื่อดู Layout เครื่องจักร และตั้งค่าเลือกรุ่น (Model)</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -149,7 +149,7 @@
 
     </div>
 
-    <!-- ================= MODAL DETAIL & MACHINE SELECTOR ================= -->
+    <!-- ================= MODAL DETAIL & MACHINE LAYOUT SELECTOR ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <!-- Modal Header -->
@@ -165,7 +165,7 @@
             
             <!-- Modal Body Content -->
             <div class="p-6 overflow-y-auto space-y-6" id="modal-body-content">
-                <!-- ถูกสร้างด้วย JavaScript แยกตามเครื่องจักร -->
+                <!-- ถูกสร้างด้วย JavaScript: แสดง Layout เครื่องจักรก่อน หรือหน้าเลือก Model -->
             </div>
 
             <!-- Modal Footer -->
@@ -205,7 +205,7 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // กำหนดกลุ่ม 9 Line พร้อมโครงสร้างเครื่องจักรย่อย (สำหรับ Press Machine มี 3 ส่วน)
+        // กำหนดกลุ่ม 9 Line พร้อมโครงสร้างเครื่องจักรย่อย (Press Machine แบ่ง 400T: 1, 200T: 4, 100T: 5)
         const productionLines = [
             { 
                 name: "Press Machine", 
@@ -238,6 +238,7 @@
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
         let activeTab = 'matrix';
         let currentActiveLineIndex = null;
+        let selectedSubMachineIndex = null; // ตัวแปรเก็บสถานะเครื่องจักรย่อยที่กำลังกดเลือก Model
 
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedData(); 
@@ -369,7 +370,6 @@
                 let groupSummaryMap = {};
 
                 if (line.hasSubMachines) {
-                    // รวมยอดจากทุกเครื่องจักรย่อย
                     line.subMachines.forEach(sub => {
                         if (sub.selectedModels) {
                             sub.selectedModels.forEach(modelName => {
@@ -462,61 +462,118 @@
             container.innerHTML = cardsHTML;
         }
 
-        // เปิด Modal แยกตามประเภทของ Line
+        // เปิด Modal และแสดง Layout เครื่องจักรก่อน
         function openLineModal(lineIndex) {
             currentActiveLineIndex = lineIndex;
-            const line = productionLines[lineIndex];
+            selectedSubMachineIndex = null; // เริ่มต้นให้แสดง Layout รวมก่อน
+            renderModalContent();
+            document.getElementById('line-modal').classList.remove('hidden');
+        }
+
+        function renderModalContent() {
+            const line = productionLines[currentActiveLineIndex];
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
             document.getElementById('modal-line-title').innerText = line.name;
-            document.getElementById('modal-line-badge').innerText = `Line #${lineIndex + 1}`;
+            document.getElementById('modal-line-badge').innerText = `Line #${currentActiveLineIndex + 1}`;
             document.getElementById('modal-footer-date').innerText = selectedDate;
 
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
             if (line.hasSubMachines) {
-                contentHTML += `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                        <p class="text-xs text-slate-300 font-semibold">⚙️ ตั้งค่ารุ่นผลิตแยกตามเครื่องจักร (Press Machine 400T / 200T / 100T):</p>
-                        <p class="text-[11px] text-slate-400 mt-0.5">เลือกติ๊ก Model ที่เครื่องจักรแต่ละเครื่องรับผิดชอบ</p>
-                    </div>
-                `;
-
-                line.subMachines.forEach((sub, subIdx) => {
+                if (selectedSubMachineIndex === null) {
+                    // แสดง Layout ของเครื่องจักรทั้งหมดในไลน์ (Press Machine Layout)
                     contentHTML += `
-                        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden mb-4">
-                            <div class="p-3.5 bg-slate-900/90 border-b border-slate-800 flex justify-between items-center">
-                                <span class="font-bold text-sm text-blue-400 flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> เครื่องจักร: ${sub.name}
-                                </span>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="toggleSubMachineModels(${subIdx}, true)" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-2.5 py-1 rounded">เลือกทั้งหมด</button>
-                                    <button onclick="toggleSubMachineModels(${subIdx}, false)" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-2.5 py-1 rounded">ยกเลิก</button>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <p class="text-xs text-blue-400 font-semibold">🏭 แผนผัง Layout เครื่องจักรในไลน์ Press Machine</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">คลิกที่การ์ดเครื่องจักรด้านล่างเพื่อเลือกตั้งค่ารุ่นผลิต (Model) ของเครื่องจักรนั้นๆ</p>
+                            </div>
+                            <span class="text-xs bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30">Total 10 Machines</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    `;
+
+                    line.subMachines.forEach((sub, subIdx) => {
+                        let machineTypeColor = sub.name.startsWith('400T') ? 'border-purple-500/40 bg-purple-950/20 text-purple-300' :
+                                               sub.name.startsWith('200T') ? 'border-blue-500/40 bg-blue-950/20 text-blue-300' : 
+                                               'border-emerald-500/40 bg-emerald-950/20 text-emerald-300';
+
+                        let modelCount = sub.selectedModels ? sub.selectedModels.length : 0;
+
+                        contentHTML += `
+                            <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${machineTypeColor} p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all shadow-lg flex flex-col justify-between group bg-slate-950/60">
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="font-bold text-sm text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
+                                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">เลือกแล้ว ${modelCount} รุ่น</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 space-y-1 mt-2 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 max-h-24 overflow-y-auto">
+                        `;
+
+                        if (modelCount > 0) {
+                            sub.selectedModels.forEach(m => {
+                                contentHTML += `<div>• ${m}</div>`;
+                            });
+                        } else {
+                            contentHTML += `<div class="italic text-slate-500">ยังไม่ได้เลือกรุ่นผลิต</div>`;
+                        }
+
+                        contentHTML += `
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-2 border-t border-slate-800/80 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
+                                    ตั้งค่ารุ่นผลิต ➔
                                 </div>
                             </div>
-                            <div class="overflow-x-auto max-h-60 overflow-y-auto">
+                        `;
+                    });
+
+                    contentHTML += `</div>`;
+                } else {
+                    // หน้าจอเลือก Model สำหรับเครื่องจักรย่อยที่กดเลือก
+                    let sub = line.subMachines[selectedSubMachineIndex];
+                    contentHTML += `
+                        <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <div class="flex items-center gap-3">
+                                <button onclick="backToMachineLayout()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1">
+                                    ⬅️ กลับสู่ Layout รวม
+                                </button>
+                                <div>
+                                    <p class="text-xs text-cyan-400 font-bold">⚙️ กำลังตั้งค่ารุ่นผลิตสำหรับ: ${sub.name}</p>
+                                    <p class="text-[11px] text-slate-400">ติ๊กเลือก Model ที่เครื่องจักรนี้รับผิดชอบ</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg">เลือกทั้งหมด</button>
+                                <button onclick="toggleSubMachineModels(${selectedSubMachineIndex}, false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg">ล้างค่า</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                            <div class="overflow-x-auto max-h-[50vh] overflow-y-auto">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
-                                        <tr class="bg-slate-900/50 text-slate-400 text-xs border-b border-slate-800">
-                                            <th class="p-2.5 pl-4 text-center w-16">เลือก</th>
-                                            <th class="p-2.5">Product Group</th>
-                                            <th class="p-2.5">Model</th>
+                                        <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                            <th class="p-3 pl-4 text-center w-16">เลือก</th>
+                                            <th class="p-3">Product Group</th>
+                                            <th class="p-3">Model</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-800/40 text-xs">
+                                    <tbody class="divide-y divide-slate-800/50 text-xs">
                     `;
 
                     productStructure.forEach(group => {
                         group.models.forEach(model => {
                             let isChecked = sub.selectedModels && sub.selectedModels.includes(model);
                             contentHTML += `
-                                <tr class="hover:bg-slate-900/40">
-                                    <td class="p-2.5 text-center">
-                                        <input type="checkbox" data-subidx="${subIdx}" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleSubMachineCheckboxChange(this, ${subIdx}, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                <tr class="hover:bg-slate-900/50">
+                                    <td class="p-3 text-center">
+                                        <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleSubMachineCheckboxChange(this, ${selectedSubMachineIndex}, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
                                     </td>
-                                    <td class="p-2.5 font-semibold text-blue-300">${group.group}</td>
-                                    <td class="p-2.5 font-medium text-slate-300">${model}</td>
+                                    <td class="p-3 font-semibold text-blue-400">${group.group}</td>
+                                    <td class="p-3 font-medium text-slate-300">${model}</td>
                                 </tr>
                             `;
                         });
@@ -528,13 +585,13 @@
                             </div>
                         </div>
                     `;
-                });
+                }
             } else {
-                // สำหรับ Line ปกติทั่วไป
+                // สำหรับ Line ทั่วไปที่ไม่มีเครื่องจักรย่อย
                 contentHTML += `
                     <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
                         <div>
-                            <p class="text-xs text-slate-300 font-semibold">💡 กำหนดรุ่น (Model) สำหรับไลน์นี้:</p>
+                            <p class="text-xs text-slate-300 font-semibold">💡 กำหนดรุ่น (Model) สำหรับไลน์ ${line.name}:</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="toggleAllModelsInModal(true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all">เลือกทั้งหมด</button>
@@ -542,10 +599,10 @@
                         </div>
                     </div>
                     <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto max-h-[50vh] overflow-y-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800">
+                                    <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
                                         <th class="p-3 pl-4 text-center w-16">เลือก</th>
                                         <th class="p-3">Product Group</th>
                                         <th class="p-3">Model</th>
@@ -578,7 +635,16 @@
             }
 
             modalBody.innerHTML = contentHTML;
-            document.getElementById('line-modal').classList.remove('hidden');
+        }
+
+        function selectSubMachineToEdit(subIdx) {
+            selectedSubMachineIndex = subIdx;
+            renderModalContent();
+        }
+
+        function backToMachineLayout() {
+            selectedSubMachineIndex = null;
+            renderModalContent();
         }
 
         function handleSubMachineCheckboxChange(checkbox, subIdx, modelName) {
@@ -613,10 +679,8 @@
                 sub.selectedModels = [];
             }
 
-            const checkboxes = document.querySelectorAll(`input[data-subidx="${subIdx}"]`);
-            checkboxes.forEach(cb => cb.checked = selectState);
-
             manualSaveDataSilent();
+            renderModalContent();
             renderLineOverview();
         }
 
@@ -650,9 +714,7 @@
                 line.selectedModels = [];
             }
 
-            const checkboxes = document.querySelectorAll('#modal-body-content input[type="checkbox"]');
-            checkboxes.forEach(cb => cb.checked = selectState);
-
+            renderModalContent();
             manualSaveDataSilent();
             renderLineOverview();
         }
