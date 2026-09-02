@@ -106,11 +106,31 @@
     </div>
 
     <script>
-        // โครงสร้าง Product และ Model มาตรฐาน
+        // โครงสร้าง Product และ Model อ้างอิงตามข้อมูลล่าสุดที่ระบุ
         const productStructure = [
-            { group: "159", models: ["159C", "159K", "159P"] },
-            { group: "TM545", models: ["TM545#212", "TM545#315"] },
-            { group: "B1", models: ["B1-Standard", "B1-Special"] }
+            { group: "159", models: ["159C", "159F"] },
+            { group: "199", models: ["199C", "199F"] },
+            { group: "TM545", models: ["TM545#212", "TM545#235"] },
+            { group: "G3 ECO", models: ["G3 ECO 320", "G3 ECO 350"] },
+            { group: "TD 456", models: ["T DOOR"] },
+            { group: "TM10/12", models: ["TM10", "TM12"] },
+            { group: "FUF14", models: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S"] },
+            { group: "FUF18", models: ["FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S"] },
+            { group: "FUF22", models: ["FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
+            { group: "TD 469", models: ["T DOOR H Metal", "T DOOR H Glass"] },
+            { group: "TD 520", models: ["T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
+            { group: "SBS 550", models: ["SBS 550", "SBS 550 WD"] },
+            { group: "SBS 620", models: ["SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { group: "BM23", models: ["BM23", "BM23 Café", "BM23 DND"] },
+            { group: "BM T-Door", models: ["BM T-Door 23 C", "BM T-Door 23"] },
+            { group: "BM29", models: ["BM29", "BM29 Café", "BM29 DND"] },
+            { group: "BM T-Door (2)", models: ["BM T-Door 28 C", "BM T-Door 28"] },
+            { group: "TM14", models: ["TM14"] },
+            { group: "TM19", models: ["TM-19 K", "TM-19 L"] },
+            { group: "TM21", models: ["TM-21 K", "TM-21 T"] },
+            { group: "FUF14 (2)", models: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S"] },
+            { group: "FUF18 (2)", models: ["FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S"] },
+            { group: "FUF22 (2)", models: ["FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] }
         ];
 
         // ฐานข้อมูลเก็บค่า Target แผนการผลิต [Model][Date] = TargetValue
