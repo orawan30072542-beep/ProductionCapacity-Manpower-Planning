@@ -106,7 +106,7 @@
     </div>
 
     <script>
-        // โครงสร้าง Product และ Model อัปเดต TD 469 ให้มี 4 รุ่นเรียบร้อยแล้ว
+        // โครงสร้าง Product และ Model ปรับปรุง BM T-Door ให้รองรับทั้งแบบย่อ C และ Café เรียบร้อยแล้ว
         const productStructure = [
             { group: "159", models: ["159C", "159F"] },
             { group: "199", models: ["199C", "199F"] },
@@ -122,9 +122,9 @@
             { group: "SBS 550", models: ["SBS 550", "SBS 550 WD"] },
             { group: "SBS 620", models: ["SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
             { group: "BM23", models: ["BM23", "BM23 Café", "BM23 DND"] },
-            { group: "BM T-Door", models: ["BM T-Door 23 C", "BM T-Door 23"] },
+            { group: "BM T-Door", models: ["BM T-Door 23 Café", "BM T-Door 23"] },
             { group: "BM29", models: ["BM29", "BM29 Café", "BM29 DND"] },
-            { group: "BM T-Door (2)", models: ["BM T-Door 28 C", "BM T-Door 28"] },
+            { group: "BM T-Door (2)", models: ["BM T-Door 28 Café", "BM T-Door 28"] },
             { group: "TM14", models: ["TM14"] },
             { group: "TM19", models: ["TM-19 K", "TM-19 L"] },
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
@@ -284,26 +284,37 @@
 
             let updatedCount = 0;
 
-            // วนลูปอ่านข้อมูลแต่ละแถวใน Excel
+            // วนลูปอ่านข้อมูลแต่ละแถวใน Excel พร้อมรองรับการแปลงรหัส C เป็น Café ให้อัตโนมัติ
             for (let i = 1; i < rows.length; i++) {
                 const r = rows[i];
                 if (!r || r.length === 0) continue;
 
-                let matchedModel = "";
+                let cellText = "";
                 for (let c = 0; c < dateStartIndex; c++) {
-                    let cellText = String(r[c] || "").trim().toLowerCase();
-                    if (!cellText) continue;
-
-                    productStructure.forEach(group => {
-                        group.models.forEach(m => {
-                            let targetModel = m.toLowerCase();
-                            if (cellText === targetModel || cellText.includes(targetModel)) {
-                                matchedModel = m;
-                            }
-                        });
-                    });
-                    if (matchedModel) break;
+                    let val = String(r[c] || "").trim();
+                    if (val) {
+                        cellText = val;
+                        break;
+                    }
                 }
+                if (!cellText) continue;
+
+                let cellTextLower = cellText.toLowerCase();
+                let matchedModel = "";
+
+                productStructure.forEach(group => {
+                    group.models.forEach(m => {
+                        let targetModel = m.toLowerCase();
+                        
+                        // รองรับกรณีใน Excel เขียนลงท้ายด้วย C ให้แมตช์กับ Café ในระบบ
+                        let normalizedCell = cellTextLower.replace(/\s+c\b/g, ' café');
+                        let normalizedTarget = targetModel.replace(/\s+c\b/g, ' café');
+
+                        if (normalizedCell === normalizedTarget || normalizedCell.includes(targetModel) || cellTextLower === targetModel) {
+                            matchedModel = m;
+                        }
+                    });
+                });
 
                 if (!matchedModel) continue;
 
