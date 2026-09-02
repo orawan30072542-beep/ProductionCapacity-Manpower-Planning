@@ -93,7 +93,6 @@
                         <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="matrix-thead">
                             <th class="p-3.5 pl-6">Product Group</th>
                             <th class="p-3.5">Model</th>
-                            <!-- คอลัมน์วันที่ถูกสร้างด้วย JavaScript -->
                         </tr>
                     </thead>
                     <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
@@ -106,7 +105,7 @@
     </div>
 
     <script>
-        // โครงสร้าง Product และ Model ปรับปรุง BM T-Door ให้รองรับทั้งแบบย่อ C และ Café เรียบร้อยแล้ว
+        // โครงสร้าง Product และ Model ทั้งหมด
         const productStructure = [
             { group: "159", models: ["159C", "159F"] },
             { group: "199", models: ["199C", "199F"] },
@@ -130,11 +129,9 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // ฐานข้อมูลเก็บค่า Target แผนการผลิต [Model][Date] = TargetValue
         let planDatabase = {};
-        let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"]; // ค่าเริ่มต้นถ้ายังไม่อัปโหลดไฟล์
+        let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
 
-        // เริ่มต้นสร้างตารางครั้งแรก
         window.addEventListener('DOMContentLoaded', () => {
             initMatrixTable(currentDates);
         });
@@ -154,7 +151,6 @@
             const tbody = document.getElementById('matrix-tbody');
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            // 1. คำนวณผลรวม Order และ UPH ของแต่ละวัน
             let dailyTotals = {};
             dates.forEach(date => {
                 let sumTarget = 0;
@@ -169,14 +165,12 @@
                 dailyTotals[date] = { target: sumTarget, uph: sumUph };
             });
 
-            // สร้างส่วนหัวตาราง (Thead)
             let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
             dates.forEach(date => {
                 headerHTML += `<th class="p-3.5 text-center min-w-[120px]">${date}</th>`;
             });
             theadTr.innerHTML = headerHTML;
 
-            // 2. สร้างแถว Order Total และ UPH Total ไว้บนสุดของ Tbody
             let tbodyHTML = `
                 <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
                     <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
@@ -194,7 +188,6 @@
             });
             tbodyHTML += `</tr>`;
 
-            // 3. สร้างเนื้อหาตารางรายรุ่นปกติ (Tbody)
             productStructure.forEach(group => {
                 group.models.forEach((model, index) => {
                     tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors" data-model="${model}">`;
@@ -245,7 +238,7 @@
                     }
 
                     const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-                    const count = renderMatrixWithData(rawExcelData, workingHours);
+                    const count = smartParseExcelData(rawExcelData);
 
                     alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
                 } catch (error) {
@@ -256,74 +249,83 @@
             reader.readAsArrayBuffer(file);
         }
 
-        function renderMatrixWithData(rows, workingHours) {
-            if (!rows || rows.length <= 1) return 0;
+        // ระบบสมองกลอัจฉริยะกวาดหาและจับคู่ข้อมูลจาก Excel ทุกรูปแบบ
+        function smartParseExcelData(rows) {
+            let headerRowIndex = 0;
+            let dateColStartIndex = -1;
+            let datesFound = [];
 
-            const headerRow = rows[0];
-            let dates = [];
-            let dateStartIndex = 2;
+            // 1. ค้นหาแถวที่เป็นหัวตารางวันเดือนปี
+            for (let r = 0; r < Math.min(rows.length, 10); r++) {
+                let row = rows[r];
+                if (!row) continue;
+                for (let c = 0; c < row.length; c++) {
+                    let val = String(row[c] || "").trim();
+                    if (val.includes('/') || (typeof row[c] === 'number' && row[c] > 30000)) {
+                        headerRowIndex = r;
+                        dateColStartIndex = c;
+                        break;
+                    }
+                }
+                if (dateColStartIndex !== -1) break;
+            }
 
-            // ค้นหาคอลัมน์เริ่มต้นของวันที่
-            for (let c = 0; c < headerRow.length; c++) {
-                let cellVal = String(headerRow[c] || "").trim();
-                if (cellVal.includes('/') || (typeof headerRow[c] === 'number' && headerRow[c] > 30000)) {
-                    dateStartIndex = c;
-                    break;
+            if (dateColStartIndex === -1) {
+                dateColStartIndex = 2; // ค่าสำรองถ้าหาไม่เจอ
+            }
+
+            // 2. ดึงรายการวันที่ทั้งหมดจากแถวหัวตาราง
+            let headerRow = rows[headerRowIndex] || rows[0];
+            for (let c = dateColStartIndex; c < headerRow.length; c++) {
+                let cell = headerRow[c];
+                if (cell !== undefined && cell !== null && String(cell).trim() !== "") {
+                    datesFound.push(formatExcelDate(cell));
                 }
             }
 
-            for (let c = dateStartIndex; c < headerRow.length; c++) {
-                if (headerRow[c] !== undefined && headerRow[c] !== null && String(headerRow[c]).trim() !== "") {
-                    dates.push(formatExcelDate(headerRow[c]));
-                }
-            }
-
-            if (dates.length > 0) {
-                currentDates = dates;
+            if (datesFound.length > 0) {
+                currentDates = datesFound;
             }
 
             let updatedCount = 0;
 
-            // วนลูปอ่านข้อมูลแต่ละแถวใน Excel พร้อมรองรับการแปลงรหัส C เป็น Café ให้อัตโนมัติ
-            for (let i = 1; i < rows.length; i++) {
-                const r = rows[i];
+            // 3. กวาดอ่านข้อมูลทุกแถวเพื่อจับคู่รุ่น Model อย่างละเอียด
+            for (let i = headerRowIndex + 1; i < rows.length; i++) {
+                let r = rows[i];
                 if (!r || r.length === 0) continue;
 
-                let cellText = "";
-                for (let c = 0; c < dateStartIndex; c++) {
-                    let val = String(r[c] || "").trim();
-                    if (val) {
-                        cellText = val;
-                        break;
-                    }
-                }
-                if (!cellText) continue;
-
-                let cellTextLower = cellText.toLowerCase();
+                // ค้นหาข้อความชื่อรุ่นจากทุกคอลัมน์ฝั่งซ้ายก่อนถึงคอลัมน์วันที่
                 let matchedModel = "";
+                for (let c = 0; c < dateColStartIndex; c++) {
+                    let cellText = String(r[c] || "").trim();
+                    if (!cellText) continue;
 
-                productStructure.forEach(group => {
-                    group.models.forEach(m => {
-                        let targetModel = m.toLowerCase();
-                        
-                        // รองรับกรณีใน Excel เขียนลงท้ายด้วย C ให้แมตช์กับ Café ในระบบ
-                        let normalizedCell = cellTextLower.replace(/\s+c\b/g, ' café');
-                        let normalizedTarget = targetModel.replace(/\s+c\b/g, ' café');
+                    let cellTextLower = cellText.toLowerCase().replace(/[\s\-_]+/g, '');
 
-                        if (normalizedCell === normalizedTarget || normalizedCell.includes(targetModel) || cellTextLower === targetModel) {
-                            matchedModel = m;
-                        }
+                    productStructure.forEach(group => {
+                        group.models.forEach(m => {
+                            let targetClean = m.toLowerCase().replace(/[\s\-_]+/g, '');
+                            let normalizedCell = cellTextLower.replace(/c$/, 'cafe');
+                            let normalizedTarget = targetClean.replace(/c$/, 'cafe');
+
+                            if (cellTextLower === targetClean || normalizedCell === normalizedTarget || cellTextLower.includes(targetClean)) {
+                                matchedModel = m;
+                            }
+                        });
                     });
-                });
+                    if (matchedModel) break;
+                }
 
                 if (!matchedModel) continue;
 
                 if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
 
+                // 4. บันทึกข้อมูลแผนการผลิตตามวันที่
                 currentDates.forEach((dateText, idx) => {
-                    const rawTarget = parseFloat(r[dateStartIndex + idx]) || 0;
-                    const targetVal = Math.round(rawTarget);
-                    
+                    let valIndex = dateColStartIndex + idx;
+                    let rawTarget = parseFloat(r[valIndex]) || 0;
+                    let targetVal = Math.round(rawTarget);
+
                     if (targetVal > 0) {
                         planDatabase[matchedModel][dateText] = targetVal;
                         updatedCount++;
@@ -331,7 +333,6 @@
                 });
             }
 
-            // เรนเดอร์ตารางใหม่พร้อมคำนวณผลรวมทั้งหมด
             initMatrixTable(currentDates);
             return updatedCount;
         }
