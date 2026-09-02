@@ -1,82 +1,301 @@
-function renderMatrixWithData(rows, workingHours) {
-    if (!rows || rows.length <= 1) return 0;
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Capacity & Manpower Planning Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS สำหรับอ่านไฟล์ Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
 
-    const headerRow = rows[0];
-    let dates = [];
-    let dateStartIndex = 2;
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Header Section -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+                    📊 Production Overview Dashboard
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product และ Model รายวัน</p>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800">
+                <span class="text-xs text-slate-400">สถานะระบบ:</span>
+                <span class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> กำลังดำเนินงาน
+                </span>
+            </div>
+        </header>
 
-    // ค้นหาคอลัมน์เริ่มต้นของวันที่
-    for (let c = 0; c < headerRow.length; c++) {
-        let cellVal = String(headerRow[c] || "").trim();
-        if (cellVal.includes('/') || (typeof headerRow[c] === 'number' && headerRow[c] > 30000)) {
-            dateStartIndex = c;
-            break;
+        <!-- Control & Upload Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Upload Excel Card -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div>
+                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
+                        📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                    </h2>
+                    <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+                </div>
+                
+                <div class="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-slate-950/50 group">
+                    <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
+                    <div class="flex flex-col items-center justify-center space-y-2">
+                        <svg class="w-8 h-8 text-slate-400 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
+                        <p class="text-[10px] text-slate-500">(.xlsx, .xls)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Card -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div>
+                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
+                        ⚙️ ตั้งค่าการคำนวณกำลังการผลิต
+                    </h2>
+                    <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงการทำงานต่อวันเพื่อใช้คำนวณค่า UPH (Units Per Hour)</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
+                        <div class="flex items-center gap-3">
+                            <input type="number" id="working-hours" value="8" min="1" max="24" step="0.5" 
+                                class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500"
+                                onchange="recalculateAll()">
+                            <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500">* เปลี่ยนค่า UPH จะคำนวณใหม่ทันทีแบบ Real-time</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matrix Table Section -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น (Matrix View)</h3>
+                <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse" id="matrix-table">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="matrix-thead">
+                            <th class="p-3.5 pl-6">Product Group</th>
+                            <th class="p-3.5">Model</th>
+                            <!-- คอลัมน์วันที่ถูกสร้างด้วย JavaScript -->
+                        </tr>
+                    </thead>
+                    <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
+                        <!-- ถูกสร้างด้วย JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // โครงสร้าง Product และ Model มาตรฐาน
+        const productStructure = [
+            { group: "159", models: ["159C", "159K", "159P"] },
+            { group: "TM545", models: ["TM545#212", "TM545#315"] },
+            { group: "B1", models: ["B1-Standard", "B1-Special"] }
+        ];
+
+        // ฐานข้อมูลเก็บค่า Target แผนการผลิต [Model][Date] = TargetValue
+        let planDatabase = {};
+        let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"]; // ค่าเริ่มต้นถ้ายังไม่อัปโหลดไฟล์
+
+        // เริ่มต้นสร้างตารางครั้งแรก
+        window.addEventListener('DOMContentLoaded', () => {
+            initMatrixTable(currentDates);
+        });
+
+        function formatExcelDate(serial) {
+            if (typeof serial === 'number') {
+                const utc_days = Math.floor(serial - 25569);
+                const utc_value = utc_days * 86400;
+                const date_info = new Date(utc_value * 1000);
+                return `${date_info.getDate()}/${date_info.getMonth() + 1}`;
+            }
+            return String(serial).trim();
         }
-    }
 
-    for (let c = dateStartIndex; c < headerRow.length; c++) {
-        if (headerRow[c] !== undefined && headerRow[c] !== null && String(headerRow[c]).trim() !== "") {
-            dates.push(formatExcelDate(headerRow[c]));
-        }
-    }
+        function initMatrixTable(dates) {
+            const theadTr = document.getElementById('matrix-thead');
+            const tbody = document.getElementById('matrix-tbody');
 
-    if (dates.length > 0) {
-        currentDates = dates;
-        initMatrixTable(currentDates);
-    }
+            // สร้างส่วนหัวตาราง (Thead)
+            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
+            dates.forEach(date => {
+                headerHTML += `<th class="p-3.5 text-center min-w-[120px]">${date}</th>`;
+            });
+            theadTr.innerHTML = headerHTML;
 
-    let updatedCount = 0;
-    const tbody = document.getElementById('matrix-tbody');
-    const modelRows = tbody.querySelectorAll('tr');
-
-    // วนลูปอ่านข้อมูลแต่ละแถวใน Excel
-    for (let i = 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (!r || r.length === 0) continue;
-
-        let matchedModel = "";
-        for (let c = 0; c < dateStartIndex; c++) {
-            let cellText = String(r[c] || "").trim();
+            // สร้างเนื้อหาตาราง (Tbody)
+            let tbodyHTML = "";
             productStructure.forEach(group => {
-                group.models.forEach(m => {
-                    if (m.toLowerCase() === cellText.toLowerCase()) {
-                        matchedModel = m;
+                group.models.forEach((model, index) => {
+                    tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors" data-model="${model}">`;
+                    
+                    if (index === 0) {
+                        tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
                     }
+                    
+                    tbodyHTML += `<td class="p-3.5 font-medium text-slate-300">${model}</td>`;
+
+                    dates.forEach(date => {
+                        let targetVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+                        let calculatedUph = targetVal > 0 && workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
+
+                        tbodyHTML += `
+                            <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
+                                <div class="font-bold text-white">${targetVal > 0 ? targetVal.toLocaleString() : '-'}</div>
+                                <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
+                            </td>
+                        `;
+                    });
+
+                    tbodyHTML += `</tr>`;
                 });
             });
-            if (matchedModel) break;
+
+            tbody.innerHTML = tbodyHTML;
         }
 
-        if (!matchedModel) continue;
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
 
-        modelRows.forEach(row => {
-            const fixedModel = row.getAttribute('data-model');
-            if (fixedModel && fixedModel.toLowerCase() === matchedModel.toLowerCase()) {
-                currentDates.forEach((dateText, idx) => {
-                    const rawTarget = parseFloat(r[dateStartIndex + idx]) || 0;
-                    const targetVal = Math.round(rawTarget);
-                    
-                    if (targetVal > 0) {
-                        planDatabase[matchedModel][dateText] = targetVal;
-                        const calculatedUph = workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
-                        
-                        // เช็คความปลอดภัย ป้องกัน Error แถวหรือเซลล์ไม่ตรงกัน
-                        const cellIndex = idx + 2;
-                        if (row.cells && row.cells[cellIndex]) {
-                            row.cells[cellIndex].innerHTML = `
-                                <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
-                                <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
-                            `;
-                            updatedCount++;
-                        }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    let rawExcelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    if (!rawExcelData || rawExcelData.length === 0) {
+                        alert('ไฟล์ Excel ว่างเปล่า ไม่มีข้อมูล');
+                        return;
+                    }
+
+                    const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+                    const count = renderMatrixWithData(rawExcelData, workingHours);
+
+                    alert(`นำเข้าไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderMatrixWithData(rows, workingHours) {
+            if (!rows || rows.length <= 1) return 0;
+
+            const headerRow = rows[0];
+            let dates = [];
+            let dateStartIndex = 2;
+
+            // ค้นหาคอลัมน์เริ่มต้นของวันที่
+            for (let c = 0; c < headerRow.length; c++) {
+                let cellVal = String(headerRow[c] || "").trim();
+                if (cellVal.includes('/') || (typeof headerRow[c] === 'number' && headerRow[c] > 30000)) {
+                    dateStartIndex = c;
+                    break;
+                }
+            }
+
+            for (let c = dateStartIndex; c < headerRow.length; c++) {
+                if (headerRow[c] !== undefined && headerRow[c] !== null && String(headerRow[c]).trim() !== "") {
+                    dates.push(formatExcelDate(headerRow[c]));
+                }
+            }
+
+            if (dates.length > 0) {
+                currentDates = dates;
+                initMatrixTable(currentDates);
+            }
+
+            let updatedCount = 0;
+            const tbody = document.getElementById('matrix-tbody');
+            const modelRows = tbody.querySelectorAll('tr');
+
+            // วนลูปอ่านข้อมูลแต่ละแถวใน Excel
+            for (let i = 1; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || r.length === 0) continue;
+
+                let matchedModel = "";
+                // ค้นหาชื่อ Model จากทุกคอลัมน์ก่อนถึงช่องวันที่ (ใช้ includes เพื่อความยืดหยุ่น)
+                for (let c = 0; c < dateStartIndex; c++) {
+                    let cellText = String(r[c] || "").trim().toLowerCase();
+                    if (!cellText) continue;
+
+                    productStructure.forEach(group => {
+                        group.models.forEach(m => {
+                            let targetModel = m.toLowerCase();
+                            if (cellText === targetModel || cellText.includes(targetModel)) {
+                                matchedModel = m;
+                            }
+                        });
+                    });
+                    if (matchedModel) break;
+                }
+
+                if (!matchedModel) continue;
+
+                if (!planDatabase[matchedModel]) planDatabase[matchedModel] = {};
+
+                modelRows.forEach(row => {
+                    const fixedModel = row.getAttribute('data-model');
+                    if (fixedModel && fixedModel.toLowerCase() === matchedModel.toLowerCase()) {
+                        currentDates.forEach((dateText, idx) => {
+                            const rawTarget = parseFloat(r[dateStartIndex + idx]) || 0;
+                            const targetVal = Math.round(rawTarget);
+                            
+                            if (targetVal > 0) {
+                                planDatabase[matchedModel][dateText] = targetVal;
+                                const calculatedUph = workingHours > 0 ? Math.round(targetVal / workingHours) : 0;
+                                
+                                const cellIndex = idx + 2;
+                                if (row.cells && row.cells[cellIndex]) {
+                                    row.cells[cellIndex].innerHTML = `
+                                        <div class="font-bold text-white">${targetVal.toLocaleString()}</div>
+                                        <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
+                                    `;
+                                    updatedCount++;
+                                }
+                            }
+                        });
                     }
                 });
             }
-        });
-    }
 
-    calculateTotals();
-    return updatedCount;
-}
+            return updatedCount;
+        }
+
+        function recalculateAll() {
+            const workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+            initMatrixTable(currentDates);
+        }
+    </script>
+</body>
+</html>
