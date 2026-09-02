@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Overview Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body {
             background-color: #0b0f19;
@@ -34,7 +35,7 @@
                         📊 หน้าสรุป Overview
                     </button>
                     <button onclick="switchTab('add-plan')" id="tab-add-plan" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
-                        ➕ เพิ่มแผนผลิต
+                        ➕ เพิ่มแผนผลิต / อัปโหลด Excel
                     </button>
                 </div>
 
@@ -191,57 +192,76 @@
         </div>
 
         <div id="content-add-plan" class="space-y-6 hidden">
-            <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-3xl mx-auto border border-blue-900/85">
-                <div class="border-b border-blue-900/50 pb-4 mb-6">
-                    <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
-                    <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่น</p>
+            <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-3xl mx-auto border border-blue-900/85 space-y-6">
+                
+                <div class="border-b border-blue-900/50 pb-5">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                    </h2>
+                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อนำเข้าข้อมูลแผนผลิตเข้าตารางอัตโนมัติ</p>
+                    
+                    <div class="mt-4 flex items-center gap-3">
+                        <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-4 cursor-pointer bg-blue-950/30 transition-all">
+                            <span class="text-sm text-blue-300 font-medium" id="file-label-text">คลิกเพื่อเลือกไฟล์ Excel หรือลากมาวางที่นี่</span>
+                            <span class="text-xs text-gray-400 mt-1">(.xlsx, .xls)</span>
+                            <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
+                        </label>
+                    </div>
                 </div>
 
-                <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Production Line</label>
-                            <select id="prodLine" required class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                                <option value="" disabled selected>-- เลือก Line ผลิต --</option>
-                                <option value="Door Press">Door Press</option>
-                                <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
-                                <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
-                                <option value="Door A">Door A</option>
-                                <option value="Door B">Door B</option>
-                                <option value="Door C">Door C</option>
-                                <option value="Door In Door">Door In Door</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">รุ่นสินค้า (Model Name)</label>
-                            <input type="text" id="modelName" required placeholder="เช่น Model-A1" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                        </div>
+                <div>
+                    <div class="pb-4 mb-5">
+                        <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
+                        <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่น</p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <div>
-                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Order รายวัน (Target)</label>
-                            <input type="number" id="dailyOrder" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                    <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Production Line</label>
+                                <select id="prodLine" required class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                    <option value="" disabled selected>-- เลือก Line ผลิต --</option>
+                                    <option value="Door Press">Door Press</option>
+                                    <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
+                                    <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
+                                    <option value="Door A">Door A</option>
+                                    <option value="Door B">Door B</option>
+                                    <option value="Door C">Door C</option>
+                                    <option value="Door In Door">Door In Door</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">รุ่นสินค้า (Model Name)</label>
+                                <input type="text" id="modelName" required placeholder="เช่น Model-A1" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Day Shift</label>
-                            <input type="number" id="dayShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Night Shift</label>
-                            <input type="number" id="nightShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
-                        </div>
-                    </div>
 
-                    <div class="pt-4 flex justify-end space-x-3">
-                        <button type="reset" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white bg-blue-950/40 border border-blue-900 transition-all">
-                            ล้างค่า
-                        </button>
-                        <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all">
-                            บันทึกข้อมูลแผนผลิต
-                        </button>
-                    </div>
-                </form>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Order รายวัน (Target)</label>
+                                <input type="number" id="dailyOrder" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Day Shift</label>
+                                <input type="number" id="dayShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Night Shift</label>
+                                <input type="number" id="nightShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-end space-x-3">
+                            <button type="reset" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white bg-blue-950/40 border border-blue-900 transition-all">
+                                ล้างค่า
+                            </button>
+                            <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all">
+                                บันทึกข้อมูลแผนผลิต
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
 
@@ -272,7 +292,7 @@
             }
         }
 
-        // จัดการเมื่อกดบันทึกข้อมูลแผนผลิตจากฟอร์ม
+        // จัดการเมื่อกดบันทึกข้อมูลแผนผลิตจากฟอร์มเดี่ยว
         function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -282,6 +302,14 @@
             const day = parseInt(document.getElementById('dayShift').value) || 0;
             const night = parseInt(document.getElementById('nightShift').value) || 0;
             
+            addRowToTable(line, model, target, day, night);
+            alert('เพิ่มแผนการผลิตเรียบร้อยแล้ว!');
+            document.getElementById('planForm').reset();
+            switchTab('overview');
+        }
+
+        // ฟังก์ชันเพิ่มแถวลงในตารางหลัก
+        function addRowToTable(line, model, target, day, night) {
             const total = day + night;
             const percentage = target > 0 ? ((total / target) * 100).toFixed(1) : 0;
 
@@ -294,7 +322,7 @@
             newRow.innerHTML = `
                 <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    <span>${line} <span class="text-xs text-blue-400 font-normal">(${model})</span></span>
+                    <span>${line} ${model ? `<span class="text-xs text-blue-400 font-normal">(${model})</span>` : ''}</span>
                 </td>
                 <td class="py-4 px-6 text-center font-semibold text-white">${target.toLocaleString()}</td>
                 <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">${day.toLocaleString()}</td>
@@ -304,11 +332,57 @@
                     <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor} border">${percentage}%</span>
                 </td>
             `;
-            
             tbody.appendChild(newRow);
-            alert('เพิ่มแผนการผลิตเรียบร้อยแล้ว!');
-            document.getElementById('planForm').reset();
-            switchTab('overview');
+        }
+
+        // ฟังก์ชันอ่านไฟล์ Excel ที่อัปโหลดเข้ามา
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // อ่านข้อมูลจากแผ่นงาน (Sheet) แรก
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // แปลงข้อมูลเป็น JSON (แถวแรกสุดถือเป็นหัวตาราง)
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonRows.length === 0) {
+                        alert('ไม่พบข้อมูลภายในไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
+                        return;
+                    }
+
+                    let successCount = 0;
+                    jsonRows.forEach(row => {
+                        // รองรับชื่อหัวคอลัมน์ภาษาไทยและอังกฤษแบบยืดหยุ่น
+                        const line = row['Production Line'] || row['Line'] || row['ไลน์ผลิต'] || 'Door Press';
+                        const model = row['Model'] || row['รุ่นสินค้า'] || row['Model Name'] || '';
+                        const target = parseInt(row['Target'] || row['Order รายวัน'] || row['Daily Order'] || 0);
+                        const day = parseInt(row['Day Shift'] || row['ยอดผลิต Day'] || 0);
+                        const night = parseInt(row['Night Shift'] || row['ยอดผลิต Night'] || 0);
+
+                        if (target > 0 || day > 0 || night > 0) {
+                            addRowToTable(line, model, target, day, night);
+                            successCount++;
+                        }
+                    });
+
+                    alert(`นำเข้าข้อมูลจาก Excel สำเร็จจำนวน ${successCount} รายการ!`);
+                    switchTab('overview');
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบโครงสร้างข้อมูล');
+                }
+            };
+            reader.readAsArrayBuffer(file);
         }
     </script>
 </body>
