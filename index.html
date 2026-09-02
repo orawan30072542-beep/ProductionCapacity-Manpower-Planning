@@ -124,16 +124,8 @@
 
         <!-- ================= PAGE 2: LINE OVERVIEW ================= -->
         <div id="page-overview" class="space-y-6 hidden">
-            <!-- KPI Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 p-5 rounded-2xl shadow-xl flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400 font-bold">⏱️</div>
-                    <div>
-                        <p class="text-xs text-slate-400 font-medium">Cycle Time สูงสุด (Max)</p>
-                        <h3 id="kpi-max-cycletime" class="text-xl font-extrabold text-amber-400 mt-0.5">0 <span class="text-xs font-normal text-slate-400">วินาที/ชิ้น</span></h3>
-                    </div>
-                </div>
-
+            <!-- KPI Summary Cards (เหลือ Lead Time และ Capacity เครื่องจักร) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/30 p-5 rounded-2xl shadow-xl flex items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-xl text-blue-400 font-bold">⏳</div>
                     <div>
@@ -398,26 +390,20 @@
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
             let cardsHTML = '';
-            let maxCycleTimeAll = 0;
             let totalLeadTimeSec = 0;
             let totalCapacityAll = 0;
-            let processCountAll = 0;
 
             productionLines.forEach((line, idx) => {
                 let lineTotalTarget = 0;
                 let groupSummaryMap = {};
-                let lineMaxCycle = 0;
                 let lineTotalCycleSec = 0;
-                let lineProcessCount = 0;
 
                 if (line.hasSubMachines) {
                     line.subMachines.forEach(sub => {
                         if (sub.processes) {
                             sub.processes.forEach(proc => {
                                 let tSec = parseFloat(proc.timePerUnit) || 0;
-                                if (tSec > lineMaxCycle) lineMaxCycle = tSec;
                                 lineTotalCycleSec += tSec;
-                                lineProcessCount++;
                             });
                         }
                         if (sub.selectedModels) {
@@ -448,11 +434,7 @@
                     }
                 }
 
-                if (lineMaxCycle > maxCycleTimeAll) {
-                    maxCycleTimeAll = lineMaxCycle;
-                }
                 totalLeadTimeSec += lineTotalCycleSec;
-                processCountAll += lineProcessCount;
                 totalCapacityAll += lineTotalTarget;
 
                 let lineUph = workingHours > 0 ? Math.round(lineTotalTarget / workingHours) : 0;
@@ -517,8 +499,7 @@
 
             container.innerHTML = cardsHTML;
 
-            // อัปเดตข้อมูล KPI Cards ด้านบน
-            document.getElementById('kpi-max-cycletime').innerHTML = `${maxCycleTimeAll} <span class="text-xs font-normal text-slate-400">วินาที/ชิ้น</span>`;
+            // อัปเดตข้อมูล KPI Cards ด้านบน (เหลือ Lead Time และ Capacity)
             let leadTimeMinutes = (totalLeadTimeSec / 60).toFixed(1);
             document.getElementById('kpi-leadtime').innerHTML = `${leadTimeMinutes} <span class="text-xs font-normal text-slate-400">นาที</span>`;
             document.getElementById('kpi-capacity').innerHTML = `${totalCapacityAll.toLocaleString()} <span class="text-xs font-normal text-slate-400">ชิ้น/วัน</span>`;
@@ -561,6 +542,15 @@
                         let processCount = sub.processes ? sub.processes.length : 0;
                         let subColors = ['border-purple-500/40 bg-purple-950/20 text-purple-300', 'border-blue-500/40 bg-blue-950/20 text-blue-300', 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300'];
 
+                        // คำนวณหา Cycle Time สูงสุด (Max) เฉพาะในเครื่องย่อยนี้
+                        let subMaxCycle = 0;
+                        if (sub.processes && sub.processes.length > 0) {
+                            sub.processes.forEach(p => {
+                                let t = parseFloat(p.timePerUnit) || 0;
+                                if (t > subMaxCycle) subMaxCycle = t;
+                            });
+                        }
+
                         contentHTML += `
                             <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${subColors[subIdx % subColors.length]} p-4 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all shadow-lg flex flex-col justify-between group bg-slate-950/60">
                                 <div>
@@ -568,6 +558,16 @@
                                         <span class="font-bold text-sm text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
                                         <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${modelCount} รุ่น | ${processCount} กระบวนการ</span>
                                     </div>
+
+                                    <!-- KPI Card: Cycle Time สูงสุด (Max) ที่ย้ายมาแสดงผลที่นี่ -->
+                                    <div class="my-3 bg-slate-900/80 border border-amber-500/30 p-3 rounded-xl flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-sm text-amber-400 font-bold">⏱️</div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-400 font-medium">Cycle Time สูงสุด (Max)</p>
+                                            <h4 class="text-base font-extrabold text-amber-400">${subMaxCycle} <span class="text-[10px] font-normal text-slate-400">วินาที/ชิ้น</span></h4>
+                                        </div>
+                                    </div>
+
                                     <div class="text-[11px] text-slate-400 space-y-1 mt-2 bg-slate-900/60 p-2.5 rounded-xl border border-slate-800/80 max-h-28 overflow-y-auto">
                         `;
 
