@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Production Management System</title>
+    <title>Production Overview Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
@@ -12,21 +12,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .glass-panel {
-            background: rgba(17, 24, 39, 0.75);
+            background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(30, 58, 138, 0.4);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0b0f19;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e3a8a;
-            border-radius: 4px;
         }
     </style>
 </head>
@@ -36,29 +24,40 @@
         
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">🏭 Production Management System</h1>
-                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตและจัดการแผนการผลิตรายรุ่น</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
+                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตจากแผนผลิต (รายวัน & รายชั่วโมง)</p>
             </div>
             
-            <div class="flex bg-blue-950/60 p-1.5 rounded-xl border border-blue-900">
-                <button onclick="switchTab('overview')" id="tab-overview" class="px-5 py-2 rounded-lg text-sm font-semibold transition-all bg-blue-600 text-white shadow-lg">
-                    📊 หน้าสรุป Overview
-                </button>
-                <button onclick="switchTab('add-plan')" id="tab-add-plan" class="px-5 py-2 rounded-lg text-sm font-semibold transition-all text-gray-400 hover:text-white">
-                    ➕ เพิ่มแผนผลิตรุ่น
-                </button>
+            <div class="flex flex-col md:flex-row items-center gap-4">
+                <div class="flex bg-blue-950/60 p-1.5 rounded-xl border border-blue-900">
+                    <button onclick="switchTab('overview')" id="tab-overview" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg">
+                        📊 หน้าสรุป Overview
+                    </button>
+                    <button onclick="switchTab('add-plan')" id="tab-add-plan" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                        ➕ เพิ่มแผนผลิต
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <span class="block text-xs text-gray-400">วันที่ปัจจุบัน</span>
+                        <span id="current-date" class="text-sm font-semibold text-blue-300"></span>
+                    </div>
+                    <div class="bg-blue-950 px-4 py-2 rounded-xl border border-blue-800 text-xs font-medium text-blue-200">
+                        สถานะ: <span class="text-emerald-400 font-bold">● กำลังดำเนินงาน</span>
+                    </div>
+                </div>
             </div>
         </header>
 
         <div id="content-overview" class="space-y-6">
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
                     <p class="text-xs text-gray-400 uppercase tracking-wider">Order รวมรายวัน (เป้าหมาย)</p>
                     <h3 class="text-2xl font-bold text-white mt-1">12,450 <span class="text-sm font-normal text-gray-400">pcs</span></h3>
                 </div>
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-emerald-500">
-                    <p class="text-xs text-gray-400 uppercase tracking-wider">ยอดผลิตจริงสะสม (Day Shift)</p>
+                    <p class="text-xs text-gray-400 uppercase Tracking-wider">ยอดผลิตจริงสะสม (Day Shift)</p>
                     <h3 class="text-2xl font-bold text-emerald-400 mt-1">6,120 <span class="text-sm font-normal text-gray-400">pcs</span></h3>
                 </div>
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-indigo-500">
@@ -86,10 +85,231 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-blue-950 text-sm text-gray-300" id="overview-table-body">
+                            
                             <tr class="hover:bg-blue-900/20 transition-colors">
-                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span>Door Press</span></td>
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door Press</span>
+                                </td>
                                 <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
                                 <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
                                 <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
                                 <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
-                                <td class="py-4 px-6 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Back plate&Bottom Plate</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">1,000</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">950</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,950</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.5%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door Frame&Door Glass</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">1,500</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">720</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">700</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,420</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">94.6%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door A</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">1,600</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">800</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">800</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,600</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">100.0%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door B</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">1,800</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">850</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,750</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">97.2%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door C</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">2,000</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">950</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">900</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,850</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">92.5%</span>
+                                </td>
+                            </tr>
+
+                            <tr class="hover:bg-blue-900/20 transition-colors">
+                                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span>Door In Door</span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-semibold text-white">1,750</td>
+                                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">900</td>
+                                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">740</td>
+                                <td class="py-4 px-6 text-center font-bold text-emerald-400">1,640</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-950 text-amber-400 border border-amber-800">93.7%</span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-add-plan" class="space-y-6 hidden">
+            <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-3xl mx-auto border border-blue-900/85">
+                <div class="border-b border-blue-900/50 pb-4 mb-6">
+                    <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
+                    <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่น</p>
+                </div>
+
+                <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Production Line</label>
+                            <select id="prodLine" required class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                                <option value="" disabled selected>-- เลือก Line ผลิต --</option>
+                                <option value="Door Press">Door Press</option>
+                                <option value="Back plate&Bottom Plate">Back plate&Bottom Plate</option>
+                                <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
+                                <option value="Door A">Door A</option>
+                                <option value="Door B">Door B</option>
+                                <option value="Door C">Door C</option>
+                                <option value="Door In Door">Door In Door</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">รุ่นสินค้า (Model Name)</label>
+                            <input type="text" id="modelName" required placeholder="เช่น Model-A1" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">Order รายวัน (Target)</label>
+                            <input type="number" id="dailyOrder" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Day Shift</label>
+                            <input type="number" id="dayShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-blue-300 uppercase mb-2">ยอดผลิต Night Shift</label>
+                            <input type="number" id="nightShift" required placeholder="0" class="w-full bg-blue-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end space-x-3">
+                        <button type="reset" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-white bg-blue-950/40 border border-blue-900 transition-all">
+                            ล้างค่า
+                        </button>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all">
+                            บันทึกข้อมูลแผนผลิต
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // แสดงวันที่ปัจจุบันอัตโนมัติ
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
+
+        // ฟังก์ชันสลับหน้า Tab ระหว่าง Overview และ เพิ่มแผนผลิต
+        function switchTab(tabId) {
+            const overviewContent = document.getElementById('content-overview');
+            const addPlanContent = document.getElementById('content-add-plan');
+            const tabOverview = document.getElementById('tab-overview');
+            const tabAddPlan = document.getElementById('tab-add-plan');
+
+            if (tabId === 'overview') {
+                overviewContent.classList.remove('hidden');
+                addPlanContent.classList.add('hidden');
+                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white";
+            } else {
+                overviewContent.classList.add('hidden');
+                addPlanContent.classList.remove('hidden');
+                tabAddPlan.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                tabOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white";
+            }
+        }
+
+        // จัดการเมื่อกดบันทึกข้อมูลแผนผลิตจากฟอร์ม
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const line = document.getElementById('prodLine').value;
+            const model = document.getElementById('modelName').value;
+            const target = parseInt(document.getElementById('dailyOrder').value) || 0;
+            const day = parseInt(document.getElementById('dayShift').value) || 0;
+            const night = parseInt(document.getElementById('nightShift').value) || 0;
+            
+            const total = day + night;
+            const percentage = target > 0 ? ((total / target) * 100).toFixed(1) : 0;
+
+            const tbody = document.getElementById('overview-table-body');
+            const newRow = document.createElement('tr');
+            newRow.className = "hover:bg-blue-900/20 transition-colors";
+            
+            const badgeColor = percentage >= 95 ? 'bg-emerald-950 text-emerald-400 border-emerald-800' : 'bg-amber-950 text-amber-400 border-amber-800';
+
+            newRow.innerHTML = `
+                <td class="py-4 px-6 font-medium text-white flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>${line} <span class="text-xs text-blue-400 font-normal">(${model})</span></span>
+                </td>
+                <td class="py-4 px-6 text-center font-semibold text-white">${target.toLocaleString()}</td>
+                <td class="py-4 px-6 text-center bg-blue-900/10 text-blue-200">${day.toLocaleString()}</td>
+                <td class="py-4 px-6 text-center bg-indigo-950/10 text-indigo-200">${night.toLocaleString()}</td>
+                <td class="py-4 px-6 text-center font-bold text-emerald-400">${total.toLocaleString()}</td>
+                <td class="py-4 px-6 text-center">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor} border">${percentage}%</span>
+                </td>
+            `;
+            
+            tbody.appendChild(newRow);
+            alert('เพิ่มแผนการผลิตเรียบร้อยแล้ว!');
+            document.getElementById('planForm').reset();
+            switchTab('overview');
+        }
+    </script>
+</body>
+</html>
