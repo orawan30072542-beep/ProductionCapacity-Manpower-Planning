@@ -349,7 +349,7 @@
                         tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
                     }
                     
-                    // เอาคำว่า "ชิ้นส่วน:" ออก และแสดงผลเฉพาะ ชื่อและค่าในวงเล็บ
+                    // นำคำว่า "ชิ้นส่วน:" ออก เหลือแค่ชื่อชิ้นส่วนและสัดส่วนในวงเล็บ
                     tbodyHTML += `
                         <td class="p-3.5 font-medium text-slate-300">
                             <div>${model}</div>
@@ -361,7 +361,7 @@
                         let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
                         let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
-                        // เอาคำว่า "set:" ออก และแสดงผลเฉพาะตัวเลข
+                        // นำคำว่า "set:" ออก เหลือเพียงตัวเลขเปล่าๆ
                         tbodyHTML += `
                             <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
                                 <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'} <span class="text-[10px] text-slate-400">(${baseVal})</span></div>
