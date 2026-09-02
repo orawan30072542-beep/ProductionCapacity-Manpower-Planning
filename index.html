@@ -130,7 +130,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตาม 9 ไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกที่การ์ดของแต่ละไลน์เพื่อดูรายละเอียดข้อมูลเชิงลึกรายรุ่น</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ดแต่ละไลน์เพื่อตั้งค่าเลือกรุ่น (Model) ที่ผลิตจริงในไลน์นั้นๆ</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -149,9 +149,9 @@
 
     </div>
 
-    <!-- ================= MODAL DETAIL POPUP ================= -->
+    <!-- ================= MODAL DETAIL & MODEL SELECTOR ================= -->
     <div id="line-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <!-- Modal Header -->
             <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950">
                 <div>
@@ -165,17 +165,24 @@
             
             <!-- Modal Body Content -->
             <div class="p-6 overflow-y-auto space-y-4">
-                <p id="modal-line-desc" class="text-xs text-slate-400"></p>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <div>
+                        <p class="text-xs text-slate-300 font-semibold">💡 กำหนดรุ่น (Model) สำหรับไลน์นี้:</p>
+                        <p class="text-[11px] text-slate-400">ติ๊กเลือก Model ที่สายการผลิตนี้รับผิดชอบ ระบบจะนำไปคำนวณ Target และ UPH อัตโนมัติ</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleAllModelsInModal(true)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all">เลือกทั้งหมด</button>
+                        <button onclick="toggleAllModelsInModal(false)" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-rose-300 px-3 py-1.5 rounded-lg transition-all">ยกเลิกทั้งหมด</button>
+                    </div>
+                </div>
                 
                 <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                    <div class="p-4 bg-slate-900/50 border-b border-slate-800 font-semibold text-xs text-slate-300">
-                        📋 รายละเอียดแผนการผลิตแยกตามรุ่น (Model) ในไลน์นี้
-                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse" id="modal-detail-table">
                             <thead>
                                 <tr class="bg-slate-900/80 text-slate-400 text-xs border-b border-slate-800" id="modal-thead">
-                                    <th class="p-3 pl-4">Product Group</th>
+                                    <th class="p-3 pl-4 text-center w-16">เลือก</th>
+                                    <th class="p-3">Product Group</th>
                                     <th class="p-3">Model</th>
                                 </tr>
                             </thead>
@@ -192,8 +199,8 @@
                 <div class="text-xs text-slate-400">
                     กำลังแสดงผลข้อมูลวันที่: <span id="modal-footer-date" class="font-bold text-amber-400">-</span>
                 </div>
-                <button onclick="closeLineModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all">
-                    ปิดหน้าต่าง
+                <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-2.5 rounded-xl transition-all shadow-lg">
+                    บันทึกและปิด
                 </button>
             </div>
         </div>
@@ -224,22 +231,23 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        // กำหนดกลุ่ม 9 Line ตามที่คุณต้องการ
+        // กำหนดกลุ่ม 9 Line พร้อม Model เริ่มต้น
         const productionLines = [
-            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", groups: ["159", "199", "TM545", "G3 ECO"] },
-            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", groups: ["TM10/12", "TM14", "TM19", "TM21"] },
-            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ", groups: [] },
-            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", groups: ["FUF14", "FUF18", "FUF22"] },
-            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", groups: ["TD 456", "TD 469", "TD 520"] },
-            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", groups: ["SBS 550", "SBS 620"] },
-            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", groups: ["BM23", "BM T-Door", "BM29", "BM T-Door (2)"] },
-            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", groups: [] },
-            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", groups: [] }
+            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", selectedModels: ["159C", "159F", "199C", "199F", "TM545#212", "TM545#235", "G3 ECO 320", "G3 ECO 350"] },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
+            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ", selectedModels: [] },
+            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
+            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
+            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", selectedModels: ["BM23", "BM23 Café", "BM23 DND", "BM T-Door 23 Café", "BM T-Door 23", "BM29", "BM29 Café", "BM29 DND", "BM T-Door 28 Café", "BM T-Door 28"] },
+            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", selectedModels: [] },
+            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", selectedModels: [] }
         ];
 
         let planDatabase = {};
         let currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
         let activeTab = 'matrix';
+        let currentActiveLineIndex = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedData(); 
@@ -368,22 +376,20 @@
 
             productionLines.forEach((line, idx) => {
                 let lineTotalTarget = 0;
-                let groupBreakdown = [];
+                let groupSummaryMap = {};
 
-                if (line.groups && line.groups.length > 0) {
-                    line.groups.forEach(groupName => {
-                        let groupObj = productStructure.find(g => g.group === groupName);
-                        let groupSum = 0;
+                // คำนวณเฉพาะ Model ที่เลือกไว้ใน Line นี้
+                if (line.selectedModels && line.selectedModels.length > 0) {
+                    line.selectedModels.forEach(modelName => {
+                        let targetVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
+                        lineTotalTarget += targetVal;
 
-                        if (groupObj) {
-                            groupObj.models.forEach(model => {
-                                if (planDatabase[model] && planDatabase[model][selectedDate]) {
-                                    groupSum += planDatabase[model][selectedDate];
-                                }
-                            });
-                        }
-                        lineTotalTarget += groupSum;
-                        groupBreakdown.push({ group: groupName, total: groupSum });
+                        // หา Product Group ของ Model นี้
+                        let parentGroup = productStructure.find(g => g.models.includes(modelName));
+                        let groupName = parentGroup ? parentGroup.group : "อื่นๆ";
+
+                        if (!groupSummaryMap[groupName]) groupSummaryMap[groupName] = 0;
+                        groupSummaryMap[groupName] += targetVal;
                     });
                 }
 
@@ -400,7 +406,6 @@
                     'border-indigo-500/30', 'border-teal-500/30', 'border-orange-500/30'
                 ];
 
-                // เพิ่ม onclick เรียกฟังก์ชัน openLineModal พร้อมส่งชื่อไลน์
                 cardsHTML += `
                     <div onclick="openLineModal(${idx})" class="bg-gradient-to-br ${colors[idx % colors.length]} border ${borderColors[idx % borderColors.length]} p-5 rounded-2xl shadow-lg flex flex-col justify-between cursor-pointer hover:scale-[1.02] hover:border-blue-400 transition-all group">
                         <div>
@@ -412,21 +417,22 @@
                             </div>
                             <p class="text-xs text-slate-400 mb-4">${line.description}</p>
                             
-                            <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
-                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดผลิตแยกตามกลุ่ม:</div>
+                            <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60 max-h-32 overflow-y-auto">
+                                <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดผลิตแยกตามกลุ่ม (ที่เลือก):</div>
                 `;
 
-                if (groupBreakdown.length > 0) {
-                    groupBreakdown.forEach(gb => {
+                let groupKeys = Object.keys(groupSummaryMap);
+                if (groupKeys.length > 0) {
+                    groupKeys.forEach(gName => {
                         cardsHTML += `
                             <div class="flex justify-between text-xs">
-                                <span class="text-slate-300">• ${gb.group}</span>
-                                <span class="font-bold text-white">${gb.total > 0 ? gb.total.toLocaleString() : '-'}</span>
+                                <span class="text-slate-300">• ${gName}</span>
+                                <span class="font-bold text-white">${groupSummaryMap[gName] > 0 ? groupSummaryMap[gName].toLocaleString() : '-'}</span>
                             </div>
                         `;
                     });
                 } else {
-                    cardsHTML += `<div class="text-xs text-slate-500 italic">รอดึงข้อมูลหรือเชื่อมโยงรุ่นการผลิต</div>`;
+                    cardsHTML += `<div class="text-xs text-slate-500 italic">ยังไม่ได้เลือกรุ่นในไลน์นี้ (คลิกเพื่อตั้งค่า)</div>`;
                 }
 
                 cardsHTML += `
@@ -450,68 +456,98 @@
             container.innerHTML = cardsHTML;
         }
 
-        // เปิด Modal รายละเอียดของ Line นั้นๆ
+        // เปิด Modal รายละเอียดและเลือก Model
         function openLineModal(lineIndex) {
+            currentActiveLineIndex = lineIndex;
             const line = productionLines[lineIndex];
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
             document.getElementById('modal-line-title').innerText = line.name;
             document.getElementById('modal-line-badge').innerText = `Line #${lineIndex + 1}`;
-            document.getElementById('modal-line-desc').innerText = line.description;
             document.getElementById('modal-footer-date').innerText = selectedDate;
 
-            // สร้างหัวตาราง Modal (แสดงวันที่ทั้งหมดที่มีในระบบ)
+            // สร้างหัวตาราง Modal
             const modalThead = document.getElementById('modal-thead');
-            let theadHTML = `<th class="p-3 pl-4">Product Group</th><th class="p-3">Model</th>`;
+            let theadHTML = `<th class="p-3 pl-4 text-center w-16">เลือก</th><th class="p-3">Product Group</th><th class="p-3">Model</th>`;
             currentDates.forEach(d => {
                 theadHTML += `<th class="p-3 text-center">${d}</th>`;
             });
-            theadHTML += `<th class="p-3 text-center bg-slate-900/90 text-cyan-300">UPH (${selectedDate})</th>`;
             modalThead.innerHTML = theadHTML;
 
-            // สร้างเนื้อหาตาราง Modal
+            // สร้างรายการ Model ทั้งหมดให้ติ๊กเลือก
             const modalTbody = document.getElementById('modal-tbody');
             let tbodyHTML = '';
 
-            if (!line.groups || line.groups.length === 0) {
-                tbodyHTML = `<tr><td colspan="${currentDates.length + 3}" class="p-6 text-center text-slate-500 italic">ไลน์นี้ยังไม่มีกลุ่มผลิตภัณฑ์ที่เชื่อมโยง</td></tr>`;
-            } else {
-                let hasData = false;
-                line.groups.forEach(groupName => {
-                    let groupObj = productStructure.find(g => g.group === groupName);
-                    if (groupObj) {
-                        groupObj.models.forEach(model => {
-                            hasData = true;
-                            tbodyHTML += `<tr class="hover:bg-slate-900/50">`;
-                            tbodyHTML += `<td class="p-3 pl-4 font-semibold text-blue-400">${groupName}</td>`;
-                            tbodyHTML += `<td class="p-3 font-medium text-slate-300">${model}</td>`;
+            productStructure.forEach(group => {
+                group.models.forEach(model => {
+                    let isChecked = line.selectedModels && line.selectedModels.includes(model);
 
-                            currentDates.forEach(date => {
-                                let val = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                                tbodyHTML += `<td class="p-3 text-center text-white font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
-                            });
+                    tbodyHTML += `<tr class="hover:bg-slate-900/50">`;
+                    tbodyHTML += `
+                        <td class="p-3 text-center">
+                            <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleModelCheckboxChange(this, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                        </td>
+                    `;
+                    tbodyHTML += `<td class="p-3 font-semibold text-blue-400">${group.group}</td>`;
+                    tbodyHTML += `<td class="p-3 font-medium text-slate-300">${model}</td>`;
 
-                            let targetOnSelected = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
-                            let uphVal = targetOnSelected > 0 && workingHours > 0 ? Math.round(targetOnSelected / workingHours) : 0;
-                            tbodyHTML += `<td class="p-3 text-center font-extrabold text-cyan-300 bg-slate-950/40">${uphVal > 0 ? uphVal.toLocaleString() : '0'}</td>`;
+                    currentDates.forEach(date => {
+                        let val = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        tbodyHTML += `<td class="p-3 text-center text-white font-bold">${val > 0 ? val.toLocaleString() : '-'}</td>`;
+                    });
 
-                            tbodyHTML += `</tr>`;
-                        });
-                    }
+                    tbodyHTML += `</tr>`;
                 });
-
-                if (!hasData) {
-                    tbodyHTML = `<tr><td colspan="${currentDates.length + 3}" class="p-6 text-center text-slate-500 italic">ยังไม่มีข้อมูลแผนการผลิตสำหรับกลุ่มผลิตภัณฑ์ในไลน์นี้</td></tr>`;
-                }
-            }
+            });
 
             modalTbody.innerHTML = tbodyHTML;
             document.getElementById('line-modal').classList.remove('hidden');
         }
 
+        function handleModelCheckboxChange(checkbox, modelName) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            if (!line.selectedModels) line.selectedModels = [];
+
+            if (checkbox.checked) {
+                if (!line.selectedModels.includes(modelName)) {
+                    line.selectedModels.push(modelName);
+                }
+            } else {
+                line.selectedModels = line.selectedModels.filter(m => m !== modelName);
+            }
+
+            // บันทึกและรีเฟรชหน้าภาพรวมทันที
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
+        function toggleAllModelsInModal(selectState) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            
+            if (selectState) {
+                line.selectedModels = [];
+                productStructure.forEach(g => {
+                    g.models.forEach(m => line.selectedModels.push(m));
+                });
+            } else {
+                line.selectedModels = [];
+            }
+
+            // อัปเดตสถานะ checkbox ในตาราง Modal
+            const checkboxes = document.querySelectorAll('#modal-tbody input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = selectState;
+            });
+
+            manualSaveDataSilent();
+            renderLineOverview();
+        }
+
         function closeLineModal() {
             document.getElementById('line-modal').classList.add('hidden');
+            renderLineOverview();
         }
 
         function handleExcelUpload(event) {
@@ -634,10 +670,21 @@
             const dataToSave = {
                 planDatabase: planDatabase,
                 currentDates: currentDates,
-                workingHours: document.getElementById('working-hours').value
+                workingHours: document.getElementById('working-hours').value,
+                productionLines: productionLines
             };
             localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
-            alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว! ข้อมูลจะไม่หายแม้รีเฟรชหน้าเว็บ');
+            alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว! ข้อมูลและการตั้งค่าจะไม่หายแม้รีเฟรชหน้าเว็บ');
+        }
+
+        function manualSaveDataSilent() {
+            const dataToSave = {
+                planDatabase: planDatabase,
+                currentDates: currentDates,
+                workingHours: document.getElementById('working-hours').value,
+                productionLines: productionLines
+            };
+            localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
         }
 
         function loadSavedData() {
@@ -649,6 +696,14 @@
                     if (parsed.currentDates) currentDates = parsed.currentDates;
                     if (parsed.workingHours) {
                         document.getElementById('working-hours').value = parsed.workingHours;
+                    }
+                    if (parsed.productionLines) {
+                        // ผสานข้อมูลการเลือก Model ของแต่ละไลน์
+                        parsed.productionLines.forEach((savedLine, idx) => {
+                            if (productionLines[idx] && savedLine.selectedModels) {
+                                productionLines[idx].selectedModels = savedLine.selectedModels;
+                            }
+                        });
                     }
                 } catch (e) {
                     console.error('Error loading saved data:', e);
