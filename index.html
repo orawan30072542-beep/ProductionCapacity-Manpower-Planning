@@ -23,6 +23,7 @@
 
     <div class="max-w-7xl mx-auto space-y-6">
         
+        <!-- Header Section & Tab Switcher -->
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
@@ -51,6 +52,7 @@
             </div>
         </header>
 
+        <!-- ================= TAB 1: OVERVIEW DASHBOARD ================= -->
         <div id="content-overview" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500">
@@ -67,6 +69,7 @@
                 </div>
             </div>
 
+            <!-- ตารางสรุปยอดผลิตแยกตาม Line การผลิต -->
             <div class="glass-panel rounded-2xl shadow-2xl overflow-hidden">
                 <div class="p-5 border-b border-blue-900/50 bg-blue-950/30 flex justify-between items-center">
                     <h2 class="text-lg font-semibold text-white">📅 ตารางสรุปยอดผลิตแยกตาม Line การผลิต (Production Line)</h2>
@@ -107,30 +110,27 @@
             </div>
         </div>
 
+        <!-- ================= TAB 2: UPLOAD & MATRIX TABLE ================= -->
         <div id="content-add-plan" class="space-y-6 hidden">
             <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-7xl mx-auto border border-blue-900/85 space-y-6">
                 
-                <div class="space-y-4">
+                <!-- ส่วนอัปโหลดไฟล์ Excel (เลือกไฟล์แล้วประมวลผลทันที) -->
+                <div>
                     <h2 class="text-xl font-bold text-white flex items-center gap-2">
                         📁 อัปโหลดไฟล์แผนผลิต (Excel)
                     </h2>
-                    <p class="text-xs text-blue-400">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อแปลงเป็นตารางสรุปรายวันตามรุ่นอัตโนมัติ</p>
+                    <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls ระบบจะทำการบันทึกและอัปเดตตารางให้อัตโนมัติทันที</p>
                     
-                    <div class="flex items-center gap-3">
-                        <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-4 cursor-pointer bg-blue-950/30 transition-all">
+                    <div class="mt-3 flex items-center gap-3">
+                        <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-6 cursor-pointer bg-blue-950/30 transition-all">
                             <span class="text-sm text-blue-300 font-medium" id="file-label-text">คลิกเพื่อเลือกไฟล์ Excel หรือลากมาวางที่นี่</span>
                             <span class="text-xs text-gray-400 mt-1">(.xlsx, .xls)</span>
-                            <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden" onchange="handleFileSelect(event)">
+                            <input type="file" id="excelFile" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
                         </label>
-                    </div>
-
-                    <div class="flex justify-end">
-                        <button type="button" onclick="processExcelUpload()" class="px-6 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition-all cursor-pointer flex items-center gap-2">
-                            💾 บันทึกข้อมูลและอัปเดตตารางด้านล่าง
-                        </button>
                     </div>
                 </div>
 
+                <!-- ส่วนแสดงผลตาราง Matrix ด้านล่างในหน้าเพิ่มแผนผลิต -->
                 <div class="space-y-3 pt-2 border-t border-blue-900/50">
                     <div class="flex justify-between items-center">
                         <h3 class="text-base font-bold text-white">📊 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้า</h3>
@@ -195,8 +195,6 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('th-TH', options);
 
-        let selectedFile = null;
-
         function switchTab(tabId) {
             const overviewContent = document.getElementById('content-overview');
             const addPlanContent = document.getElementById('content-add-plan');
@@ -258,4 +256,82 @@
             if (!existingRow) {
                 existingRow = document.createElement('tr');
                 existingRow.className = "hover:bg-blue-900/20";
-                existing
+                existingRow.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
+                        <div class="font-bold text-blue-200">${model}</div>
+                        <div class="text-[10px] text-gray-400">UPH</div>
+                    </td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                `;
+                tbody.appendChild(existingRow);
+            }
+
+            const headers = document.getElementById('matrix-table').rows[0].cells;
+            let colIndex = -1;
+            for (let i = 1; i < headers.length; i++) {
+                if (headers[i].innerText.trim() === date.trim()) {
+                    colIndex = i;
+                    break;
+                }
+            }
+
+            if (colIndex !== -1) {
+                existingRow.cells[colIndex].innerHTML = `
+                    <div class="font-bold text-white">${target.toLocaleString()}</div>
+                    <div class="text-[10px] text-blue-400">${uph}</div>
+                `;
+            }
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-label-text').innerText = `เลือกไฟล์: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonRows.length === 0) {
+                        alert('ไม่พบข้อมูลภายในไฟล์ Excel');
+                        return;
+                    }
+
+                    let count = 0;
+                    jsonRows.forEach(row => {
+                        const model = row['Model'] || row['รุ่น'] || row['Model Name'] || 'Model-A';
+                        const date = row['Date'] || row['วันที่'] || '1 ก.ย.';
+                        const target = parseInt(row['Target'] || row['Order'] || 0);
+                        const uph = parseInt(row['UPH'] || 0);
+                        const day = parseInt(row['Day'] || 0);
+                        const night = parseInt(row['Night'] || 0);
+
+                        if (target > 0 || uph > 0) {
+                            addRowToOverviewTable(model, date, target, uph, day, night);
+                            addOrUpdateMatrixRow(model, date, target, uph);
+                            count++;
+                        }
+                    });
+
+                    alert(`บันทึกและอัปเดตข้อมูลจาก Excel สำเร็จ ${count} รายการ!`);
+                } catch (error) {
+                    console.error(error);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
