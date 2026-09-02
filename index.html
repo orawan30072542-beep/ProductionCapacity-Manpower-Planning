@@ -26,7 +26,7 @@
         <header class="glass-panel p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600 gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-white tracking-wide">📊 Production Overview Dashboard</h1>
-                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตแยกตามกลุ่มสินค้า (Order, UPH & Shifts)</p>
+                <p class="text-sm text-blue-400 mt-1">ระบบสรุปยอดผลิตแยกตาม Line การผลิต (Order, UPH & Shifts)</p>
             </div>
             
             <div class="flex flex-col md:flex-row items-center gap-4">
@@ -110,12 +110,12 @@
         <div id="content-add-plan" class="space-y-6 hidden">
             <div class="glass-panel p-6 rounded-2xl shadow-2xl max-w-7xl mx-auto border border-blue-900/85 space-y-6">
                 
-                <div class="pb-2 space-y-5">
+                <div class="border-b border-blue-900/50 pb-5 space-y-5">
                     <div>
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
                             📁 อัปโหลดไฟล์แผนผลิต (Excel)
                         </h2>
-                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อนำเข้าข้อมูลแผนผลิต</p>
+                        <p class="text-xs text-blue-400 mt-1">อัปโหลดไฟล์ฟอร์แมต .xlsx หรือ .xls เพื่อแปลงเป็นตารางสรุปรายวันตามรุ่นอัตโนมัติ</p>
                         
                         <div class="mt-3 flex items-center gap-3">
                             <label class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-blue-800 hover:border-blue-500 rounded-xl p-4 cursor-pointer bg-blue-950/30 transition-all">
@@ -128,7 +128,7 @@
 
                     <div>
                         <h2 class="text-xl font-bold text-white">📝 ฟอร์มเพิ่ม / บันทึกแผนการผลิตแต่ละรุ่น</h2>
-                        <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่น</p>
+                        <p class="text-xs text-blue-400 mt-1">กรอกรายละเอียดแผนการผลิตรายวันและแยกกะ (Day / Night Shift) ตามรุ่นสินค้า</p>
                     </div>
 
                     <form id="planForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
@@ -173,6 +173,61 @@
                     </form>
                 </div>
 
+                <div class="space-y-3 pt-2">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-base font-bold text-white">📊 สรุปยอดผลิตรายวัน — ตามกลุ่มสินค้า</h3>
+                        <span class="text-xs text-gray-400">ยอดที่ต้องผลิต (Order) และอัตราต่อชั่วโมง (UPH) ของแต่ละกลุ่มสินค้าในแต่ละวัน</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-blue-900/60 bg-blue-950/20">
+                        <table class="w-full text-left border-collapse text-xs" id="matrix-table">
+                            <thead>
+                                <tr class="bg-blue-950/90 text-blue-300 uppercase border-b border-blue-900">
+                                    <th class="py-3 px-4 font-semibold sticky left-0 bg-blue-950 z-10">วันที่ / รุ่นสินค้า</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">20 ส.ค.</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">21 ส.ค.</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">22 ส.ค.</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">1 ก.ย.</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">2 ก.ย.</th>
+                                    <th class="py-3 px-3 text-center border-l border-blue-900/50">3 ก.ย.</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-950 text-gray-300" id="matrix-tbody">
+                                <tr class="hover:bg-blue-900/20">
+                                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
+                                        <div class="font-bold text-blue-200">One Door</div>
+                                        <div class="text-[10px] text-gray-400">UPH</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,150</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,150</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,150</div>
+                                        <div class="text-[10px] text-blue-400">52</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,300</div>
+                                        <div class="text-[10px] text-blue-400">59</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,253</div>
+                                        <div class="text-[10px] text-blue-400">57</div>
+                                    </td>
+                                    <td class="py-3 px-3 text-center border-l border-blue-900/30">
+                                        <div class="font-bold text-white">1,087</div>
+                                        <div class="text-[10px] text-blue-400">49</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -212,8 +267,9 @@
             const night = parseInt(document.getElementById('nightShift').value) || 0;
             
             addRowToOverviewTable(model, date, target, uph, day, night);
+            addOrUpdateMatrixRow(model, date, target, uph);
 
-            alert('บันทึกข้อมูลแผนผลิตสำเร็จและส่งข้อมูลเข้าหน้า Overview แล้ว!');
+            alert('บันทึกข้อมูลแผนผลิตสำเร็จ!');
             document.getElementById('planForm').reset();
         }
 
@@ -241,6 +297,54 @@
                 </td>
             `;
             tbody.appendChild(newRow);
+        }
+
+        function addOrUpdateMatrixRow(model, date, target, uph) {
+            const tbody = document.getElementById('matrix-tbody');
+            let existingRow = null;
+
+            const rows = tbody.getElementsByTagName('tr');
+            for (let r of rows) {
+                const modelText = r.cells[0].innerText;
+                if (modelText.includes(model)) {
+                    existingRow = r;
+                    break;
+                }
+            }
+
+            if (!existingRow) {
+                existingRow = document.createElement('tr');
+                existingRow.className = "hover:bg-blue-900/20";
+                existingRow.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-white sticky left-0 bg-[#0f172a] z-10">
+                        <div class="font-bold text-blue-200">${model}</div>
+                        <div class="text-[10px] text-gray-400">UPH</div>
+                    </td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                    <td class="py-3 px-3 text-center border-l border-blue-900/30 text-gray-500">-</td>
+                `;
+                tbody.appendChild(existingRow);
+            }
+
+            const headers = document.getElementById('matrix-table').rows[0].cells;
+            let colIndex = -1;
+            for (let i = 1; i < headers.length; i++) {
+                if (headers[i].innerText.trim() === date.trim()) {
+                    colIndex = i;
+                    break;
+                }
+            }
+
+            if (colIndex !== -1) {
+                existingRow.cells[colIndex].innerHTML = `
+                    <div class="font-bold text-white">${target.toLocaleString()}</div>
+                    <div class="text-[10px] text-blue-400">${uph}</div>
+                `;
+            }
         }
 
         function handleExcelUpload(event) {
@@ -274,6 +378,7 @@
 
                         if (target > 0 || uph > 0) {
                             addRowToOverviewTable(model, date, target, uph, day, night);
+                            addOrUpdateMatrixRow(model, date, target, uph);
                             count++;
                         }
                     });
