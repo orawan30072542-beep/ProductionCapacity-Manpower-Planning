@@ -11,40 +11,43 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-[#090d16] text-slate-100 min-h-screen selection:bg-blue-600 selection:text-white p-4 md:p-8">
 
     <div class="max-w-7xl mx-auto space-y-6">
         
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl gap-4">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-2xl gap-4 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-blue-600 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-sm mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (กำหนดชิ้นส่วนย่อยอิสระ)</p>
+                <p class="text-slate-400 text-xs mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (กำหนดชิ้นส่วนย่อยอิสระ)</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
-                <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
-                    <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg">
+                <div class="bg-[#090d16] p-1.5 rounded-xl border border-blue-950/80 flex items-center gap-1 shadow-inner">
+                    <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
                         📋 Matrix View
                     </button>
-                    <button onclick="switchTab('overview')" id="tab-btn-overview" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                    <button onclick="switchTab('overview')" id="tab-btn-overview" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
                         🏢 Line Overview
                     </button>
-                    <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                    <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
                         ⚙️ จัดการชิ้นส่วน & KPI
                     </button>
                 </div>
 
-                <div class="flex items-center gap-1.5 text-emerald-400 text-xs font-medium bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800">
+                <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-[#090d16] px-4 py-2.5 rounded-xl border border-blue-950/80 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ระบบพร้อมใช้งาน
                 </div>
             </div>
         </header>
 
+        <!-- Page Matrix -->
         <div id="page-matrix" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
                             📁 อัปโหลดไฟล์แผนผลิต (Excel)
@@ -52,10 +55,10 @@
                         <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
                     </div>
                     
-                    <div class="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-slate-950/50 group">
+                    <div class="relative border-2 border-dashed border-blue-900/40 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-[#090d16]/50 group">
                         <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
                         <div class="flex flex-col items-center justify-center space-y-2">
-                            <svg class="w-8 h-8 text-slate-400 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-blue-400/70 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
                             <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
@@ -64,7 +67,7 @@
                     </div>
                 </div>
 
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
                             ⚙️ ตั้งค่าและการบันทึกข้อมูล
@@ -77,17 +80,17 @@
                             <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
                             <div class="flex items-center gap-3">
                                 <input type="number" id="working-hours" value="8" min="1" max="24" step="0.5" 
-                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500"
+                                    class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500 transition-colors"
                                     onchange="recalculateAll()">
                                 <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-2 pt-2">
-                            <button onclick="manualSaveData()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                            <button onclick="manualSaveData()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2">
                                 💾 บันทึกข้อมูล
                             </button>
-                            <button onclick="clearSavedData()" class="bg-rose-900/40 hover:bg-rose-900 text-rose-300 font-semibold text-xs py-3 px-4 rounded-xl border border-rose-800 transition-all" title="ล้างข้อมูลที่บันทึกไว้">
+                            <button onclick="clearSavedData()" class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 font-semibold text-xs py-3 px-4 rounded-xl border border-rose-900/60 transition-all" title="ล้างข้อมูลที่บันทึกไว้">
                                 🗑️ ล้างข้อมูล
                             </button>
                         </div>
@@ -95,29 +98,30 @@
                 </div>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+            <div class="bg-[#0e1626] border border-blue-950/60 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-6 border-b border-blue-950/60 flex justify-between items-center bg-blue-950/20">
                     <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น</h3>
-                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
+                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Data Grid</span>
                 </div>
                 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse" id="matrix-table">
                         <thead>
-                            <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="matrix-thead">
+                            <tr class="bg-[#090d16] text-slate-400 text-xs border-b border-blue-950/60" id="matrix-thead">
                                 <th class="p-3.5 pl-6">Product Group</th>
                                 <th class="p-3.5">Model</th>
                             </tr>
                         </thead>
-                        <tbody id="matrix-tbody" class="divide-y divide-slate-800/60 text-sm">
+                        <tbody id="matrix-tbody" class="divide-y divide-blue-950/40 text-sm">
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- Page Overview -->
         <div id="page-overview" class="space-y-6 hidden">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
@@ -125,7 +129,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
-                        <select id="overview-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
+                        <select id="overview-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
                         </select>
                     </div>
                 </div>
@@ -135,16 +139,17 @@
             </div>
         </div>
 
+        <!-- Page Parts Config -->
         <div id="page-partsconfig" class="space-y-6 hidden">
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+            <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ</p>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ[cite: 3]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
-                        <select id="config-date-select" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
+                        <select id="config-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
                         </select>
                     </div>
                 </div>
@@ -153,15 +158,15 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                    <div class="bg-[#090d16] border border-blue-950/60 p-4 rounded-xl space-y-3">
                         <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">📋 เลือกรุ่นสินค้า (Models)</h3>
-                        <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2" id="model-selector-list">
+                        <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar" id="model-selector-list">
                         </div>
                     </div>
 
-                    <div class="lg:col-span-2 bg-slate-950 border border-slate-800 p-6 rounded-xl space-y-6 flex flex-col justify-between">
+                    <div class="lg:col-span-2 bg-[#090d16] border border-blue-950/60 p-6 rounded-xl space-y-6 flex flex-col justify-between">
                         <div>
-                            <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+                            <div class="flex justify-between items-center pb-4 border-b border-blue-950/60 mb-4">
                                 <div>
                                     <span class="text-[10px] text-blue-400 font-mono bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">Active Model</span>
                                     <h3 id="active-model-title" class="text-xl font-extrabold text-white mt-1">-</h3>
@@ -172,22 +177,22 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมระบุจำนวน</p>
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมระบุจำนวน[cite: 3]</p>
 
-                            <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2" id="active-model-parts-editor">
+                            <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar" id="active-model-parts-editor">
                             </div>
                         </div>
 
-                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between flex-wrap gap-3">
+                        <div class="pt-4 border-t border-blue-950/60 flex items-center justify-between flex-wrap gap-3">
                             <div class="flex items-center gap-2">
-                                <button onclick="addNewPartToActiveModel()" class="bg-slate-800 hover:bg-slate-700 text-blue-300 text-xs font-semibold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                                <button onclick="addNewPartToActiveModel()" class="bg-blue-950 hover:bg-blue-900 text-blue-300 text-xs font-semibold px-4 py-2.5 rounded-xl transition-all border border-blue-800/50 flex items-center gap-2">
                                     + เพิ่มชิ้นส่วนย่อยใหม่
                                 </button>
-                                <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-900/50 hover:bg-indigo-900 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-800 transition-all">
-                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน (Door Metal, Glass, Bottom, Back)
+                                <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-900/60 transition-all">
+                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน (Door Metal, Glass, Bottom, Back)[cite: 3]
                                 </button>
                             </div>
-                            <button onclick="saveActiveModelConfig()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all">
+                            <button onclick="saveActiveModelConfig()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all">
                                 บันทึกการเปลี่ยนแปลงรุ่นนี้
                             </button>
                         </div>
@@ -198,8 +203,9 @@
 
     </div>
 
-    <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
-        <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
+    <!-- Line Fullscreen Modal -->
+    <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-[#090d16] hidden">
+        <div class="px-6 py-4 border-b border-blue-950/60 bg-[#0e1626] flex justify-between items-center shadow-xl">
             <div class="flex items-center gap-3">
                 <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
                 <div>
@@ -209,24 +215,24 @@
             </div>
             
             <div class="flex items-center gap-4">
-                <div class="text-xs text-slate-300 bg-slate-950 px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2">
+                <div class="text-xs text-slate-300 bg-[#090d16] px-4 py-2 rounded-xl border border-blue-950 flex items-center gap-2">
                     <span>กำลังแสดงข้อมูลวันที่:</span>
                     <span id="modal-footer-date" class="font-bold text-amber-400">-</span>
                 </div>
-                <button onclick="closeLineModal()" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg flex items-center gap-2">
+                <button onclick="closeLineModal()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 font-semibold text-xs px-5 py-2.5 rounded-xl border border-rose-900/60 transition-all shadow-lg flex items-center gap-2">
                     ✕ ปิดหน้าจอ / บันทึก
                 </button>
             </div>
         </div>
         
-        <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full" id="modal-body-content">
+        <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full custom-scrollbar" id="modal-body-content">
         </div>
 
-        <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-between items-center px-8">
+        <div class="p-4 bg-[#0e1626] border-t border-blue-950/60 flex justify-between items-center px-8">
             <div class="text-xs text-slate-400">
                 ระบบจัดการสายการผลิตอัจฉริยะ (Production Line Multi-Part View)
             </div>
-            <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition-all shadow-lg">
+            <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-blue-600/30 transition-all">
                 บันทึกและกลับสู่หน้าหลัก
             </button>
         </div>
@@ -292,7 +298,6 @@
         let modelSubParts = {};
         let activeSelectedModelForConfig = "159C";
 
-        // โครงสร้างชิ้นส่วนย่อยเริ่มต้นตามที่ผู้ใช้กำหนด (รองรับ Door: Metal/Glass, 1/2/4 Doors, Back/Bottom plate)[cite: 3]
         function initDefaultSubParts() {
             productStructure.forEach(g => {
                 g.models.forEach(m => {
@@ -334,23 +339,23 @@
             const pageOverview = document.getElementById('page-overview');
             const pagePartsConfig = document.getElementById('page-partsconfig');
 
-            btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-            btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-            btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+            btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40";
+            btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40";
+            btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40";
             
             pageMatrix.classList.add('hidden');
             pageOverview.classList.add('hidden');
             pagePartsConfig.classList.add('hidden');
 
             if (tabName === 'matrix') {
-                btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                btnMatrix.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 pageMatrix.classList.remove('hidden');
             } else if (tabName === 'overview') {
-                btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                btnOverview.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 pageOverview.classList.remove('hidden');
                 renderLineOverview();
             } else if (tabName === 'partsconfig') {
-                btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg";
+                btnPartsConfig.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 pagePartsConfig.classList.remove('hidden');
                 renderPartsConfigPage();
             }
@@ -409,7 +414,7 @@
             dates.forEach(date => {
                 let t = dailyTotals[date];
                 tbodyHTML += `
-                    <td class="p-3.5 text-center bg-blue-900/20 border-l border-slate-800/40">
+                    <td class="p-3.5 text-center bg-blue-900/20 border-l border-blue-950/60">
                         <div class="text-amber-400 font-extrabold">${t.target > 0 ? t.target.toLocaleString() : '-'}</div>
                         <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${t.uph > 0 ? t.uph.toLocaleString() : '0'}</div>
                     </td>
@@ -419,10 +424,10 @@
 
             productStructure.forEach(group => {
                 group.models.forEach((model, index) => {
-                    tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors" data-model="${model}">`;
+                    tbodyHTML += `<tr class="hover:bg-blue-950/20 transition-colors" data-model="${model}">`;
                     
                     if (index === 0) {
-                        tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
+                        tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle bg-[#0e1626]/40" rowspan="${group.models.length}">${group.group}</td>`;
                     }
                     
                     tbodyHTML += `
@@ -436,7 +441,7 @@
                         let calculatedUph = baseVal > 0 && workingHours > 0 ? Math.round(baseVal / workingHours) : 0;
 
                         tbodyHTML += `
-                            <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
+                            <td class="p-3.5 text-center bg-[#090d16]/30 border-l border-blue-950/40">
                                 <div class="font-bold text-white">${baseVal > 0 ? baseVal.toLocaleString() + ' ชิ้น' : '-'}</div>
                                 <div class="text-[10px] text-blue-400">UPH: ${calculatedUph}</div>
                             </td>
@@ -492,7 +497,7 @@
                                 if (p.doorMaterial === 'Door Glass') {
                                     totalDoorGlassParts += partQty;
                                 } else {
-                                    totalDoorMetalParts += partQty; // Door Metal ส่งเข้า KPI Card Press Machine[cite: 3]
+                                    totalDoorMetalParts += partQty;
                                 }
                             } else {
                                 totalOtherParts += partQty;
@@ -509,28 +514,28 @@
             const kpiContainer = document.getElementById('kpi-cards-container');
             if (kpiContainer) {
                 kpiContainer.innerHTML = `
-                    <div class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div class="bg-[#090d16] border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
                         <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
                         <div>
                             <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
                             <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div class="bg-[#090d16] border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)[cite: 3]</span>
                             <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphPress.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div class="bg-[#090d16] border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
                         <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door[cite: 3]</span>
                             <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphGlass.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div class="bg-[#090d16] border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
                         <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
                         <div>
                             <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)</span>
@@ -548,12 +553,12 @@
                         let isSelected = (activeSelectedModelForConfig === model);
                         let mult = getMultiplier(model);
                         listHTML += `
-                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow' : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800'}">
+                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg' : 'bg-[#0e1626] border-blue-950/60 text-slate-300 hover:bg-blue-950/30'}">
                                 <div>
                                     <span class="text-[10px] text-slate-400 block">${group.group}</span>
                                     <span class="font-bold text-xs">${model}</span>
                                 </div>
-                                <span class="text-xs font-mono bg-slate-950 px-2.5 py-1 rounded-lg text-amber-400 border border-slate-800">x${mult}</span>
+                                <span class="text-xs font-mono bg-[#090d16] px-2.5 py-1 rounded-lg text-amber-400 border border-blue-950">x${mult}</span>
                             </div>
                         `;
                     });
@@ -593,45 +598,45 @@
                 let isDoor = (part.type === 'Door');
                 
                 html += `
-                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <div class="bg-[#0e1626] p-4 rounded-xl border border-blue-950/60 space-y-3 shadow-inner">
                         <div class="flex items-center justify-between gap-2 flex-wrap">
                             <div class="flex items-center gap-2">
-                                <span class="w-6 h-6 rounded-lg bg-slate-950 flex items-center justify-center text-xs font-bold text-slate-400">${pIdx + 1}</span>
-                                <select onchange="updatePartMainType('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs font-bold">
+                                <span class="w-6 h-6 rounded-lg bg-[#090d16] flex items-center justify-center text-xs font-bold text-slate-400 border border-blue-950">${pIdx + 1}</span>
+                                <select onchange="updatePartMainType('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
                                     <option value="Door" ${part.type === 'Door' ? 'selected' : ''}>🚪 Door (ประตู)</option>
                                     <option value="Back Plate" ${part.type === 'Back Plate' ? 'selected' : ''}>🛡️ Back Plate</option>
                                     <option value="Bottom Plate" ${part.type === 'Bottom Plate' ? 'selected' : ''}>📦 Bottom Plate</option>
                                 </select>
                             </div>
                             
-                            <button onclick="removeActiveModelPart(${pIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-900/50">🗑️ ลบชิ้นส่วน</button>
+                            <button onclick="removeActiveModelPart(${pIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-900/50 transition-colors">🗑️ ลบชิ้นส่วน</button>
                         </div>
 
                         ${isDoor ? `
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/60">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-blue-950/40">
                                 <div>
                                     <label class="block text-[10px] text-slate-400 mb-1">จำนวนบานประตู:</label>
-                                    <select onchange="updateDoorCount('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs">
+                                    <select onchange="updateDoorCount('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-blue-500">
                                         <option value="1Door" ${part.doorCount === '1Door' ? 'selected' : ''}>1 ประตู (Ratio = 1)</option>
                                         <option value="2Door" ${part.doorCount === '2Door' ? 'selected' : ''}>2 ประตู (Ratio = 2)</option>
                                         <option value="4Door" ${part.doorCount === '4Door' ? 'selected' : ''}>4 ประตู (Ratio = 4)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] text-slate-400 mb-1">ประเภทวัสดุประตู (KPI Destination):</label>
-                                    <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs font-semibold ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
-                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine[cite: 3]</option>
-                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door[cite: 3]</option>
+                                    <label class="block text-[10px] text-slate-400 mb-1">ประเภทวัสดุประตู (KPI Destination):[cite: 3]</label>
+                                    <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs font-semibold focus:outline-none focus:border-blue-500 ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
+                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine</option>
+                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door</option>
                                     </select>
                                 </div>
                             </div>
                         ` : ''}
 
-                        <div class="flex items-center gap-3 pt-2 border-t border-slate-800/60">
-                            <input type="text" value="${part.name}" placeholder="ชื่อชิ้นส่วนย่อยแสดงผล" onchange="updatePartNameText('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs">
+                        <div class="flex items-center gap-3 pt-2 border-t border-blue-950/40">
+                            <input type="text" value="${part.name}" placeholder="ชื่อชิ้นส่วนย่อยแสดงผล" onchange="updatePartNameText('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="flex-1 bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-blue-500">
                             <div class="flex items-center gap-1.5 shrink-0">
                                 <span class="text-xs text-slate-400">Ratio:</span>
-                                <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updatePartRatioVal('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-20 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-white text-center font-bold text-xs">
+                                <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updatePartRatioVal('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-20 bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1.5 text-white text-center font-bold text-xs focus:outline-none focus:border-blue-500">
                             </div>
                         </div>
                     </div>
@@ -770,29 +775,25 @@
 
                 let lineUph = workingHours > 0 ? Math.round(lineTotalTargetParts / workingHours) : 0;
                 let colors = [
-                    'from-blue-500/20 to-indigo-500/20', 'from-emerald-500/20 to-teal-500/20', 
-                    'from-amber-500/20 to-orange-500/20', 'from-purple-500/20 to-pink-500/20', 
-                    'from-cyan-500/20 to-blue-500/20', 'from-rose-500/20 to-red-500/20',
-                    'from-indigo-500/20 to-purple-500/20', 'from-teal-500/20 to-emerald-500/20', 'from-orange-500/20 to-amber-500/20'
-                ];
-                let borderColors = [
-                    'border-blue-500/30', 'border-emerald-500/30', 'border-amber-500/30', 
-                    'border-purple-500/30', 'border-cyan-500/30', 'border-rose-500/30',
-                    'border-indigo-500/30', 'border-teal-500/30', 'border-orange-500/30'
+                    'from-blue-950/40 to-indigo-950/40 border-blue-900/40', 
+                    'from-slate-900 to-blue-950/30 border-blue-900/40', 
+                    'from-indigo-950/30 to-slate-900 border-indigo-900/40', 
+                    'from-blue-950/30 to-slate-900 border-blue-900/40', 
+                    'from-slate-900 to-indigo-950/40 border-indigo-900/40'
                 ];
 
                 cardsHTML += `
-                    <div onclick="openLineModal(${idx})" class="bg-gradient-to-br ${colors[idx % colors.length]} border ${borderColors[idx % borderColors.length]} p-5 rounded-2xl shadow-xl flex flex-col justify-between cursor-pointer hover:scale-[1.02] hover:border-blue-400 transition-all group">
+                    <div onclick="openLineModal(${idx})" class="bg-gradient-to-br ${colors[idx % colors.length]} p-5 rounded-2xl shadow-xl flex flex-col justify-between cursor-pointer hover:scale-[1.01] hover:border-blue-500 transition-all group border">
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-base text-slate-100 flex items-center gap-2 group-hover:text-blue-300 transition-colors">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span> ${line.name}
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500"></span> ${line.name}
                                 </h3>
-                                <span class="text-[10px] bg-slate-950/60 px-2.5 py-1 rounded-full text-slate-300 font-mono">Line #${idx + 1}</span>
+                                <span class="text-[10px] bg-[#090d16] px-2.5 py-1 rounded-full text-slate-300 font-mono border border-blue-950">Line #${idx + 1}</span>
                             </div>
                             <p class="text-xs text-slate-400 mb-4">${line.description}</p>
                             
-                            <div class="space-y-1.5 mb-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60 max-h-32 overflow-y-auto">
+                            <div class="space-y-1.5 mb-4 bg-[#090d16]/60 p-3 rounded-xl border border-blue-950/60 max-h-32 overflow-y-auto custom-scrollbar">
                                 <div class="text-[11px] text-slate-400 font-semibold mb-1">ยอดรวมชิ้นส่วนย่อย:</div>
                 `;
 
@@ -814,7 +815,7 @@
                             </div>
                         </div>
 
-                        <div class="pt-3 border-t border-slate-800/80 flex justify-between items-center bg-slate-950/60 px-4 py-3 rounded-xl">
+                        <div class="pt-3 border-t border-blue-950/60 flex justify-between items-center bg-[#090d16]/80 px-4 py-3 rounded-xl">
                             <div>
                                 <span class="text-[10px] text-slate-400 block">รวมชิ้นส่วน (${selectedDate})</span>
                                 <span class="text-lg font-extrabold text-amber-400">${lineTotalTargetParts > 0 ? lineTotalTargetParts.toLocaleString() : '-'}</span>
@@ -850,17 +851,17 @@
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
             if (tab === 'target') {
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
             } else if (tab === 'parts') {
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
             } else {
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
                 btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
                 container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
@@ -881,19 +882,19 @@
             if (line.hasSubMachines) {
                 if (selectedSubMachineIndex === null) {
                     contentHTML += `
-                        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
+                        <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 flex justify-between items-center shadow-xl">
                             <div>
                                 <p class="text-sm text-blue-400 font-bold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
                                 <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละกลุ่ม</p>
                             </div>
-                            <span class="text-xs bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full border border-purple-500/30 font-semibold">3 Machine Groups</span>
+                            <span class="text-xs bg-blue-600/20 text-blue-300 px-4 py-2 rounded-full border border-blue-500/30 font-semibold">3 Machine Groups</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     `;
 
                     line.subMachines.forEach((sub, subIdx) => {
                         let modelCount = sub.selectedModels ? sub.selectedModels.length : 0;
-                        let subColors = ['border-purple-500/40 bg-purple-950/20 text-purple-300', 'border-blue-500/40 bg-blue-950/20 text-blue-300', 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300'];
+                        let subColors = ['border-blue-900/60 bg-[#0e1626] text-blue-300', 'border-indigo-900/60 bg-[#0e1626] text-indigo-300', 'border-sky-900/60 bg-[#0e1626] text-sky-300'];
 
                         let subTargetPartsSum = 0;
                         if (sub.selectedModels) {
@@ -904,15 +905,15 @@
                         }
 
                         contentHTML += `
-                            <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${subColors[subIdx % subColors.length]} p-6 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all shadow-xl flex flex-col justify-between group bg-slate-900">
+                            <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${subColors[subIdx % subColors.length]} p-6 rounded-2xl cursor-pointer hover:scale-[1.01] hover:border-blue-500 transition-all shadow-xl flex flex-col justify-between group">
                                 <div>
                                     <div class="flex justify-between items-start mb-3">
-                                        <span class="font-bold text-base text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
-                                        <span class="text-[11px] bg-slate-950 px-3 py-1 rounded-full text-slate-300 font-medium">${modelCount} รุ่น</span>
+                                        <span class="font-bold text-base text-white group-hover:text-blue-300 transition-colors">⚙️ ${sub.name}</span>
+                                        <span class="text-[11px] bg-[#090d16] px-3 py-1 rounded-full text-slate-300 font-medium border border-blue-950">${modelCount} รุ่น</span>
                                     </div>
 
                                     <div class="my-4 space-y-3">
-                                        <div class="bg-slate-950 border border-amber-500/30 p-3 rounded-xl flex items-center gap-3">
+                                        <div class="bg-[#090d16] border border-blue-950 p-3 rounded-xl flex items-center gap-3">
                                             <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xs text-amber-400 font-bold">🎯</div>
                                             <div>
                                                 <p class="text-[10px] text-slate-400 font-medium">รวมชิ้นส่วนผลิต (${selectedDate})</p>
@@ -921,7 +922,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-5 pt-3 border-t border-slate-800 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
+                                <div class="mt-5 pt-3 border-t border-blue-950/60 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
                                     ตั้งค่าชิ้นส่วนย่อยและเป้าหมาย ➔
                                 </div>
                             </div>
@@ -934,17 +935,17 @@
                     if (!sub.processes) sub.processes = [];
 
                     contentHTML += `
-                        <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
+                        <div class="flex items-center justify-between bg-[#0e1626] p-5 rounded-2xl border border-blue-950/60 flex-wrap gap-4 shadow-xl">
                             <div class="flex items-center gap-4">
-                                <button onclick="backToSubMachineList()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
+                                <button onclick="backToSubMachineList()" class="bg-[#090d16] hover:bg-blue-950/60 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all border border-blue-950 flex items-center gap-1.5">
                                     ⬅️ กลับหน้าเลือกกลุ่มเครื่อง
                                 </button>
-                                <div class="border-l border-slate-700 pl-4">
+                                <div class="border-l border-blue-950 pl-4">
                                     <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
                                 </div>
                             </div>
 
-                            <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
+                            <div class="bg-[#090d16] p-1.5 rounded-xl border border-blue-950 flex items-center gap-1">
                                 <button onclick="switchSubMachineSubTab('target')" id="subtab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'target' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
                                     🎯 กรอกเป้าหมาย (${selectedDate})
                                 </button>
@@ -967,23 +968,23 @@
                         contentHTML += generatePartsConfigTableHTML(sub.selectedModels);
                     } else if (subMachineSubTab === 'process') {
                         contentHTML += `
-                            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6 shadow-xl">
+                            <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-6 shadow-xl">
                                 <div class="flex justify-between items-center">
                                     <span class="text-sm font-bold text-slate-200">🛠️ กระบวนการทำงานและเวลา (${sub.name})</span>
-                                    <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition-all">+ เพิ่มกระบวนการ</button>
+                                    <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-600/30 transition-all">+ เพิ่มกระบวนการ</button>
                                 </div>
-                                <div class="space-y-3 max-h-[55vh] overflow-y-auto">
+                                <div class="space-y-3 max-h-[55vh] overflow-y-auto custom-scrollbar">
                         `;
                         if (sub.processes.length > 0) {
                             sub.processes.forEach((proc, pIdx) => {
                                 contentHTML += `
-                                    <div class="flex items-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                                        <input type="text" value="${proc.name}" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white">
+                                    <div class="flex items-center gap-4 bg-[#090d16] p-4 rounded-xl border border-blue-950/60">
+                                        <input type="text" value="${proc.name}" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-[#0e1626] border border-blue-950 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-blue-500">
                                         <div class="flex items-center gap-2">
-                                            <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white text-center font-bold">
+                                            <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-32 bg-[#0e1626] border border-blue-950 rounded-xl px-4 py-3 text-xs text-white text-center font-bold focus:outline-none focus:border-blue-500">
                                             <span class="text-xs text-slate-400">วินาที/ชิ้น</span>
                                         </div>
-                                        <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 p-3 rounded-xl bg-rose-950/40">🗑️</button>
+                                        <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 p-3 rounded-xl bg-rose-950/40 border border-rose-900/50">🗑️</button>
                                     </div>
                                 `;
                             });
@@ -997,13 +998,13 @@
                 }
             } else {
                 contentHTML += `
-                    <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
+                    <div class="flex items-center justify-between bg-[#0e1626] p-5 rounded-2xl border border-blue-950/60 flex-wrap gap-4 shadow-xl">
                         <div>
                             <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${line.name}</p>
                             <p class="text-xs text-slate-400 mt-0.5">กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิตสำหรับวันที่ <span class="text-amber-400 font-bold">${selectedDate}</span></p>
                         </div>
-                        <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
-                            <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow">
+                        <div class="bg-[#090d16] p-1.5 rounded-xl border border-blue-950 flex items-center gap-1">
+                            <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
                                 🎯 กรอกเป้าหมายผลิต
                             </button>
                             <button onclick="switchLineSubTab('parts')" id="linetab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
@@ -1032,18 +1033,18 @@
         function generateTargetInputTableHTML(selectedModels, dateStr) {
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             let html = `
-                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
-                    <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl">
+                    <div class="flex justify-between items-center bg-[#090d16] p-4 rounded-xl border border-blue-950">
                         <div>
                             <span class="text-xs font-bold text-slate-200">🎯 กรอกเป้าหมายจำนวนรุ่น ประจำวันที่: <span class="text-amber-400">${dateStr}</span></span>
                         </div>
                     </div>
                     
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto">
+                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden">
+                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                    <tr class="bg-[#0e1626] text-slate-400 text-xs border-b border-blue-950/60 sticky top-0">
                                         <th class="p-3.5 pl-6">Product Group</th>
                                         <th class="p-3.5">Model</th>
                                         <th class="p-3.5 text-center">เป้าหมายรุ่น</th>
@@ -1051,7 +1052,7 @@
                                         <th class="p-3.5 text-center">UPH รวม</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-800/50 text-xs">
+                                <tbody class="divide-y divide-blue-950/40 text-xs">
             `;
 
             if (!selectedModels || selectedModels.length === 0) {
@@ -1066,7 +1067,7 @@
                     let calcUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
 
                     html += `
-                        <tr class="hover:bg-slate-900/50">
+                        <tr class="hover:bg-blue-950/20">
                             <td class="p-3.5 pl-6 font-semibold text-blue-400">${groupName}</td>
                             <td class="p-3.5 font-medium text-slate-300">
                                 <div>${model}</div>
@@ -1074,7 +1075,7 @@
                             <td class="p-3.5 text-center">
                                 <input type="number" min="0" value="${currentTarget > 0 ? currentTarget : ''}" placeholder="0" 
                                     onchange="updateModelTargetValue('${model}', '${dateStr}', this.value)" 
-                                    class="w-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-center text-white font-bold focus:outline-none focus:border-blue-500">
+                                    class="w-32 bg-[#090d16] border border-blue-950 rounded-xl px-4 py-2 text-center text-white font-bold focus:outline-none focus:border-blue-500">
                             </td>
                             <td class="p-3.5 text-center font-bold text-amber-400" id="total-parts-${model}">
                                 ${totalPartsVal > 0 ? totalPartsVal.toLocaleString() + ' ชิ้น' : '-'}
@@ -1099,25 +1100,25 @@
 
         function generatePartsConfigTableHTML(selectedModels) {
             let html = `
-                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center flex-wrap gap-2">
+                <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl">
+                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950 flex justify-between items-center flex-wrap gap-2">
                         <div>
                             <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น[cite: 3]</span>
                             <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู[cite: 3]</p>
                         </div>
                     </div>
                     
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto">
+                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden">
+                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                    <tr class="bg-[#0e1626] text-slate-400 text-xs border-b border-blue-950/60 sticky top-0">
                                         <th class="p-3.5 pl-6 w-44">Model</th>
                                         <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)[cite: 3]</th>
                                         <th class="p-3.5 text-center w-32">ตัวคูณรวม</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-800/50 text-xs">
+                                <tbody class="divide-y divide-blue-950/40 text-xs">
             `;
 
             if (!selectedModels || selectedModels.length === 0) {
@@ -1133,7 +1134,7 @@
                     let mult = getMultiplier(model);
 
                     html += `
-                        <tr class="hover:bg-slate-900/50 align-top">
+                        <tr class="hover:bg-blue-950/20 align-top">
                             <td class="p-4 pl-6 font-bold text-blue-400 pt-5">${model}</td>
                             <td class="p-3">
                                 <div class="space-y-3">
@@ -1142,24 +1143,24 @@
                     partsList.forEach((part, pIdx) => {
                         let isDoor = (part.type === 'Door');
                         html += `
-                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <div class="bg-[#090d16] p-3 rounded-xl border border-blue-950/60 space-y-2">
                                 <div class="flex items-center justify-between gap-2 flex-wrap">
-                                    <select onchange="updatePartMainTypeModal('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs font-bold">
+                                    <select onchange="updatePartMainTypeModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
                                         <option value="Door" ${part.type === 'Door' ? 'selected' : ''}>🚪 Door</option>
                                         <option value="Back Plate" ${part.type === 'Back Plate' ? 'selected' : ''}>🛡️ Back Plate</option>
                                         <option value="Bottom Plate" ${part.type === 'Bottom Plate' ? 'selected' : ''}>📦 Bottom Plate</option>
                                     </select>
-                                    <button onclick="removeSubPartItemModal('${model}', ${pIdx})" class="text-rose-400 text-xs px-2 py-0.5 rounded bg-rose-950/40">🗑️ ลบ</button>
+                                    <button onclick="removeSubPartItemModal('${model}', ${pIdx})" class="text-rose-400 text-xs px-2 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️ ลบ</button>
                                 </div>
                                 
                                 ${isDoor ? `
                                     <div class="grid grid-cols-2 gap-2">
-                                        <select onchange="updateDoorCountModal('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-white text-[11px]">
+                                        <select onchange="updateDoorCountModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-white text-[11px] focus:outline-none focus:border-blue-500">
                                             <option value="1Door" ${part.doorCount === '1Door' ? 'selected' : ''}>1 ประตู (x1)</option>
                                             <option value="2Door" ${part.doorCount === '2Door' ? 'selected' : ''}>2 ประตู (x2)</option>
                                             <option value="4Door" ${part.doorCount === '4Door' ? 'selected' : ''}>4 ประตู (x4)</option>
                                         </select>
-                                        <select onchange="updateDoorMaterialModal('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[11px] font-semibold ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
+                                        <select onchange="updateDoorMaterialModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-[11px] font-semibold focus:outline-none focus:border-blue-500 ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
                                             <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal (Press)</option>
                                             <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass (Glass Door)</option>
                                         </select>
@@ -1167,10 +1168,10 @@
                                 ` : ''}
 
                                 <div class="flex items-center gap-2">
-                                    <input type="text" value="${part.name}" onchange="updateSubPartPropName('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-white flex-1 text-xs">
+                                    <input type="text" value="${part.name}" onchange="updateSubPartPropName('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2.5 py-1 text-white flex-1 text-xs focus:outline-none focus:border-blue-500">
                                     <div class="flex items-center gap-1">
                                         <span class="text-[10px] text-slate-400">Ratio:</span>
-                                        <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updateSubPartPropRatio('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-white text-center w-16 font-bold text-xs">
+                                        <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updateSubPartPropRatio('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-white text-center w-16 font-bold text-xs focus:outline-none focus:border-blue-500">
                                     </div>
                                 </div>
                             </div>
@@ -1180,7 +1181,7 @@
                     html += `
                                 </div>
                                 <div class="mt-2">
-                                    <button onclick="addSubPartItemModal('${model}')" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-blue-300 px-3 py-1.5 rounded-lg transition-all font-semibold">
+                                    <button onclick="addSubPartItemModal('${model}')" class="text-[11px] bg-blue-950 hover:bg-blue-900 text-blue-300 px-3 py-1.5 rounded-lg transition-all font-semibold border border-blue-800/50">
                                         + เพิ่มชิ้นส่วนย่อย
                                     </button>
                                 </div>
@@ -1321,34 +1322,34 @@
 
         function generateModelCheckboxTableHTML(selectedModels, changeCallbackName, selectAllFnName, clearAllFnName) {
             let html = `
-                <div class="space-y-4 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-                    <div class="flex justify-between items-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+                <div class="space-y-4 bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 shadow-xl">
+                    <div class="flex justify-between items-center bg-[#090d16] p-4 rounded-xl border border-blue-950">
                         <span class="text-xs font-bold text-slate-200">📋 เลือกรุ่น (Model) ที่ผลิตในไลน์นี้</span>
                         <div class="flex items-center gap-2">
-                            <button onclick="${selectAllFnName.name ? selectAllFnName.name + '()' : selectAllFnName}" class="text-xs bg-slate-800 hover:bg-slate-700 text-blue-300 px-3.5 py-2 rounded-xl transition-all">เลือกทั้งหมด</button>
-                            <button onclick="${clearAllFnName.name ? clearAllFnName.name + '()' : clearAllFnName}" class="text-xs bg-slate-800 hover:bg-slate-700 text-rose-300 px-3.5 py-2 rounded-xl transition-all">ล้างค่า</button>
+                            <button onclick="${selectAllFnName.name ? selectAllFnName.name + '()' : selectAllFnName}" class="text-xs bg-blue-950 hover:bg-blue-900 text-blue-300 px-3.5 py-2 rounded-xl transition-all border border-blue-800/50">เลือกทั้งหมด</button>
+                            <button onclick="${clearAllFnName.name ? clearAllFnName.name + '()' : clearAllFnName}" class="text-xs bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 px-3.5 py-2 rounded-xl transition-all border border-rose-900/50">ล้างค่า</button>
                         </div>
                     </div>
-                    <div class="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto">
+                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden">
+                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
+                                    <tr class="bg-[#0e1626] text-slate-400 text-xs border-b border-blue-950/60 sticky top-0">
                                         <th class="p-3.5 pl-6 text-center w-20">เลือก</th>
                                         <th class="p-3.5">Product Group</th>
                                         <th class="p-3.5">Model</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-800/50 text-xs">
+                                <tbody class="divide-y divide-blue-950/40 text-xs">
             `;
 
             productStructure.forEach(group => {
                 group.models.forEach(model => {
                     let isChecked = selectedModels && selectedModels.includes(model);
                     html += `
-                        <tr class="hover:bg-slate-900/50">
+                        <tr class="hover:bg-blue-950/20">
                             <td class="p-3.5 text-center">
-                                <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleModelCheckboxGeneric(this, '${model}')" class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                <input type="checkbox" data-model="${model}" ${isChecked ? 'checked' : ''} onchange="handleModelCheckboxGeneric(this, '${model}')" class="w-4 h-4 rounded bg-[#0e1626] border-blue-950 text-blue-600 focus:ring-blue-500 cursor-pointer">
                             </td>
                             <td class="p-3.5 font-semibold text-blue-400">${group.group}</td>
                             <td class="p-3.5 font-medium text-slate-300">${model}</td>
