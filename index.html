@@ -154,7 +154,8 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="kpi-cards-container">
+                <!-- KPI Table Card ตามรูปแบบรูปที่ 1 -->
+                <div class="mb-6 bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-xl" id="kpi-cards-container">
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -475,74 +476,97 @@
             select.innerHTML = html;
         }
 
+        // ฟังก์ชันคำนวณและแสดง KPI Card ในรูปแบบตารางตามรูปที่ 1
         function renderPartsConfigPage() {
             const dateSelect = document.getElementById('config-date-select');
             const selectedDate = dateSelect ? dateSelect.value : currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            let totalMasterPlanTarget = 0;
-            let totalDoorMetalParts = 0;
-            let totalDoorGlassParts = 0;
-            let totalOtherParts = 0;
+            // คำนวณแยกตามหมวดหมู่ชิ้นส่วนจาก Order ทั้งหมดที่ผูกไว้
+            let categories = [
+                { name: "Press Machine (Door Metal)", target: 0, materialFilter: "Door Metal", type: "Door" },
+                { name: "Glass Door (Door Glass)", target: 0, materialFilter: "Door Glass", type: "Door" },
+                { name: "Back Plate", target: 0, type: "Back Plate" },
+                { name: "Bottom Plate", target: 0, type: "Bottom Plate" }
+            ];
 
             productStructure.forEach(g => {
                 g.models.forEach(m => {
                     let baseTarget = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
-                    totalMasterPlanTarget += baseTarget;
-
                     if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
                         modelSubParts[m].forEach(p => {
                             let partQty = baseTarget * (parseFloat(p.ratio) || 0);
-                            if (p.type === 'Door') {
-                                if (p.doorMaterial === 'Door Glass') {
-                                    totalDoorGlassParts += partQty;
-                                } else {
-                                    totalDoorMetalParts += partQty;
+                            categories.forEach(cat => {
+                                if (cat.type === 'Door' && p.type === 'Door' && p.doorMaterial === cat.materialFilter) {
+                                    cat.target += partQty;
+                                } else if (cat.type !== 'Door' && p.type === cat.type) {
+                                    cat.target += partQty;
                                 }
-                            } else {
-                                totalOtherParts += partQty;
-                            }
+                            });
                         });
                     }
                 });
             });
 
-            let totalAllParts = totalDoorMetalParts + totalDoorGlassParts + totalOtherParts;
-            let uphPress = workingHours > 0 ? Math.round(totalDoorMetalParts / workingHours) : 0;
-            let uphGlass = workingHours > 0 ? Math.round(totalDoorGlassParts / workingHours) : 0;
-
             const kpiContainer = document.getElementById('kpi-cards-container');
             if (kpiContainer) {
-                kpiContainer.innerHTML = `
-                    <div class="bg-[#090d16] border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
+                let tableHtml = `
+                    <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
-                            <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
+                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card & Sub-line Production Summary (${selectedDate})</h3>
+                            <p class="text-[11px] text-slate-400">ออร์เดอร์ทั้งหมดคำนวณอัตโนมัติจากการจัดการชิ้นส่วนย่อย[cite: 8]</p>
                         </div>
+                        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
                     </div>
-                    <div class="bg-[#090d16] border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)[cite: 3]</span>
-                            <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphPress.toLocaleString()})</span></h4>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door[cite: 3]</span>
-                            <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphGlass.toLocaleString()})</span></h4>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)</span>
-                            <h4 class="text-lg font-extrabold text-purple-300">${totalOtherParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
+                                    <th class="p-3.5 pl-6">Sub-line / Category</th>
+                                    <th class="p-3.5 text-center">Production Plan</th>
+                                    <th class="p-3.5 text-center">Capacity / day</th>
+                                    <th class="p-3.5 text-center">Order / hr</th>
+                                    <th class="p-3.5 text-center">Actual MP</th>
+                                    <th class="p-3.5 text-center">Required MP</th>
+                                    <th class="p-3.5 text-center">Line Balance</th>
+                                    <th class="p-3.5 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-950/40">
+                `;
+
+                categories.forEach(cat => {
+                    let orderHr = workingHours > 0 ? Math.round(cat.target / workingHours) : 0;
+                    // จำลองค่า Capacity, MP ตามโครงสร้าง KPI Card รูปที่ 1
+                    let capacity = cat.target > 0 ? Math.round(cat.target * 1.2) : 0;
+                    let actualMP = cat.target > 0 ? 10 : 0;
+                    let requiredMP = cat.target > 0 ? 12 : 0;
+                    let balance = requiredMP > 0 ? Math.round((actualMP / requiredMP) * 100) : 0;
+                    let statusClass = balance >= 80 ? 'bg-emerald-950/40 text-emerald-300 border-emerald-900/60' : 'bg-rose-950/40 text-rose-300 border-rose-900/60';
+                    let statusText = balance >= 80 ? 'Normal' : 'Shortage';
+
+                    tableHtml += `
+                        <tr class="hover:bg-blue-950/20 transition-colors">
+                            <td class="p-3.5 pl-6 font-bold text-blue-300">${cat.name}</td>
+                            <td class="p-3.5 text-center font-extrabold text-amber-400">${cat.target > 0 ? cat.target.toLocaleString() : '-'}</td>
+                            <td class="p-3.5 text-center text-slate-300">${capacity > 0 ? capacity.toLocaleString() : '-'}</td>
+                            <td class="p-3.5 text-center font-bold text-cyan-300">${orderHr > 0 ? orderHr.toLocaleString() : '-'}</td>
+                            <td class="p-3.5 text-center text-slate-300">${actualMP > 0 ? actualMP : '-'}</td>
+                            <td class="p-3.5 text-center text-slate-300">${requiredMP > 0 ? requiredMP : '-'}</td>
+                            <td class="p-3.5 text-center font-semibold">${balance > 0 ? balance + '%' : '-'}</td>
+                            <td class="p-3.5 text-center">
+                                ${cat.target > 0 ? `<span class="px-2.5 py-1 rounded-full border text-[10px] font-bold ${statusClass}">${statusText}</span>` : '<span class="text-slate-500">-</span>'}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                            </tbody>
+                        </table>
                     </div>
                 `;
+                kpiContainer.innerHTML = tableHtml;
             }
 
             const selectorListContainer = document.getElementById('model-selector-list');
