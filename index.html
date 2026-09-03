@@ -861,6 +861,7 @@
             selectedSubMachineIndex = null; 
             subMachineSubTab = 'target'; 
             renderModalContent();
+            // แสดงหน้าจอ Full Screen Modal
             document.getElementById('line-modal').classList.remove('hidden');
         }
 
@@ -893,109 +894,128 @@
         }
 
        function renderModalContent() {
-    const line = productionLines[currentActiveLineIndex];
-    const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+            const line = productionLines[currentActiveLineIndex];
+            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
-    document.getElementById('modal-line-title').innerText = line.name;
-    document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
-    document.getElementById('modal-footer-date').innerText = selectedDate;
+            document.getElementById('modal-line-title').innerText = line.name;
+            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
+            document.getElementById('modal-footer-date').innerText = selectedDate;
 
-    const modalBody = document.getElementById('modal-body-content');
-    let contentHTML = '';
+            const modalBody = document.getElementById('modal-body-content');
+            let contentHTML = '';
 
-    // เพิ่มเงื่อนไขตรวจสอบเฉพาะ Line Back plate & Bottom plate ตามโจทย์
-    if (line.name.includes("Back Plate&Bottom Plate")) {
-        let workingHours = parseFloat(document.getElementById('working-hours').value) || 11;
-        
-        contentHTML += `
-            <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-6 shadow-xl">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line (Back Plate & Bottom Plate)</h2>
-                        <p class="text-xs text-slate-400 mt-1">แสดงยอดออเดอร์รายวันในแต่ละรุ่น ออเดอร์รวม และยอด Capacity UPH ที่ต้องทำในแต่ละวัน</p>
-                    </div>
-                </div>
-
-                <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
-                    <div class="overflow-x-auto max-h-[65vh] custom-scrollbar">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60 sticky top-0">
-                                    <th class="p-3.5 pl-6 min-w-[200px]">วันที่ / Sub-line</th>
-        `;
-        
-        // สร้างหัวตารางแสดงวันที่ทั้งหมด
-        currentDates.forEach(date => {
-            contentHTML += `<th class="p-3.5 text-center min-w-[120px]">${date}</th>`;
-        });
-        
-        contentHTML += `
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-blue-950/40">
-        `;
-
-        // รายการ Sub-line ย่อยจำลองตามตัวอย่างในรูปภาพ
-        let subLines = [
-            { name: "Order Back plate #A", type: "Back Plate" },
-            { name: "Order Back plate #B", type: "Back Plate" },
-            { name: "Order Bottom plate #A", type: "Bottom Plate" },
-            { name: "Order Bottom plate #B", type: "Bottom Plate" }
-        ];
-
-        subLines.forEach(sub => {
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 11;
+            
             contentHTML += `
-                <tr class="hover:bg-blue-950/20 transition-colors">
-                    <td class="p-3.5 pl-6 font-bold text-blue-300">
-                        <div>${sub.name}</div>
-                        <div class="text-[10px] text-cyan-400 font-normal">Order/hr (UPH)</div>
-                    </td>
+                <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-6 shadow-xl w-full">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line (${line.name})</h2>
+                            <p class="text-xs text-slate-400 mt-1">แสดงยอดออเดอร์รายวันในแต่ละรุ่น ออเดอร์รวม และยอด Capacity UPH ที่ต้องทำในแต่ละวัน</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                        <div class="overflow-x-auto max-h-[70vh] custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60 sticky top-0">
+                                        <th class="p-3.5 pl-6 min-w-[220px]">วันที่ / Sub-line</th>
+            `;
+            
+            // สร้างหัวตารางแสดงวันที่ทั้งหมด (1/9, 2/9, 3/9, ...)
+            currentDates.forEach(date => {
+                contentHTML += `<th class="p-3.5 text-center min-w-[120px]">${date}</th>`;
+            });
+            
+            contentHTML += `
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-blue-950/40">
             `;
 
-            currentDates.forEach(date => {
-                let totalQtyForSub = 0;
-                
-                // คำนวณยอดรวมตามประเภทชิ้นส่วนจากแผนผลิตจริง
-                productStructure.forEach(g => {
-                    g.models.forEach(m => {
-                        let baseVal = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
-                        if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
-                            modelSubParts[m].forEach(p => {
-                                if (p.type === sub.type) {
-                                    totalQtyForSub += (baseVal * (parseFloat(p.ratio) || 0));
-                                }
-                            });
-                        }
+            // กำหนด Sub-lines ย่อยตามไลน์ที่เลือก
+            let subLines = [];
+            if (line.name.includes("Back Plate&Bottom Plate")) {
+                subLines = [
+                    { name: "Order Back plate #A", type: "Back Plate" },
+                    { name: "Order Back plate #B", type: "Back Plate" },
+                    { name: "Order Bottom plate #A", type: "Bottom Plate" },
+                    { name: "Order Bottom plate #B", type: "Bottom Plate" }
+                ];
+            } else if (line.name.includes("Press Machine")) {
+                subLines = [
+                    { name: "400T Press (Door Metal)", type: "Door", material: "Door Metal" },
+                    { name: "200T Press (Door Metal)", type: "Door", material: "Door Metal" }
+                ];
+            } else {
+                subLines = [
+                    { name: `Order ${line.name} #A`, type: "Door" },
+                    { name: `Order ${line.name} #B`, type: "Door" }
+                ];
+            }
+
+            subLines.forEach(sub => {
+                contentHTML += `
+                    <tr class="hover:bg-blue-950/20 transition-colors">
+                        <td class="p-3.5 pl-6 font-bold text-blue-300">
+                            <div>${sub.name}</div>
+                            <div class="text-[10px] text-cyan-400 font-normal">Order/hr (UPH)</div>
+                        </td>
+                `;
+
+                currentDates.forEach(date => {
+                    let totalQtyForSub = 0;
+                    
+                    productStructure.forEach(g => {
+                        g.models.forEach(m => {
+                            let baseVal = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
+                            if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
+                                modelSubParts[m].forEach(p => {
+                                    if (sub.material) {
+                                        if (p.type === sub.type && p.doorMaterial === sub.material) {
+                                            totalQtyForSub += (baseVal * (parseFloat(p.ratio) || 0));
+                                        }
+                                    } else {
+                                        if (p.type === sub.type || (sub.type === 'Door' && p.type === 'Door')) {
+                                            totalQtyForSub += (baseVal * (parseFloat(p.ratio) || 0));
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     });
+
+                    let uphVal = workingHours > 0 ? Math.round(totalQtyForSub / workingHours) : 0;
+
+                    contentHTML += `
+                        <td class="p-3.5 text-center border-l border-blue-950/60">
+                            <div class="font-extrabold text-amber-400 text-sm">${totalQtyForSub > 0 ? totalQtyForSub.toLocaleString() : '-'}</div>
+                            <div class="text-[11px] text-cyan-300 font-semibold mt-0.5">${uphVal > 0 ? uphVal.toLocaleString() : '-'}</div>
+                        </td>
+                    `;
                 });
 
-                let uphVal = workingHours > 0 ? Math.round(totalQtyForSub / workingHours) : 0;
-
-                contentHTML += `
-                    <td class="p-3.5 text-center border-l border-blue-950/40">
-                        <div class="font-extrabold text-amber-400">${totalQtyForSub > 0 ? totalQtyForSub.toLocaleString() : '-'}</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold mt-0.5">${uphVal > 0 ? uphVal.toLocaleString() : '-'}</div>
-                    </td>
-                `;
+                contentHTML += `</tr>`;
             });
 
-            contentHTML += `</tr>`;
-        });
-
-        contentHTML += `
-                            </tbody>
-                        </table>
+            contentHTML += `
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-    } else {
-        // โค้ดเดิมสำหรับไลน์การผลิตอื่นๆ (เช่น Press Machine, Door A, ฯลฯ)
-        // ... (คงโค้ดเดิมไว้ตามโครงสร้างเดิมที่คุณใช้งานอยู่)
-    }
+            `;
 
-    modalBody.innerHTML = contentHTML;
-}
+            modalBody.innerHTML = contentHTML;
+        }
+
+        function closeLineModal() {
+            // ซ่อนหน้าจอ Full Screen Modal
+            document.getElementById('line-modal').classList.add('hidden');
+            renderLineOverview();
+            renderPartsConfigPage();
+        }
 
         function switchSubMachineSubTab(subTabName) {
             subMachineSubTab = subTabName;
