@@ -474,44 +474,25 @@
             });
             select.innerHTML = html;
         }
-
-        function renderPartsConfigPage() {
+function renderPartsConfigPage() {
             const dateSelect = document.getElementById('config-date-select');
             const selectedDate = dateSelect ? dateSelect.value : currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            let categories = [
-                { name: "Press Machine (Door Metal)", target: 0, materialFilter: "Door Metal", type: "Door" },
-                { name: "Glass Door (Door Glass)", target: 0, materialFilter: "Door Glass", type: "Door" },
-                { name: "Back Plate", target: 0, type: "Back Plate" },
-                { name: "Bottom Plate", target: 0, type: "Bottom Plate" }
+            let subLinesConfig = [
+                { name: "Press Machine (Door Metal)", materialFilter: "Door Metal", type: "Door" },
+                { name: "Glass Door (Door Glass)", materialFilter: "Door Glass", type: "Door" },
+                { name: "Back Plate", type: "Back Plate" },
+                { name: "Bottom Plate", type: "Bottom Plate" }
             ];
-
-            productStructure.forEach(g => {
-                g.models.forEach(m => {
-                    let baseTarget = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
-                    if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
-                        modelSubParts[m].forEach(p => {
-                            let partQty = baseTarget * (parseFloat(p.ratio) || 0);
-                            categories.forEach(cat => {
-                                if (cat.type === 'Door' && p.type === 'Door' && p.doorMaterial === cat.materialFilter) {
-                                    cat.target += partQty;
-                                } else if (cat.type !== 'Door' && p.type === cat.type) {
-                                    cat.target += partQty;
-                                }
-                            });
-                        });
-                    }
-                });
-            });
 
             const kpiContainer = document.getElementById('kpi-cards-container');
             if (kpiContainer) {
                 let tableHtml = `
                     <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card & Sub-line Production Summary (${selectedDate})</h3>
-                            <p class="text-[11px] text-slate-400">ออร์เดอร์ทั้งหมดคำนวณอัตโนมัติจากการจัดการชิ้นส่วนย่อย[cite: 8]</p>
+                            <h3 class="text-sm font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line</h3>
+                            <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวันของแต่ละ Sub-line คำนวณอัตโนมัติจากชิ้นส่วนย่อย[cite: 3, 8, 10]</p>
                         </div>
                         <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
                     </div>
@@ -519,42 +500,59 @@
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
-                                    <th class="p-3.5 pl-6">Sub-line / Category</th>
-                                    <th class="p-3.5 text-center">Production Plan</th>
-                                    <th class="p-3.5 text-center">Capacity / day</th>
-                                    <th class="p-3.5 text-center">Order / hr</th>
-                                    <th class="p-3.5 text-center">Actual MP</th>
-                                    <th class="p-3.5 text-center">Required MP</th>
-                                    <th class="p-3.5 text-center">Line Balance</th>
-                                    <th class="p-3.5 text-center">Status</th>
+                                    <th class="p-3.5 pl-6 min-w-[200px]">Sub-line / Category</th>
+                `;
+
+                // สร้างหัวตารางตามรายชื่อวันทั้งหมดใน currentDates
+                currentDates.forEach(date => {
+                    tableHtml += `<th class="p-3.5 text-center min-w-[130px]">${date}</th>`;
+                });
+
+                tableHtml += `
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950/40">
                 `;
 
-                categories.forEach(cat => {
-                    let orderHr = workingHours > 0 ? Math.round(cat.target / workingHours) : 0;
-                    let capacity = cat.target > 0 ? Math.round(cat.target * 1.2) : 0;
-                    let actualMP = cat.target > 0 ? 10 : 0;
-                    let requiredMP = cat.target > 0 ? 12 : 0;
-                    let balance = requiredMP > 0 ? Math.round((actualMP / requiredMP) * 100) : 0;
-                    let statusClass = balance >= 80 ? 'bg-emerald-950/40 text-emerald-300 border-emerald-900/60' : 'bg-rose-950/40 text-rose-300 border-rose-900/60';
-                    let statusText = balance >= 80 ? 'Normal' : 'Shortage';
-
+                subLinesConfig.forEach(sub => {
                     tableHtml += `
                         <tr class="hover:bg-blue-950/20 transition-colors">
-                            <td class="p-3.5 pl-6 font-bold text-blue-300">${cat.name}</td>
-                            <td class="p-3.5 text-center font-extrabold text-amber-400">${cat.target > 0 ? cat.target.toLocaleString() : '-'}</td>
-                            <td class="p-3.5 text-center text-slate-300">${capacity > 0 ? capacity.toLocaleString() : '-'}</td>
-                            <td class="p-3.5 text-center font-bold text-cyan-300">${orderHr > 0 ? orderHr.toLocaleString() : '-'}</td>
-                            <td class="p-3.5 text-center text-slate-300">${actualMP > 0 ? actualMP : '-'}</td>
-                            <td class="p-3.5 text-center text-slate-300">${requiredMP > 0 ? requiredMP : '-'}</td>
-                            <td class="p-3.5 text-center font-semibold">${balance > 0 ? balance + '%' : '-'}</td>
-                            <td class="p-3.5 text-center">
-                                ${cat.target > 0 ? `<span class="px-2.5 py-1 rounded-full border text-[10px] font-bold ${statusClass}">${statusText}</span>` : '<span class="text-slate-500">-</span>'}
+                            <td class="p-3.5 pl-6 font-bold text-blue-300">
+                                <div>${sub.name}</div>
+                                <div class="text-[10px] text-cyan-400 font-normal">ยอดผลิต / UPH (ชม.)</div>
                             </td>
-                        </tr>
                     `;
+
+                    // คำนวณยอดผลิตและ UPH แยกตามแต่ละวัน
+                    currentDates.forEach(date => {
+                        let dailyTarget = 0;
+                        productStructure.forEach(g => {
+                            g.models.forEach(m => {
+                                let baseTarget = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
+                                if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
+                                    modelSubParts[m].forEach(p => {
+                                        let partQty = baseTarget * (parseFloat(p.ratio) || 0);
+                                        if (sub.type === 'Door' && p.type === 'Door' && p.doorMaterial === sub.materialFilter) {
+                                            dailyTarget += partQty;
+                                        } else if (sub.type !== 'Door' && p.type === sub.type) {
+                                            dailyTarget += partQty;
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+                        let uphVal = workingHours > 0 ? Math.round(dailyTarget / workingHours) : 0;
+
+                        tableHtml += `
+                            <td class="p-3.5 text-center border-l border-blue-950/40">
+                                <div class="font-extrabold text-amber-400 text-sm">${dailyTarget > 0 ? dailyTarget.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                <div class="text-[10px] text-cyan-300 font-semibold mt-0.5">UPH: ${uphVal > 0 ? uphVal.toLocaleString() : '0'}</div>
+                            </td>
+                        `;
+                    });
+
+                    tableHtml += `</tr>`;
                 });
 
                 tableHtml += `
@@ -565,6 +563,7 @@
                 kpiContainer.innerHTML = tableHtml;
             }
 
+            // เรนเดอร์ส่วนเลือก Model ด้านล่างต่อตามปกติ
             const selectorListContainer = document.getElementById('model-selector-list');
             if (selectorListContainer) {
                 let listHTML = '';
