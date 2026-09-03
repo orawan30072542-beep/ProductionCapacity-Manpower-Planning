@@ -474,9 +474,9 @@
             });
             select.innerHTML = html;
         }
-function renderPartsConfigPage() {
+
+        function renderPartsConfigPage() {
             const dateSelect = document.getElementById('config-date-select');
-            const selectedDate = dateSelect ? dateSelect.value : currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
             let subLinesConfig = [
@@ -503,7 +503,6 @@ function renderPartsConfigPage() {
                                     <th class="p-3.5 pl-6 min-w-[200px]">Sub-line / Category</th>
                 `;
 
-                // สร้างหัวตารางตามรายชื่อวันทั้งหมดใน currentDates
                 currentDates.forEach(date => {
                     tableHtml += `<th class="p-3.5 text-center min-w-[130px]">${date}</th>`;
                 });
@@ -523,7 +522,6 @@ function renderPartsConfigPage() {
                             </td>
                     `;
 
-                    // คำนวณยอดผลิตและ UPH แยกตามแต่ละวัน
                     currentDates.forEach(date => {
                         let dailyTarget = 0;
                         productStructure.forEach(g => {
@@ -563,7 +561,6 @@ function renderPartsConfigPage() {
                 kpiContainer.innerHTML = tableHtml;
             }
 
-            // เรนเดอร์ส่วนเลือก Model ด้านล่างต่อตามปกติ
             const selectorListContainer = document.getElementById('model-selector-list');
             if (selectorListContainer) {
                 let listHTML = '';
@@ -871,7 +868,6 @@ function renderPartsConfigPage() {
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
-            // รวบรวมรุ่นทั้งหมดที่อยู่ใน Line นี้
             let modelsInLine = [];
             if (line.hasSubMachines && line.subMachines) {
                 line.subMachines.forEach(sub => {
@@ -882,7 +878,6 @@ function renderPartsConfigPage() {
             }
             modelsInLine = [...new Set(modelsInLine)];
 
-            // 1. สร้างตารางสรุปยอดผลิตรายวันและ UPH ทุกวัน (เหมือนหน้า Matrix View)
             contentHTML += `
                 <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
@@ -908,7 +903,6 @@ function renderPartsConfigPage() {
                                 <tbody class="divide-y divide-blue-950/40">
             `;
 
-            // แถวรวมยอด (TOTAL LINE OUTPUT)
             contentHTML += `
                 <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
                     <td class="p-3 pl-4 text-blue-400">TOTAL LINE OUTPUT</td>
@@ -971,7 +965,6 @@ function renderPartsConfigPage() {
                 </div>
             `;
 
-            // 2. ส่วนสำหรับจัดการเป้าหมายรายวันและเลือกรุ่นในไลน์ด้านล่าง
             contentHTML += `
                 <div class="space-y-4 pt-4">
                     <div class="flex items-center gap-2 bg-[#090d16] p-1.5 rounded-xl border border-blue-950 w-fit">
@@ -1006,33 +999,7 @@ function renderPartsConfigPage() {
             }
         }
 
-        function switchLineSubTab(tab) {
-            currentLineSubTab = tab;
-            const btnTarget = document.getElementById('linetab-btn-target');
-            const btnParts = document.getElementById('linetab-btn-parts');
-            const btnModel = document.getElementById('linetab-btn-model');
-            const container = document.getElementById('line-subtab-content-container');
-            const line = productionLines[currentActiveLineIndex];
-            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
-
-            if (tab === 'target') {
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
-            } else if (tab === 'parts') {
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
-            } else {
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
-            }
-        }
-
+        // ลบคอลัมน์ "รวมชิ้นส่วนย่อย" ออกตามคำขอ
         function generateTargetInputTableHTML(selectedModels, dateStr) {
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             let html = `
@@ -1051,7 +1018,6 @@ function renderPartsConfigPage() {
                                         <th class="p-3.5 pl-6">Product Group</th>
                                         <th class="p-3.5">Model</th>
                                         <th class="p-3.5 text-center">เป้าหมายรุ่น</th>
-                                        <th class="p-3.5 text-center">รวมชิ้นส่วนย่อย</th>
                                         <th class="p-3.5 text-center">UPH รวม</th>
                                     </tr>
                                 </thead>
@@ -1059,7 +1025,7 @@ function renderPartsConfigPage() {
             `;
 
             if (!selectedModels || selectedModels.length === 0) {
-                html += `<tr><td colspan="5" class="p-8 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
+                html += `<tr><td colspan="4" class="p-8 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
             } else {
                 selectedModels.forEach(model => {
                     let parentGroup = productStructure.find(g => g.models.includes(model));
@@ -1080,9 +1046,6 @@ function renderPartsConfigPage() {
                                     onchange="updateModelTargetValue('${model}', '${dateStr}', this.value)" 
                                     class="w-32 bg-[#090d16] border border-blue-950 rounded-xl px-4 py-2 text-center text-white font-bold focus:outline-none focus:border-blue-500">
                             </td>
-                            <td class="p-3.5 text-center font-bold text-amber-400" id="total-parts-${model}">
-                                ${totalPartsVal > 0 ? totalPartsVal.toLocaleString() + ' ชิ้น' : '-'}
-                            </td>
                             <td class="p-3.5 text-center font-bold text-cyan-300" id="uph-display-${model}">
                                 ${calcUph > 0 ? calcUph.toLocaleString() : '-'}
                             </td>
@@ -1101,206 +1064,6 @@ function renderPartsConfigPage() {
             return html;
         }
 
-        function generatePartsConfigTableHTML(selectedModels) {
-            let html = `
-                <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl">
-                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950 flex justify-between items-center flex-wrap gap-2">
-                        <div>
-                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น[cite: 3]</span>
-                            <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู[cite: 3]</p>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden">
-                        <div class="overflow-x-auto max-h-[55vh] overflow-y-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-[#0e1626] text-slate-400 text-xs border-b border-blue-950/60 sticky top-0">
-                                        <th class="p-3.5 pl-6 w-44">Model</th>
-                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)[cite: 3]</th>
-                                        <th class="p-3.5 text-center w-32">ตัวคูณรวม</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-950/40 text-xs">
-            `;
-
-            if (!selectedModels || selectedModels.length === 0) {
-                html += `<tr><td colspan="3" class="p-8 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
-            } else {
-                selectedModels.forEach(model => {
-                    if (!modelSubParts[model] || !Array.isArray(modelSubParts[model])) {
-                        modelSubParts[model] = [
-                            { type: "Door", doorCount: "1Door", doorMaterial: "Door Metal", name: "Door (1 ประตู - Metal)", ratio: 1 }
-                        ];
-                    }
-                    let partsList = modelSubParts[model];
-                    let mult = getMultiplier(model);
-
-                    html += `
-                        <tr class="hover:bg-blue-950/20 align-top">
-                            <td class="p-4 pl-6 font-bold text-blue-400 pt-5">${model}</td>
-                            <td class="p-3">
-                                <div class="space-y-3">
-                    `;
-
-                    partsList.forEach((part, pIdx) => {
-                        let isDoor = (part.type === 'Door');
-                        html += `
-                            <div class="bg-[#090d16] p-3 rounded-xl border border-blue-950/60 space-y-2">
-                                <div class="flex items-center justify-between gap-2 flex-wrap">
-                                    <select onchange="updatePartMainTypeModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
-                                        <option value="Door" ${part.type === 'Door' ? 'selected' : ''}>🚪 Door</option>
-                                        <option value="Back Plate" ${part.type === 'Back Plate' ? 'selected' : ''}>🛡️ Back Plate</option>
-                                        <option value="Bottom Plate" ${part.type === 'Bottom Plate' ? 'selected' : ''}>📦 Bottom Plate</option>
-                                    </select>
-                                    <button onclick="removeSubPartItemModal('${model}', ${pIdx})" class="text-rose-400 text-xs px-2 py-0.5 rounded bg-rose-950/40 border border-rose-900/50">🗑️ ลบ</button>
-                                </div>
-                                
-                                ${isDoor ? `
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <select onchange="updateDoorCountModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-white text-[11px] focus:outline-none focus:border-blue-500">
-                                            <option value="1Door" ${part.doorCount === '1Door' ? 'selected' : ''}>1 ประตู (x1)</option>
-                                            <option value="2Door" ${part.doorCount === '2Door' ? 'selected' : ''}>2 ประตู (x2)</option>
-                                            <option value="4Door" ${part.doorCount === '4Door' ? 'selected' : ''}>4 ประตู (x4)</option>
-                                        </select>
-                                        <select onchange="updateDoorMaterialModal('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-[11px] font-semibold focus:outline-none focus:border-blue-500 ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
-                                            <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal (Press)</option>
-                                            <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass (Glass Door)</option>
-                                        </select>
-                                    </div>
-                                ` : ''}
-
-                                <div class="flex items-center gap-2">
-                                    <input type="text" value="${part.name}" onchange="updateSubPartPropName('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2.5 py-1 text-white flex-1 text-xs focus:outline-none focus:border-blue-500">
-                                    <div class="flex items-center gap-1">
-                                        <span class="text-[10px] text-slate-400">Ratio:</span>
-                                        <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updateSubPartPropRatio('${model}', ${pIdx}, this.value)" class="bg-[#0e1626] border border-blue-950 rounded-lg px-2 py-1 text-white text-center w-16 font-bold text-xs focus:outline-none focus:border-blue-500">
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    html += `
-                                </div>
-                                <div class="mt-2">
-                                    <button onclick="addSubPartItemModal('${model}')" class="text-[11px] bg-blue-950 hover:bg-blue-900 text-blue-300 px-3 py-1.5 rounded-lg transition-all font-semibold border border-blue-800/50">
-                                        + เพิ่มชิ้นส่วนย่อย
-                                    </button>
-                                </div>
-                            </td>
-                            <td class="p-4 text-center font-extrabold text-amber-400 text-base pt-5" id="multiplier-display-${model}">
-                                x ${mult}
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-
-            html += `
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return html;
-        }
-
-        function updatePartMainTypeModal(model, pIdx, newType) {
-            if (!modelSubParts[model] || !modelSubParts[model][pIdx]) return;
-            let p = modelSubParts[model][pIdx];
-            p.type = newType;
-            if (newType === 'Door') {
-                p.doorCount = p.doorCount || '1Door';
-                p.doorMaterial = p.doorMaterial || 'Door Metal';
-                p.ratio = p.doorCount === '4Door' ? 4 : (p.doorCount === '2Door' ? 2 : 1);
-                p.name = `Door (${p.doorCount.replace('Door','')} ประตู - ${p.doorMaterial.includes('Glass') ? 'Glass' : 'Metal'})`;
-            } else {
-                p.doorCount = '';
-                p.doorMaterial = '';
-                p.ratio = 1;
-                p.name = newType;
-            }
-            renderModalContent();
-            manualSaveDataSilent();
-            initMatrixTable(currentDates);
-            renderLineOverview();
-            renderPartsConfigPage();
-        }
-
-        function updateDoorCountModal(model, pIdx, countVal) {
-            if (!modelSubParts[model] || !modelSubParts[model][pIdx]) return;
-            let p = modelSubParts[model][pIdx];
-            p.doorCount = countVal;
-            p.ratio = countVal === '4Door' ? 4 : (countVal === '2Door' ? 2 : 1);
-            let matTxt = p.doorMaterial && p.doorMaterial.includes('Glass') ? 'Glass' : 'Metal';
-            p.name = `Door (${countVal.replace('Door','')} ประตู - ${matTxt})`;
-            renderModalContent();
-            manualSaveDataSilent();
-            initMatrixTable(currentDates);
-            renderLineOverview();
-            renderPartsConfigPage();
-        }
-
-        function updateDoorMaterialModal(model, pIdx, matVal) {
-            if (!modelSubParts[model] || !modelSubParts[model][pIdx]) return;
-            let p = modelSubParts[model][pIdx];
-            p.doorMaterial = matVal;
-            let countTxt = p.doorCount ? p.doorCount.replace('Door','') : '1';
-            let matTxt = matVal.includes('Glass') ? 'Glass' : 'Metal';
-            p.name = `Door (${countTxt} ประตู - ${matTxt})`;
-            renderModalContent();
-            manualSaveDataSilent();
-            initMatrixTable(currentDates);
-            renderLineOverview();
-            renderPartsConfigPage();
-        }
-
-        function addSubPartItemModal(model) {
-            if (!modelSubParts[model]) modelSubParts[model] = [];
-            modelSubParts[model].push({ type: "Back Plate", doorCount: "", doorMaterial: "", name: "ชิ้นส่วนใหม่", ratio: 1 });
-            renderModalContent();
-            manualSaveDataSilent();
-            initMatrixTable(currentDates);
-            renderLineOverview();
-            renderPartsConfigPage();
-        }
-
-        function removeSubPartItemModal(model, pIdx) {
-            if (!modelSubParts[model]) return;
-            if (modelSubParts[model].length <= 1) {
-                alert("ต้องมีชิ้นส่วนย่อยอย่างน้อย 1 ชิ้น");
-                return;
-            }
-            modelSubParts[model].splice(pIdx, 1);
-            renderModalContent();
-            manualSaveDataSilent();
-            initMatrixTable(currentDates);
-            renderLineOverview();
-            renderPartsConfigPage();
-        }
-
-        function updateSubPartPropName(model, pIdx, val) {
-            if (modelSubParts[model] && modelSubParts[model][pIdx]) {
-                modelSubParts[model][pIdx].name = val;
-                manualSaveDataSilent();
-            }
-        }
-
-        function updateSubPartPropRatio(model, pIdx, val) {
-            if (modelSubParts[model] && modelSubParts[model][pIdx]) {
-                modelSubParts[model][pIdx].ratio = parseFloat(val) || 0;
-                let mult = getMultiplier(model);
-                let multEl = document.getElementById(`multiplier-display-${model}`);
-                if (multEl) multEl.innerText = `x ${mult}`;
-                manualSaveDataSilent();
-                initMatrixTable(currentDates);
-                renderLineOverview();
-                renderPartsConfigPage();
-            }
-        }
-
         function updateModelTargetValue(modelName, dateStr, val) {
             let numericVal = parseInt(val) || 0;
             if (!planDatabase[modelName]) planDatabase[modelName] = {};
@@ -1310,9 +1073,6 @@ function renderPartsConfigPage() {
             let totalPartsVal = numericVal * mult;
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             let calcUph = totalPartsVal > 0 && workingHours > 0 ? Math.round(totalPartsVal / workingHours) : 0;
-            
-            let totalPartsEl = document.getElementById(`total-parts-${modelName}`);
-            if (totalPartsEl) totalPartsEl.innerText = totalPartsVal > 0 ? totalPartsVal.toLocaleString() + ' ชิ้น' : '-';
 
             let uphEl = document.getElementById(`uph-display-${modelName}`);
             if (uphEl) uphEl.innerText = calcUph > 0 ? calcUph.toLocaleString() : '-';
