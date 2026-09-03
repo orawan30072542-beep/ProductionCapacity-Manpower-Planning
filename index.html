@@ -795,9 +795,9 @@
                             matchThisLine = true;
                         } else if (line.name === "Glass Door" && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
                             matchThisLine = true;
-                        } else if (line.name === "Back Plate & Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) {
+                        } else if (line.name === "Back Plate&Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) {
                             matchThisLine = true;
-                        } else if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate & Bottom Plate" && p.type === 'Door') {
+                        } else if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate&Bottom Plate" && p.type === 'Door') {
                             // สำหรับ Line ประกอบประตูทั่วไป (Door A, Door B, Door C, ฯลฯ) นับรวมชิ้นส่วน Door ทั้งหมดที่เลือกรุ่นไว้
                             matchThisLine = true;
                         }
@@ -931,8 +931,8 @@
                         let matchThisLine = false;
                         if (line.name === "Press Machine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
                         else if (line.name === "Glass Door" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
-                        else if (line.name === "Back Plate & Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) matchThisLine = true;
-                        else if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate & Bottom Plate" && p.type === 'Door') matchThisLine = true;
+                        else if (line.name === "Back Plate&Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) matchThisLine = true;
+                        else if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate&Bottom Plate" && p.type === 'Door') matchThisLine = true;
 
                         if (matchThisLine) {
                             sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
@@ -961,8 +961,8 @@
                     let relevantParts = parts.filter(p => {
                         if (line.name === "Press Machine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') return true;
                         if (line.name === "Glass Door" && p.type === 'Door' && p.doorMaterial === 'Door Glass') return true;
-                        if (line.name === "Back Plate & Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) return true;
-                        if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate & Bottom Plate" && p.type === 'Door') return true;
+                        if (line.name === "Back Plate&Bottom Plate" && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) return true;
+                        if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate&Bottom Plate" && p.type === 'Door') return true;
                         return false;
                     });
 
