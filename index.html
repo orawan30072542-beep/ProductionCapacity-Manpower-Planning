@@ -856,129 +856,120 @@
             document.getElementById('line-modal').classList.remove('hidden');
         }
 
-        function renderModalContent() {
-            const line = productionLines[currentActiveLineIndex];
-            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+       function renderModalContent() {
+    const line = productionLines[currentActiveLineIndex];
+    const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+    let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            document.getElementById('modal-line-title').innerText = line.name;
-            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
-            document.getElementById('modal-footer-date').innerText = selectedDate;
+    document.getElementById('modal-line-title').innerText = line.name;
+    document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
+    document.getElementById('modal-footer-date').innerText = selectedDate;
 
-            const modalBody = document.getElementById('modal-body-content');
-            let contentHTML = '';
+    const modalBody = document.getElementById('modal-body-content');
+    let contentHTML = '';
 
-            let modelsInLine = [];
-            if (line.hasSubMachines && line.subMachines) {
-                line.subMachines.forEach(sub => {
-                    if (sub.selectedModels) modelsInLine.push(...sub.selectedModels);
-                });
-            } else if (line.selectedModels) {
-                modelsInLine = [...line.selectedModels];
-            }
-            modelsInLine = [...new Set(modelsInLine)];
+    // รวบรวมรุ่นทั้งหมดที่อยู่ใน Line นี้
+    let modelsInLine = [];
+    if (line.hasSubMachines && line.subMachines) {
+        line.subMachines.forEach(sub => {
+            if (sub.selectedModels) modelsInLine.push(...sub.selectedModels);
+        });
+    } else if (line.selectedModels) {
+        modelsInLine = [...line.selectedModels];
+    }
+    modelsInLine = [...new Set(modelsInLine)];
+
+    // ตารางสรุปยอดผลิตรายวันและ UPH
+    contentHTML += `
+        <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div>
+                    <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตรายวันและ UPH — ${line.name}</h2>
+                    <p class="text-xs text-slate-400">แสดงยอดผลิตและ UPH แยกตามรุ่นและรายวัน (อ้างอิงจากแผนการผลิตและตัวคูณชิ้นส่วน)</p>
+                </div>
+            </div>
+
+            <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
+                                <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+    `;
+    currentDates.forEach(date => {
+        contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
+    });
+    contentHTML += `
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-blue-950/40">
+    `;
+
+    // แถวรวมยอด (TOTAL LINE OUTPUT)
+    contentHTML += `
+        <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
+            <td class="p-3 pl-4 text-blue-400">TOTAL LINE OUTPUT</td>
+    `;
+    currentDates.forEach(date => {
+        let sumTarget = 0;
+        modelsInLine.forEach(model => {
+            let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+            let mult = getMultiplier(model);
+            sumTarget += (baseVal * mult);
+        });
+        let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
+        contentHTML += `
+            <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
+                <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
+                <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
+            </td>
+        `;
+    });
+    contentHTML += `</tr>`;
+
+    if (modelsInLine.length === 0) {
+        contentHTML += `<tr><td colspan="${currentDates.length + 1}" class="p-6 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
+    } else {
+        modelsInLine.forEach(model => {
+            let parentGroup = productStructure.find(g => g.models.includes(model));
+            let groupName = parentGroup ? parentGroup.group : "-";
+            let mult = getMultiplier(model);
 
             contentHTML += `
-                <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตรายวันและ UPH — ${line.name}</h2>
-                            <p class="text-xs text-slate-400">แสดงยอดผลิตและ UPH แยกตามรุ่นและรายวัน (อ้างอิงจากแผนการผลิตและตัวคูณชิ้นส่วน)</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
-                        <div class="w-full overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
-                                        <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+                <tr class="hover:bg-blue-950/20 transition-colors">
+                    <td class="p-3 pl-4">
+                        <div class="font-bold text-slate-200">${model}</div>
+                        <div class="text-[10px] text-blue-400">Group: ${groupName} (x${mult})</div>
+                    </td>
             `;
+
             currentDates.forEach(date => {
-                contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
-            });
-            contentHTML += `
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-950/40">
-            `;
+                let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                let totalParts = baseVal * mult;
+                let calcUph = totalParts > 0 && workingHours > 0 ? Math.round(totalParts / workingHours) : 0;
 
-            contentHTML += `
-                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
-                    <td class="p-3 pl-4 text-blue-400">TOTAL LINE OUTPUT</td>
-            `;
-            currentDates.forEach(date => {
-                let sumTarget = 0;
-                modelsInLine.forEach(model => {
-                    let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                    let mult = getMultiplier(model);
-                    sumTarget += (baseVal * mult);
-                });
-                let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
                 contentHTML += `
-                    <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
-                        <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
+                    <td class="p-3 text-center border-l border-blue-950/40">
+                        <div class="font-bold text-white">${totalParts > 0 ? totalParts.toLocaleString() + ' ชิ้น' : '-'}</div>
+                        <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
                     </td>
                 `;
             });
+
             contentHTML += `</tr>`;
+        });
+    }
 
-            if (modelsInLine.length === 0) {
-                contentHTML += `<tr><td colspan="${currentDates.length + 1}" class="p-6 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
-            } else {
-                modelsInLine.forEach(model => {
-                    let parentGroup = productStructure.find(g => g.models.includes(model));
-                    let groupName = parentGroup ? parentGroup.group : "-";
-                    let mult = getMultiplier(model);
-
-                    contentHTML += `
-                        <tr class="hover:bg-blue-950/20 transition-colors">
-                            <td class="p-3 pl-4">
-                                <div class="font-bold text-slate-200">${model}</div>
-                                <div class="text-[10px] text-blue-400">Group: ${groupName} (x${mult})</div>
-                            </td>
-                    `;
-
-                    currentDates.forEach(date => {
-                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        let totalParts = baseVal * mult;
-                        let calcUph = totalParts > 0 && workingHours > 0 ? Math.round(totalParts / workingHours) : 0;
-
-                        contentHTML += `
-                            <td class="p-3 text-center border-l border-blue-950/40">
-                                <div class="font-bold text-white">${totalParts > 0 ? totalParts.toLocaleString() + ' ชิ้น' : '-'}</div>
-                                <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
-                            </td>
-                        `;
-                    });
-
-                    contentHTML += `</tr>`;
-                });
-            }
-
-            contentHTML += `
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+    contentHTML += `
+                        </tbody>
+                    </table>
                 </div>
-            `;
+            </div>
+        </div>
+    `;
 
-            contentHTML += `
-                <div class="space-y-4 pt-4">
-                    <div class="flex items-center gap-2 bg-[#090d16] p-1.5 rounded-xl border border-blue-950 w-fit">
-                        <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow">🎯 กรอกเป้าหมายรายวัน</button>
-                        <button onclick="switchLineSubTab('model')" id="linetab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">📋 เลือกรุ่นในไลน์</button>
-                    </div>
-                    <div id="line-subtab-content-container">
-                        ${generateTargetInputTableHTML(line.selectedModels, selectedDate)}
-                    </div>
-                </div>
-            `;
-
-            modalBody.innerHTML = contentHTML;
-        }
+    modalBody.innerHTML = contentHTML;
+}
 
         function switchLineSubTab(tab) {
             currentLineSubTab = tab;
