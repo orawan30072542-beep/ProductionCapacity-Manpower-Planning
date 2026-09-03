@@ -474,99 +474,116 @@
         }
 
         function renderPartsConfigPage() {
-    // โค้ดส่วนการทำงานเดิมของหน้า Parts Config...
-    
-    const kpiContainer = document.getElementById('kpi-cards-container');
-    if (kpiContainer) {
-        let tableHtml = `
-            <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
-                <div>
-                    <h3 class="text-sm font-bold text-slate-200">📊 KPI Card Line Back Plate & Bottom Plate (แยกตามไลน์ผลิต Line#1 และ Line#2)</h3>
-                    <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวัน แบ่ง Back Plate และ Bottom Plate ออกจากกันชัดเจน</p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <!-- ปุ่มลัดเปิดหน้าจัดการชิ้นส่วนย่อยด่วน -->
-                    <button onclick="switchTab('partsconfig')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-md transition-all flex items-center gap-1.5">
-                        ⚙️ จัดการชิ้นส่วนย่อยทั้งหมด
-                    </button>
-                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
-                            <th class="p-3.5 pl-6 min-w-[220px]">Sub-line / Category</th>
-        `;
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-        currentDates.forEach(date => {
-            tableHtml += `<th class="p-3.5 text-center min-w-[130px]">${date}</th>`;
-        });
+            let subLinesConfig = [
+                { name: "Press Machine (Door Metal)", materialFilter: "Door Metal", type: "Door" },
+                { name: "Glass Door (Door Glass)", materialFilter: "Door Glass", type: "Door" },
+                { name: "Back Plate (Line#1)", type: "Back Plate", lineChoice: "Line#1" },
+                { name: "Back Plate (Line#2)", type: "Back Plate", lineChoice: "Line#2" },
+                { name: "Bottom Plate (Line#1)", type: "Bottom Plate", lineChoice: "Line#1" },
+                { name: "Bottom Plate (Line#2)", type: "Bottom Plate", lineChoice: "Line#2" }
+            ];
 
-        tableHtml += `
-                            <th class="p-3.5 text-center min-w-[100px]">จัดการด่วน</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-blue-950/40">
-        `;
+            const kpiContainer = document.getElementById('kpi-cards-container');
+            if (kpiContainer) {
+                let tableHtml = `
+                    <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card Line Back Plate & Bottom Plate (แยกตามไลน์ผลิต Line#1 และ Line#2)</h3>
+                            <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวัน แบ่ง Back Plate และ Bottom Plate ออกจากกันชัดเจน</p>
+                        </div>
+                        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
+                                    <th class="p-3.5 pl-6 min-w-[220px]">Sub-line / Category</th>
+                `;
 
-        subLinesConfig.forEach(sub => {
-            tableHtml += `
-                <tr class="hover:bg-blue-950/20 transition-colors">
-                    <td class="p-3.5 pl-6 font-bold text-blue-300">
-                        <div>${sub.name}</div>
-                        <div class="text-[10px] text-cyan-400 font-normal">ยอดผลิต / UPH (ชม.)</div>
-                    </td>
-            `;
-
-            currentDates.forEach(date => {
-                let dailyTarget = 0;
-                productStructure.forEach(g => {
-                    g.models.forEach(m => {
-                        let baseTarget = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
-                        if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
-                            modelSubParts[m].forEach(p => {
-                                let partQty = baseTarget * (parseFloat(p.ratio) || 0);
-                                let lineChoice = p.lineChoice || "Line#1";
-                                if (sub.type === 'Door' && p.type === 'Door' && p.doorMaterial === sub.materialFilter) {
-                                    dailyTarget += partQty;
-                                } else if (sub.type !== 'Door' && p.type === sub.type && lineChoice === sub.lineChoice) {
-                                    dailyTarget += partQty;
-                                }
-                            });
-                        }
-                    });
+                currentDates.forEach(date => {
+                    tableHtml += `<th class="p-3.5 text-center min-w-[130px]">${date}</th>`;
                 });
 
-                let uphVal = workingHours > 0 ? Math.round(dailyTarget / workingHours) : 0;
+                tableHtml += `
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-950/40">
+                `;
+
+                subLinesConfig.forEach(sub => {
+                    tableHtml += `
+                        <tr class="hover:bg-blue-950/20 transition-colors">
+                            <td class="p-3.5 pl-6 font-bold text-blue-300">
+                                <div>${sub.name}</div>
+                                <div class="text-[10px] text-cyan-400 font-normal">ยอดผลิต / UPH (ชม.)</div>
+                            </td>
+                    `;
+
+                    currentDates.forEach(date => {
+                        let dailyTarget = 0;
+                        productStructure.forEach(g => {
+                            g.models.forEach(m => {
+                                let baseTarget = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
+                                if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
+                                    modelSubParts[m].forEach(p => {
+                                        let partQty = baseTarget * (parseFloat(p.ratio) || 0);
+                                        let lineChoice = p.lineChoice || "Line#1";
+                                        if (sub.type === 'Door' && p.type === 'Door' && p.doorMaterial === sub.materialFilter) {
+                                            dailyTarget += partQty;
+                                        } else if (sub.type !== 'Door' && p.type === sub.type && lineChoice === sub.lineChoice) {
+                                            dailyTarget += partQty;
+                                        }
+                                    });
+                                }
+                            });
+                        });
+
+                        let uphVal = workingHours > 0 ? Math.round(dailyTarget / workingHours) : 0;
+
+                        tableHtml += `
+                            <td class="p-3.5 text-center border-l border-blue-950/40">
+                                <div class="font-extrabold text-amber-400 text-sm">${dailyTarget > 0 ? dailyTarget.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                <div class="text-[10px] text-cyan-300 font-semibold mt-0.5">UPH: ${uphVal > 0 ? uphVal.toLocaleString() : '0'}</div>
+                            </td>
+                        `;
+                    });
+
+                    tableHtml += `</tr>`;
+                });
 
                 tableHtml += `
-                    <td class="p-3.5 text-center border-l border-blue-950/40">
-                        <div class="font-extrabold text-amber-400 text-sm">${dailyTarget > 0 ? dailyTarget.toLocaleString() + ' ชิ้น' : '-'}</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold mt-0.5">UPH: ${uphVal > 0 ? uphVal.toLocaleString() : '0'}</div>
-                    </td>
+                            </tbody>
+                        </table>
+                    </div>
                 `;
-            });
+                kpiContainer.innerHTML = tableHtml;
+            }
 
-            // ปุ่มคลิกสำหรับแก้ไขข้อมูลแยกตามแถว
-            tableHtml += `
-                    <td class="p-3.5 text-center border-l border-blue-950/40">
-                        <button onclick="switchTab('partsconfig')" class="bg-blue-950/60 hover:bg-blue-900 text-blue-300 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg border border-blue-800/50 transition-all">
-                            แก้ไขสัดส่วน
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
+            const selectorListContainer = document.getElementById('model-selector-list');
+            if (selectorListContainer) {
+                let listHTML = '';
+                productStructure.forEach(group => {
+                    group.models.forEach(model => {
+                        let isSelected = (activeSelectedModelForConfig === model);
+                        let mult = getMultiplier(model);
+                        listHTML += `
+                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg' : 'bg-[#0e1626] border-blue-950/60 text-slate-300 hover:bg-blue-950/30'}">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 block">${group.group}</span>
+                                    <span class="font-bold text-xs">${model}</span>
+                                </div>
+                                <span class="text-xs font-mono bg-[#090d16] px-2.5 py-1 rounded-lg text-amber-400 border border-blue-950">x${mult}</span>
+                            </div>
+                        `;
+                    });
+                });
+                selectorListContainer.innerHTML = listHTML;
+            }
 
-        tableHtml += `
-                    </tbody>
-                </table>
-            </div>
-        `;
-        kpiContainer.innerHTML = tableHtml;
-    }
-}
+            renderActiveModelEditor();
+        }
 
         function selectModelForConfig(modelName) {
             activeSelectedModelForConfig = modelName;
