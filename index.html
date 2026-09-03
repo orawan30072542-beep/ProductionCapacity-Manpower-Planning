@@ -9,10 +9,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #090d16; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
     </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen selection:bg-blue-600 selection:text-white p-4 md:p-8">
@@ -149,7 +145,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้าจากตารางด้านล่าง เพื่อกำหนดชิ้นส่วนย่อย (Door, Back Plate, Bottom Plate) พร้อมเลือกไลน์ผลิตได้อย่างอิสระ</p>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate พร้อมกำหนดไลน์ผลิต (Line#1 / Line#2)</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
@@ -161,30 +157,14 @@
                 <div class="mb-6 bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-xl" id="kpi-cards-container">
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- Model Selector Table (New Design) -->
-                    <div class="lg:col-span-5 bg-[#090d16] border border-blue-950/60 p-4 rounded-xl space-y-3 flex flex-col">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📋 ตารางเลือกรุ่นสินค้า (Models Table)</h3>
-                            <span class="text-[10px] text-blue-400 font-mono">คลิกแถวเพื่อเลือก</span>
-                        </div>
-                        <div class="relative flex-1 max-h-[520px] overflow-y-auto pr-1 custom-scrollbar border border-blue-950/80 rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead class="sticky top-0 bg-[#0e1626] text-slate-400 z-10 border-b border-blue-950/80">
-                                    <tr>
-                                        <th class="p-2.5 pl-3">Group</th>
-                                        <th class="p-2.5">Model Name</th>
-                                        <th class="p-2.5 text-center">Multiplier</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-950/40" id="model-selector-table-body">
-                                </tbody>
-                            </table>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-[#090d16] border border-blue-950/60 p-4 rounded-xl space-y-3">
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">📋 เลือกรุ่นสินค้า (Models)</h3>
+                        <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar" id="model-selector-list">
                         </div>
                     </div>
 
-                    <!-- Active Model Editor -->
-                    <div class="lg:col-span-7 bg-[#090d16] border border-blue-950/60 p-6 rounded-xl space-y-6 flex flex-col justify-between">
+                    <div class="lg:col-span-2 bg-[#090d16] border border-blue-950/60 p-6 rounded-xl space-y-6 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-center pb-4 border-b border-blue-950/60 mb-4">
                                 <div>
@@ -581,26 +561,25 @@
                 kpiContainer.innerHTML = tableHtml;
             }
 
-            // Render Model Selector Table
-            const selectorTableBody = document.getElementById('model-selector-table-body');
-            if (selectorTableBody) {
-                let tableHTML = '';
+            const selectorListContainer = document.getElementById('model-selector-list');
+            if (selectorListContainer) {
+                let listHTML = '';
                 productStructure.forEach(group => {
                     group.models.forEach(model => {
                         let isSelected = (activeSelectedModelForConfig === model);
                         let mult = getMultiplier(model);
-                        tableHTML += `
-                            <tr onclick="selectModelForConfig('${model}')" class="cursor-pointer transition-colors ${isSelected ? 'bg-blue-600/30 border-l-4 border-blue-500 text-white font-semibold' : 'hover:bg-blue-950/30 text-slate-300'}">
-                                <td class="p-2.5 pl-3 text-slate-400 font-mono text-[11px]">${group.group}</td>
-                                <td class="p-2.5 font-bold">${model}</td>
-                                <td class="p-2.5 text-center">
-                                    <span class="px-2 py-0.5 rounded bg-[#090d16] text-amber-400 font-mono border border-blue-950 text-[11px]">x${mult}</span>
-                                </td>
-                            </tr>
+                        listHTML += `
+                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg' : 'bg-[#0e1626] border-blue-950/60 text-slate-300 hover:bg-blue-950/30'}">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 block">${group.group}</span>
+                                    <span class="font-bold text-xs">${model}</span>
+                                </div>
+                                <span class="text-xs font-mono bg-[#090d16] px-2.5 py-1 rounded-lg text-amber-400 border border-blue-950">x${mult}</span>
+                            </div>
                         `;
                     });
                 });
-                selectorTableBody.innerHTML = tableHTML;
+                selectorListContainer.innerHTML = listHTML;
             }
 
             renderActiveModelEditor();
@@ -710,7 +689,7 @@
                 p.ratio = 1;
                 p.name = newType;
             }
-            renderPartsConfigPage();
+            renderActiveModelEditor();
         }
 
         function updateLineChoice(model, pIdx, choice) {
@@ -747,7 +726,6 @@
             if (modelSubParts[model] && modelSubParts[model][pIdx]) {
                 modelSubParts[model][pIdx].ratio = parseFloat(val) || 0;
                 document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(model)}`;
-                renderPartsConfigPage();
             }
         }
 
@@ -756,7 +734,8 @@
                 modelSubParts[activeSelectedModelForConfig] = [];
             }
             modelSubParts[activeSelectedModelForConfig].push({ type: "Back Plate", doorCount: "", doorMaterial: "", lineChoice: "Line#1", name: "Back Plate", ratio: 1 });
-            renderPartsConfigPage();
+            renderActiveModelEditor();
+            document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
         }
 
         function addPresetPartsToActiveModel() {
@@ -768,7 +747,8 @@
                 { type: "Bottom Plate", doorCount: "", doorMaterial: "", lineChoice: "Line#1", name: "Bottom Plate", ratio: 1 },
                 { type: "Back Plate", doorCount: "", doorMaterial: "", lineChoice: "Line#1", name: "Back Plate", ratio: 1 }
             ];
-            renderPartsConfigPage();
+            renderActiveModelEditor();
+            document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
         }
 
         function removeActiveModelPart(pIdx) {
@@ -778,7 +758,8 @@
                     return;
                 }
                 modelSubParts[activeSelectedModelForConfig].splice(pIdx, 1);
-                renderPartsConfigPage();
+                renderActiveModelEditor();
+                document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
             }
         }
 
