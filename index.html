@@ -491,7 +491,7 @@
                 let tableHtml = `
                     <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line (แยกชิ้นส่วน Back Plate และ Bottom Plate)</h3>
+                            <h3 class="text-sm font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line (แยกชิ้นส่วน Back Plate และ Bottom Plate ชัดเจน)</h3>
                             <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวันของแต่ละ Sub-line คำนวณอัตโนมัติ[cite: 3, 8]</p>
                         </div>
                         <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
@@ -620,8 +620,8 @@
                                 <span class="w-6 h-6 rounded-lg bg-[#090d16] flex items-center justify-center text-xs font-bold text-slate-400 border border-blue-950">${pIdx + 1}</span>
                                 <select onchange="updatePartMainType('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs font-bold focus:outline-none focus:border-blue-500">
                                     <option value="Door" ${part.type === 'Door' ? 'selected' : ''}>🚪 Door (ประตู)</option>
-                                    <option value="Back Plate" ${part.type === 'Back Plate' ? 'selected' : ''}>🛡️ Back Plate (ไปไลน์ Back Plate&Bottom Plate อัตโนมัติ)</option>
-                                    <option value="Bottom Plate" ${part.type === 'Bottom Plate' ? 'selected' : ''}>📦 Bottom Plate (ไปไลน์ Back Plate&Bottom Plate อัตโนมัติ)</option>
+                                    <option value="Back Plate" ${part.type === 'Back Plate' ? 'selected' : ''}>🛡️ Back Plate (แยกอิสระ)</option>
+                                    <option value="Bottom Plate" ${part.type === 'Bottom Plate' ? 'selected' : ''}>📦 Bottom Plate (แยกอิสระ)</option>
                                 </select>
                             </div>
                             
@@ -879,7 +879,6 @@
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
-            // 🛠️ แก้ไข: ตรวจสอบและดึงทุกรุ่นที่ตรงกับชิ้นส่วนในไลน์นี้อัตโนมัติ (ป้องกันข้อมูลรุ่นขึ้นไม่ครบ)
             let modelsInLine = [];
             productStructure.forEach(group => {
                 group.models.forEach(modelName => {
@@ -905,7 +904,6 @@
                 });
             });
 
-            // รวมรุ่นที่ตั้งค่าเผื่อไว้ใน selectedModels ด้วย
             if (line.selectedModels) {
                 line.selectedModels.forEach(m => {
                     if (!modelsInLine.includes(m)) modelsInLine.push(m);
@@ -915,69 +913,170 @@
             let isBackBottomLine = (line.name === "Back Plate&Bottom Plate" || line.name === "Back Plate & Bottom Plate");
 
             contentHTML += `
-                <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตชิ้นส่วนและ UPH รายวัน — ${line.name}</h2>
-                            <p class="text-xs text-slate-400">${isBackBottomLine ? 'แสดงการแยกชิ้นส่วน Back Plate และ Bottom Plate อย่างอิสระ' : 'คำนวณยอดผลิตจริงจากชิ้นส่วนย่อยที่กำหนดไว้ในแต่ละรุ่น'}</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
-                        <div class="w-full overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
-                                        <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
-                                        <th class="p-3 min-w-[200px]">ชิ้นส่วนย่อยที่ผลิตในไลน์นี้</th>
-            `;
-            currentDates.forEach(date => {
-                contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
-            });
-            contentHTML += `
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-950/40">
+                <div class="space-y-6 w-full">
             `;
 
-            contentHTML += `
-                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
-                    <td class="p-3 pl-4 text-blue-400" colspan="2">TOTAL LINE OUTPUT (ทุกรุ่นรวมกัน)</td>
-            `;
-            currentDates.forEach(date => {
-                let sumTarget = 0;
-                modelsInLine.forEach(model => {
-                    let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                    let parts = modelSubParts[model] || [];
-                    parts.forEach(p => {
-                        let matchThisLine = false;
-                        let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
+            if (isBackBottomLine) {
+                // แยกตารางออกเป็น 2 ตารางย่อย: Back Plate และ Bottom Plate
+                let subPartTypes = [
+                    { title: "🛡️ ตารางสรุปยอดผลิตและ UPH — Back Plate", typeFilter: "Back Plate" },
+                    { title: "📦 ตารางสรุปยอดผลิตและ UPH — Bottom Plate", typeFilter: "Bottom Plate" }
+                ];
 
-                        if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
-                        else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
-                        else if (lineNameNorm.includes("backplate") && (lineNameNorm.includes("bottomplate") || lineNameNorm.includes("&"))) {
-                            if (p.type === 'Back Plate' || p.type === 'Bottom Plate') matchThisLine = true;
-                        }
-                        else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') matchThisLine = true;
+                subPartTypes.forEach(subSec => {
+                    contentHTML += `
+                        <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                            <div>
+                                <h2 class="text-base font-bold text-slate-200">${subSec.title}</h2>
+                                <p class="text-xs text-slate-400">แสดงเฉพาะยอดผลิตและค่า UPH ของชิ้นส่วน ${subSec.typeFilter} แยกรายรุ่น[cite: 3, 9]</p>
+                            </div>
 
-                        if (matchThisLine) {
-                            sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
+                            <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                                <div class="w-full overflow-x-auto">
+                                    <table class="w-full text-left border-collapse text-xs">
+                                        <thead>
+                                            <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
+                                                <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+                                                <th class="p-3 min-w-[200px]">ชื่อชิ้นส่วนย่อย</th>
+                    `;
+                    currentDates.forEach(date => {
+                        contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
+                    });
+                    contentHTML += `
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-blue-950/40">
+                    `;
+
+                    // Total Row
+                    contentHTML += `
+                        <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
+                            <td class="p-3 pl-4 text-blue-400" colspan="2">TOTAL ${subSec.typeFilter.toUpperCase()} OUTPUT</td>
+                    `;
+                    currentDates.forEach(date => {
+                        let sumTarget = 0;
+                        modelsInLine.forEach(model => {
+                            let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                            let parts = modelSubParts[model] || [];
+                            parts.forEach(p => {
+                                if (p.type === subSec.typeFilter) {
+                                    sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
+                                }
+                            });
+                        });
+                        let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
+                        contentHTML += `
+                            <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
+                                <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
+                                <div class="text-[10px] text-cyan-300 font-semibold">UPH: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
+                            </td>
+                        `;
+                    });
+                    contentHTML += `</tr>`;
+
+                    modelsInLine.forEach(model => {
+                        let parentGroup = productStructure.find(g => g.models.includes(model));
+                        let groupName = parentGroup ? parentGroup.group : "-";
+                        let parts = modelSubParts[model] || [];
+                        let relevantParts = parts.filter(p => p.type === subSec.typeFilter);
+
+                        if (relevantParts.length > 0) {
+                            let partNamesStr = relevantParts.map(p => `${p.name} (x${p.ratio})`).join(', ');
+                            contentHTML += `
+                                <tr class="hover:bg-blue-950/20 transition-colors">
+                                    <td class="p-3 pl-4">
+                                        <div class="font-bold text-slate-200">${model}</div>
+                                        <div class="text-[10px] text-blue-400">Group: ${groupName}</div>
+                                    </td>
+                                    <td class="p-3 text-slate-300 text-[11px]">${partNamesStr}</td>
+                            `;
+
+                            currentDates.forEach(date => {
+                                let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                                let modelPartSum = 0;
+                                relevantParts.forEach(p => {
+                                    modelPartSum += (baseVal * (parseFloat(p.ratio) || 0));
+                                });
+                                let calcUph = modelPartSum > 0 && workingHours > 0 ? Math.round(modelPartSum / workingHours) : 0;
+
+                                contentHTML += `
+                                    <td class="p-3 text-center border-l border-blue-950/40">
+                                        <div class="font-bold text-white">${modelPartSum > 0 ? modelPartSum.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                        <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
+                                    </td>
+                                `;
+                            });
+                            contentHTML += `</tr>`;
                         }
                     });
-                });
-                let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
-                contentHTML += `
-                    <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
-                        <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
-                    </td>
-                `;
-            });
-            contentHTML += `</tr>`;
 
-            if (modelsInLine.length === 0) {
-                contentHTML += `<tr><td colspan="${currentDates.length + 2}" class="p-6 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
+                    contentHTML += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
             } else {
+                // สำหรับไลน์อื่นๆ แสดงตารางปกติ
+                contentHTML += `
+                    <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตชิ้นส่วนและ UPH รายวัน — ${line.name}</h2>
+                            <p class="text-xs text-slate-400">คำนวณยอดผลิตจริงจากชิ้นส่วนย่อยที่กำหนดไว้ในแต่ละรุ่น</p>
+                        </div>
+
+                        <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                            <div class="w-full overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
+                                            <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+                                            <th class="p-3 min-w-[200px]">ชิ้นส่วนย่อยที่ผลิตในไลน์นี้</th>
+                `;
+                currentDates.forEach(date => {
+                    contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
+                });
+                contentHTML += `
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-blue-950/40">
+                `;
+
+                contentHTML += `
+                    <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
+                        <td class="p-3 pl-4 text-blue-400" colspan="2">TOTAL LINE OUTPUT (ทุกรุ่นรวมกัน)</td>
+                `;
+                currentDates.forEach(date => {
+                    let sumTarget = 0;
+                    modelsInLine.forEach(model => {
+                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        let parts = modelSubParts[model] || [];
+                        parts.forEach(p => {
+                            let matchThisLine = false;
+                            let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
+
+                            if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
+                            else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
+                            else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') matchThisLine = true;
+
+                            if (matchThisLine) {
+                                sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
+                            }
+                        });
+                    });
+                    let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
+                    contentHTML += `
+                        <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
+                            <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
+                            <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
+                        </td>
+                    `;
+                });
+                contentHTML += `</tr>`;
+
                 modelsInLine.forEach(model => {
                     let parentGroup = productStructure.find(g => g.models.includes(model));
                     let groupName = parentGroup ? parentGroup.group : "-";
@@ -987,9 +1086,6 @@
                         let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
                         if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') return true;
                         if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') return true;
-                        if (lineNameNorm.includes("backplate") && (lineNameNorm.includes("bottomplate") || lineNameNorm.includes("&"))) {
-                            if (p.type === 'Back Plate' || p.type === 'Bottom Plate') return true;
-                        }
                         if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') return true;
                         return false;
                     });
@@ -1025,16 +1121,17 @@
 
                     contentHTML += `</tr>`;
                 });
-            }
 
-            contentHTML += `
-                                </tbody>
-                            </table>
+                contentHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
 
+            contentHTML += `</div>`;
             modalBody.innerHTML = contentHTML;
         }
 
