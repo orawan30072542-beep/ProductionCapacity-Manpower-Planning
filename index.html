@@ -263,7 +263,7 @@
             { group: "TM21", models: ["TM-21 K", "TM-21 T"] }
         ];
 
-        let productionLines = [
+       let productionLines = [
             { 
                 name: "Press Machine", 
                 description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (รวม Door Metal)", 
@@ -286,15 +286,68 @@
                     }
                 ]
             },
-            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ (Door Glass)", hasSubMachines: false, selectedModels: ["T DOOR H Glass", "T DOOR H Glass WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
-            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", hasSubMachines: false, selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
-            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", hasSubMachines: false, selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
-            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", hasSubMachines: false, selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
-            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", hasSubMachines: false, selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { 
+                name: "Glass Door", 
+                description: "สายการผลิตกระจกและประตูกระจกพิเศษ (Glass Door)", 
+                hasSubMachines: true, 
+                subMachines: [
+                    { name: "Door Frame #1", selectedModels: ["T DOOR H Glass", "T DOOR H Glass WD", "SBS 620 Glass", "SBS 620 Glass WD"], processes: [] },
+                    { name: "Door Frame #2", selectedModels: [], processes: [] },
+                    { name: "Door Glass #1", selectedModels: [], processes: [] },
+                    { name: "Door Glass #2", selectedModels: [], processes: [] }
+                ],
+                selectedModels: [] 
+            },
+            { 
+                name: "Back Plate&Bottom Plate", 
+                description: "ประกอบแผ่นหลังและแผ่นฐานตู้", 
+                hasSubMachines: true, 
+                subMachines: [
+                    { name: "Welding", selectedModels: [], processes: [] },
+                    { name: "Back Plate #1", selectedModels: [], processes: [] },
+                    { name: "Back Plate #2", selectedModels: [], processes: [] },
+                    { name: "Bottom Plate #1", selectedModels: [], processes: [] },
+                    { name: "Bottom Plate #2", selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"], processes: [] }
+                ],
+                selectedModels: [] 
+            },
+            { 
+                name: "Door A", 
+                description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", 
+                hasSubMachines: true, 
+                subMachines: [
+                    { name: "Door Bend A", selectedModels: [], processes: [] },
+                    { name: "Door Liner", selectedModels: [], processes: [] },
+                    { name: "Door Foam A", selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"], processes: [] }
+                ],
+                selectedModels: [] 
+            },
+            { 
+                name: "Door B", 
+                description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", 
+                hasSubMachines: true, 
+                subMachines: [
+                    { name: "Door Bend B", selectedModels: [], processes: [] },
+                    { name: "Door Foam B", selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"], processes: [] }
+                ],
+                selectedModels: [] 
+            },
+            { 
+                name: "Door C", 
+                description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์[cite: 9]", 
+                hasSubMachines: true, 
+                subMachines: [
+                    { name: "Door Bend C", selectedModels: [], processes: [] },
+                    { name: "Door Liner", selectedModels: [], processes: [] },
+                    { name: "Door Foam C", selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"], processes: [] }
+                ],
+                selectedModels: [] 
+            },
             { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", hasSubMachines: false, selectedModels: ["BM23", "BM23 Café", "BM23 DND", "BM T-Door 23 Café", "BM T-Door 23", "BM29", "BM29 Café", "BM29 DND", "BM T-Door 28 Café", "BM T-Door 28"] },
             { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", hasSubMachines: false, selectedModels: [] },
             { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false, selectedModels: [] }
         ];
+```[cite: 9]
 
         let modelSubParts = {};
         let activeSelectedModelForConfig = "159C";
