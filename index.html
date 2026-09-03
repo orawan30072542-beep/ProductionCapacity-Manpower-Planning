@@ -1,4 +1,4 @@
-[cite: 8]<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -286,28 +286,7 @@
                 ]
             },
             { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ (Door Glass)", hasSubMachines: false, selectedModels: ["T DOOR H Glass", "T DOOR H Glass WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
-            { 
-                name: "Back Plate&Bottom Plate", 
-                description: "ประกอบแผ่นหลังและแผ่นฐานตู้ (แยก 3 สถานีงาน)", 
-                hasSubMachines: true,
-                subMachines: [
-                    { 
-                        name: "1. Welding Machine", 
-                        selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"],
-                        processes: [{ name: "Spot Welding", timePerUnit: 15 }]
-                    },
-                    { 
-                        name: "2. Back Plate", 
-                        selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"],
-                        processes: [{ name: "Assembly Back Plate", timePerUnit: 12 }]
-                    },
-                    { 
-                        name: "3. Bottom Plate", 
-                        selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"],
-                        processes: [{ name: "Assembly Bottom Plate", timePerUnit: 12 }]
-                    }
-                ]
-            },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", hasSubMachines: false, selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
             { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", hasSubMachines: false, selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
             { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", hasSubMachines: false, selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
             { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", hasSubMachines: false, selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
@@ -894,7 +873,7 @@
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
             document.getElementById('modal-line-title').innerText = line.name;
-            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Sub-Stations Detail" : `Line #${currentActiveLineIndex + 1}`;
+            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
             document.getElementById('modal-footer-date').innerText = selectedDate;
 
             const modalBody = document.getElementById('modal-body-content');
@@ -905,10 +884,10 @@
                     contentHTML += `
                         <div class="bg-[#0e1626] p-6 rounded-2xl border border-blue-950/60 flex justify-between items-center shadow-xl">
                             <div>
-                                <p class="text-sm text-blue-400 font-bold">🏭 เลือกสถานีงานย่อยด้านใน (${line.name})</p>
-                                <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละสถานีงาน</p>
+                                <p class="text-sm text-blue-400 font-bold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
+                                <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละกลุ่ม</p>
                             </div>
-                            <span class="text-xs bg-blue-600/20 text-blue-300 px-4 py-2 rounded-full border border-blue-500/30 font-semibold">${line.subMachines.length} สถานีงาน</span>
+                            <span class="text-xs bg-blue-600/20 text-blue-300 px-4 py-2 rounded-full border border-blue-500/30 font-semibold">3 Machine Groups</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     `;
@@ -959,7 +938,7 @@
                         <div class="flex items-center justify-between bg-[#0e1626] p-5 rounded-2xl border border-blue-950/60 flex-wrap gap-4 shadow-xl">
                             <div class="flex items-center gap-4">
                                 <button onclick="backToSubMachineList()" class="bg-[#090d16] hover:bg-blue-950/60 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all border border-blue-950 flex items-center gap-1.5">
-                                    ⬅️ กลับหน้าเลือกสถานีงาน
+                                    ⬅️ กลับหน้าเลือกกลุ่มเครื่อง
                                 </button>
                                 <div class="border-l border-blue-950 pl-4">
                                     <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
