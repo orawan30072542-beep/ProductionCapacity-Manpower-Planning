@@ -1002,33 +1002,33 @@
             document.getElementById('line-modal').classList.remove('hidden');
         }
 
-        let currentLineSubTab = 'target';
-        function switchLineSubTab(tab) {
-            currentLineSubTab = tab;
-            const btnTarget = document.getElementById('linetab-btn-target');
-            const btnParts = document.getElementById('linetab-btn-parts');
-            const btnModel = document.getElementById('linetab-btn-model');
-            const container = document.getElementById('line-subtab-content-container');
-            const line = productionLines[currentActiveLineIndex];
-            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+       let currentLineSubTab = 'target';
 
-            if (tab === 'target') {
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
-            } else if (tab === 'parts') {
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
-            } else {
-                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-                container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
-            }
-        }
+function switchLineSubTab(tab) {
+    currentLineSubTab = tab;
+    const btnTarget = document.getElementById('linetab-btn-target');
+    const btnParts = document.getElementById('linetab-btn-parts');
+    const btnModel = document.getElementById('linetab-btn-model');
+    const container = document.getElementById('line-subtab-content-container');
+    const line = productionLines[currentActiveLineIndex];
+    const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+
+    if (tab === 'target') {
+        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
+    } else if (tab === 'parts') {
+        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
+    } else {
+        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+        container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
+    }
 function renderModalContent() {
     const line = productionLines[currentActiveLineIndex];
     const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
