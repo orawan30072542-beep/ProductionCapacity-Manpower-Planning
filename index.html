@@ -145,7 +145,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate พร้อมกำหนดไลน์ผลิต (Line#1 / Line#2)</p>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate พร้อมกำหนดไลน์ผลิต (Line#1 / Line#2)[cite: 10]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
@@ -177,7 +177,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกไลน์ผลิต (Line#1 / Line#2) สำหรับ Back Plate และ Bottom Plate ได้อย่างอิสระ</p>
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกไลน์ผลิต (Line#1 / Line#2) สำหรับ Back Plate และ Bottom Plate ได้อย่างอิสระ[cite: 10]</p>
 
                             <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar" id="active-model-parts-editor">
                             </div>
@@ -267,7 +267,6 @@
                 name: "Press Machine", 
                 description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (รวม Door Metal)", 
                 hasSubMachines: true,
-                selectedModels: [],
                 subMachines: [
                     { 
                         name: "400T Press Machine", 
@@ -311,14 +310,6 @@
                         ];
                     }
                 });
-            });
-
-            // ตรวจสอบและกำหนดค่าเริ่มต้นให้ selectedModels ของแต่ละไลน์หากยังไม่มี
-            productionLines.forEach(line => {
-                if (!line.selectedModels || line.selectedModels.length === 0) {
-                    line.selectedModels = [];
-                    productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
-                }
             });
         }
 
@@ -499,8 +490,8 @@
                 let tableHtml = `
                     <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card Line Back Plate & Bottom Plate (แยกตามไลน์ผลิต Line#1 และ Line#2)</h3>
-                            <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวัน แบ่ง Back Plate และ Bottom Plate ออกจากกันชัดเจน</p>
+                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card Line Back Plate & Bottom Plate (แยกตามไลน์ผลิต Line#1 และ Line#2)[cite: 10]</h3>
+                            <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนที่ต้องผลิตและค่า UPH รายวัน แบ่ง Back Plate และ Bottom Plate ออกจากกันชัดเจน[cite: 10]</p>
                         </div>
                         <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Working Hours: ${workingHours} h/day</span>
                     </div>
@@ -660,7 +651,7 @@
 
                         ${isPlate ? `
                             <div class="pt-2 border-t border-blue-950/40">
-                                <label class="block text-[10px] text-slate-400 mb-1">เลือกไลน์การผลิต (Shift Line Select):</label>
+                                <label class="block text-[10px] text-slate-400 mb-1">เลือกไลน์การผลิต (Shift Line Select):[cite: 10]</label>
                                 <select onchange="updateLineChoice('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-amber-300 text-xs font-bold focus:outline-none focus:border-blue-500">
                                     <option value="Line#1" ${part.lineChoice === 'Line#1' ? 'selected' : ''}>🏭 Line #1</option>
                                     <option value="Line#2" ${part.lineChoice === 'Line#2' ? 'selected' : ''}>🏭 Line #2</option>
@@ -792,17 +783,19 @@
                 let lineTotalTargetParts = 0;
                 let groupSummaryMap = {};
 
-                if (!line.selectedModels) {
-                    line.selectedModels = [];
-                    productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
-                }
-
                 productStructure.forEach(group => {
                     group.models.forEach(modelName => {
                         let baseVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
                         if (baseVal === 0) return;
 
-                        if (!line.selectedModels.includes(modelName)) return;
+                        // ตรวจสอบรุ่นที่ถูกเปิดใช้งานในไลน์นี้ (Model Toggles)
+                        let isModelAllowedInLine = true;
+                        if (line.selectedModels && Array.isArray(line.selectedModels)) {
+                            if (!line.selectedModels.includes(modelName)) {
+                                isModelAllowedInLine = false;
+                            }
+                        }
+                        if (!isModelAllowedInLine) return;
 
                         let parts = modelSubParts[modelName] || [];
                         let modelLinePartsTotal = 0;
@@ -911,17 +904,19 @@
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
+            // ตรวจสอบว่ามี array เก็บ selectedModels หรือยัง ถ้ายังให้ตั้งค่าเริ่มต้นเป็นทุกรุ่นที่มีในระบบ
             if (!line.selectedModels) {
                 line.selectedModels = [];
                 productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
             }
 
+            // ส่วนที่เพิ่มใหม่: แผงปุ่มกดเลือกรุ่นที่ขึ้นได้ (Model Selection Toggles)
             contentHTML += `
                 <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
                     <div class="flex justify-between items-center flex-wrap gap-2">
                         <div>
                             <h3 class="text-sm font-bold text-slate-200">🎛️ ตั้งค่าเลือกรุ่นที่ขึ้นผลิตได้ในไลน์นี้ (Model Toggles)</h3>
-                            <p class="text-xs text-slate-400">คลิกปุ่มรุ่นสินค้าเพื่อเปิด/ปิด การนำยอดผลิตของรุ่นนั้นมาคำนวณในไลน์นี้</p>
+                            <p class="text-xs text-slate-400">คลิกปุ่มรุ่นสินค้าเพื่อเปิด/ปิด การนำยอดผลิตของรุ่นนั้นมาคำนวณในไลน์นี้[cite: 10]</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="toggleAllModelsForLine(true)" class="bg-blue-950 hover:bg-blue-900 text-blue-300 text-[11px] font-semibold px-3 py-1.5 rounded-lg border border-blue-800/50">เลือกทั้งหมด</button>
@@ -964,10 +959,10 @@
                             <div class="flex justify-between items-center flex-wrap gap-2">
                                 <div>
                                     <h2 class="text-base font-bold text-slate-200">${subSec.title}</h2>
-                                    <p class="text-xs text-slate-400">แยกออเดอร์และการผลิตสำหรับ ${subSec.typeFilter} (Line#1 และ Line#2)</p>
+                                    <p class="text-xs text-slate-400">แยกออเดอร์และการผลิตสำหรับ ${subSec.typeFilter} (Line#1 และ Line#2)[cite: 10]</p>
                                 </div>
                                 <button onclick="manualSaveData()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-md">
-                                    💾 บันทึกข้อมูล ${subSec.typeFilter}
+                                    💾 บันทึกข้อมูล ${subSec.typeFilter}[cite: 10]
                                 </button>
                             </div>
 
@@ -996,6 +991,7 @@
                         let lineTotal = 0;
                         productStructure.forEach(g => {
                             g.models.forEach(model => {
+                                // ตรวจสอบการเปิดใช้งานรุ่นในไลน์นี้
                                 if (!line.selectedModels.includes(model)) return;
 
                                 let baseVal = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
@@ -1043,6 +1039,7 @@
                 });
 
             } else {
+                // สำหรับไลน์ทั่วไปที่มีการกรองรุ่น
                 contentHTML += `
                     <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
                         <div>
@@ -1118,6 +1115,7 @@
             modalBody.innerHTML = contentHTML;
         }
 
+        // ฟังก์ชันช่วยเปิด/ปิดรุ่นในไลน์ที่กำลังเปิดดูอยู่
         function toggleModelForActiveLine(modelName) {
             if (currentActiveLineIndex === null) return;
             let line = productionLines[currentActiveLineIndex];
