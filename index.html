@@ -788,6 +788,15 @@
                         let baseVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
                         if (baseVal === 0) return;
 
+                        // ตรวจสอบรุ่นที่ถูกเปิดใช้งานในไลน์นี้ (Model Toggles)
+                        let isModelAllowedInLine = true;
+                        if (line.selectedModels && Array.isArray(line.selectedModels)) {
+                            if (!line.selectedModels.includes(modelName)) {
+                                isModelAllowedInLine = false;
+                            }
+                        }
+                        if (!isModelAllowedInLine) return;
+
                         let parts = modelSubParts[modelName] || [];
                         let modelLinePartsTotal = 0;
 
@@ -853,7 +862,7 @@
                         `;
                     });
                 } else {
-                    cardsHTML += `<div class="text-xs text-slate-500 italic">ไม่มีข้อมูลชิ้นส่วนในไลน์นี้</div>`;
+                    cardsHTML += `<div class="text-xs text-slate-500 italic">ไม่มีข้อมูลชิ้นส่วนในไลน์นี้ (ตรวจสอบการเปิดรุ่น)</div>`;
                 }
 
                 cardsHTML += `
@@ -895,37 +904,50 @@
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
-            let modelsInLine = [];
+            // ตรวจสอบว่ามี array เก็บ selectedModels หรือยัง ถ้ายังให้ตั้งค่าเริ่มต้นเป็นทุกรุ่นที่มีในระบบ
+            if (!line.selectedModels) {
+                line.selectedModels = [];
+                productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
+            }
+
+            // ส่วนที่เพิ่มใหม่: แผงปุ่มกดเลือกรุ่นที่ขึ้นได้ (Model Selection Toggles)
+            contentHTML += `
+                <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                    <div class="flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">🎛️ ตั้งค่าเลือกรุ่นที่ขึ้นผลิตได้ในไลน์นี้ (Model Toggles)</h3>
+                            <p class="text-xs text-slate-400">คลิกปุ่มรุ่นสินค้าเพื่อเปิด/ปิด การนำยอดผลิตของรุ่นนั้นมาคำนวณในไลน์นี้[cite: 10]</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleAllModelsForLine(true)" class="bg-blue-950 hover:bg-blue-900 text-blue-300 text-[11px] font-semibold px-3 py-1.5 rounded-lg border border-blue-800/50">เลือกทั้งหมด</button>
+                            <button onclick="toggleAllModelsForLine(false)" class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 text-[11px] font-semibold px-3 py-1.5 rounded-lg border border-rose-900/50">ยกเลิกทั้งหมด</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-48 overflow-y-auto p-2 bg-[#090d16] rounded-xl border border-blue-950 custom-scrollbar">
+            `;
+
             productStructure.forEach(group => {
-                group.models.forEach(modelName => {
-                    let parts = modelSubParts[modelName] || [];
-                    let matchThisLine = false;
-                    let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
-
-                    parts.forEach(p => {
-                        if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') {
-                            matchThisLine = true;
-                        } else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
-                            matchThisLine = true;
-                        } else if (lineNameNorm.includes("backplate") && (lineNameNorm.includes("bottomplate") || lineNameNorm.includes("&"))) {
-                            if (p.type === 'Back Plate' || p.type === 'Bottom Plate') matchThisLine = true;
-                        } else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') {
-                            matchThisLine = true;
-                        }
-                    });
-
-                    if (matchThisLine && !modelsInLine.includes(modelName)) {
-                        modelsInLine.push(modelName);
-                    }
+                group.models.forEach(model => {
+                    let isChecked = line.selectedModels.includes(model);
+                    contentHTML += `
+                        <button onclick="toggleModelForActiveLine('${model}')" class="px-3 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center justify-between gap-1 ${isChecked ? 'bg-blue-600/30 border-blue-500 text-white shadow-md' : 'bg-[#0e1626]/60 border-blue-950/80 text-slate-400 hover:text-slate-200'}">
+                            <span class="truncate">${model}</span>
+                            <span class="text-[10px] font-mono">${isChecked ? '✓' : '○'}</span>
+                        </button>
+                    `;
                 });
             });
+
+            contentHTML += `
+                    </div>
+                </div>
+            `;
 
             let isBackBottomLine = (line.name.includes("Back Plate") && line.name.includes("Bottom Plate"));
 
             contentHTML += `<div class="space-y-6 w-full">`;
 
             if (isBackBottomLine) {
-                // แยกหน้าจอและตารางออกเป็น 2 หน้า (แยก Back Plate และ Bottom Plate ตามความต้องการ)[cite: 10]
                 let subPartTypes = [
                     { title: "🛡️ ตารางสรุปยอดผลิตและ UPH แยกตามไลน์ (Back Plate)", typeFilter: "Back Plate" },
                     { title: "📦 ตารางสรุปยอดผลิตและ UPH แยกตามไลน์ (Bottom Plate)", typeFilter: "Bottom Plate" }
@@ -947,7 +969,6 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     `;
 
-                    // แสดงแยกทีละไลน์ (Line#1 และ Line#2)
                     ["Line#1", "Line#2"].forEach(targetLine => {
                         contentHTML += `
                             <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950 space-y-3">
@@ -968,28 +989,33 @@
                         `;
 
                         let lineTotal = 0;
-                        modelsInLine.forEach(model => {
-                            let baseVal = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
-                            let parts = modelSubParts[model] || [];
-                            let modelPartQty = 0;
+                        productStructure.forEach(g => {
+                            g.models.forEach(model => {
+                                // ตรวจสอบการเปิดใช้งานรุ่นในไลน์นี้
+                                if (!line.selectedModels.includes(model)) return;
 
-                            parts.forEach(p => {
-                                if (p.type === subSec.typeFilter && (p.lineChoice || "Line#1") === targetLine) {
-                                    modelPartQty += (baseVal * (parseFloat(p.ratio) || 0));
+                                let baseVal = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
+                                let parts = modelSubParts[model] || [];
+                                let modelPartQty = 0;
+
+                                parts.forEach(p => {
+                                    if (p.type === subSec.typeFilter && (p.lineChoice || "Line#1") === targetLine) {
+                                        modelPartQty += (baseVal * (parseFloat(p.ratio) || 0));
+                                    }
+                                });
+
+                                if (modelPartQty > 0) {
+                                    lineTotal += modelPartQty;
+                                    let uVal = workingHours > 0 ? Math.round(modelPartQty / workingHours) : 0;
+                                    contentHTML += `
+                                        <tr>
+                                            <td class="p-2 font-medium text-slate-300">${model}</td>
+                                            <td class="p-2 text-center font-bold text-white">${modelPartQty.toLocaleString()}</td>
+                                            <td class="p-2 text-center text-cyan-300">${uVal}</td>
+                                        </tr>
+                                    `;
                                 }
                             });
-
-                            if (modelPartQty > 0) {
-                                lineTotal += modelPartQty;
-                                let uVal = workingHours > 0 ? Math.round(modelPartQty / workingHours) : 0;
-                                contentHTML += `
-                                    <tr>
-                                        <td class="p-2 font-medium text-slate-300">${model}</td>
-                                        <td class="p-2 text-center font-bold text-white">${modelPartQty.toLocaleString()}</td>
-                                        <td class="p-2 text-center text-cyan-300">${uVal}</td>
-                                    </tr>
-                                `;
-                            }
                         });
 
                         let totalUph = workingHours > 0 ? Math.round(lineTotal / workingHours) : 0;
@@ -1013,13 +1039,73 @@
                 });
 
             } else {
+                // สำหรับไลน์ทั่วไปที่มีการกรองรุ่น
                 contentHTML += `
                     <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
                         <div>
                             <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตชิ้นส่วนและ UPH รายวัน — ${line.name}</h2>
                         </div>
-                        <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden p-4">
-                            <p class="text-xs text-slate-300">แสดงผลรวมกำลังการผลิตของไลน์ ${line.name} เรียบร้อยแล้ว</p>
+                        <div class="overflow-x-auto bg-[#090d16] rounded-xl border border-blue-950 p-4">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="text-slate-400 border-b border-blue-950">
+                                        <th class="p-2">Model</th>
+                                        <th class="p-2 text-center">${selectedDate} (ยอดรวมชิ้นส่วน)</th>
+                                        <th class="p-2 text-center">UPH</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-blue-950/40">
+                `;
+
+                let totalQtyGeneral = 0;
+                productStructure.forEach(g => {
+                    g.models.forEach(model => {
+                        if (!line.selectedModels.includes(model)) return;
+
+                        let baseVal = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
+                        if (baseVal === 0) return;
+
+                        let parts = modelSubParts[model] || [];
+                        let modelLinePartsTotal = 0;
+                        let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
+
+                        parts.forEach(p => {
+                            let matchThisLine = false;
+                            if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') {
+                                matchThisLine = true;
+                            } else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
+                                matchThisLine = true;
+                            } else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && p.type === 'Door') {
+                                matchThisLine = true;
+                            }
+                            if (matchThisLine) {
+                                modelLinePartsTotal += baseVal * (parseFloat(p.ratio) || 0);
+                            }
+                        });
+
+                        if (modelLinePartsTotal > 0) {
+                            totalQtyGeneral += modelLinePartsTotal;
+                            let uVal = workingHours > 0 ? Math.round(modelLinePartsTotal / workingHours) : 0;
+                            contentHTML += `
+                                <tr>
+                                    <td class="p-2 font-medium text-slate-300">${model}</td>
+                                    <td class="p-2 text-center font-bold text-white">${modelLinePartsTotal.toLocaleString()}</td>
+                                    <td class="p-2 text-center text-cyan-300">${uVal}</td>
+                                </tr>
+                            `;
+                        }
+                    });
+                });
+
+                let totalUphGeneral = workingHours > 0 ? Math.round(totalQtyGeneral / workingHours) : 0;
+
+                contentHTML += `
+                                </tbody>
+                            </table>
+                            <div class="pt-3 mt-3 border-t border-blue-950 flex justify-between items-center text-xs font-bold">
+                                <span class="text-slate-300">รวมทั้งหมดในไลน์ ${line.name}:</span>
+                                <span class="text-amber-400">${totalQtyGeneral.toLocaleString()} ชิ้น (UPH: ${totalUphGeneral})</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1027,6 +1113,37 @@
 
             contentHTML += `</div>`;
             modalBody.innerHTML = contentHTML;
+        }
+
+        // ฟังก์ชันช่วยเปิด/ปิดรุ่นในไลน์ที่กำลังเปิดดูอยู่
+        function toggleModelForActiveLine(modelName) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            if (!line.selectedModels) {
+                line.selectedModels = [];
+                productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
+            }
+
+            let idx = line.selectedModels.indexOf(modelName);
+            if (idx > -1) {
+                line.selectedModels.splice(idx, 1);
+            } else {
+                line.selectedModels.push(modelName);
+            }
+
+            renderModalContent();
+            manualSaveDataSilent();
+        }
+
+        function toggleAllModelsForLine(selectState) {
+            if (currentActiveLineIndex === null) return;
+            let line = productionLines[currentActiveLineIndex];
+            line.selectedModels = [];
+            if (selectState) {
+                productStructure.forEach(g => g.models.forEach(m => line.selectedModels.push(m)));
+            }
+            renderModalContent();
+            manualSaveDataSilent();
         }
 
         function closeLineModal() {
@@ -1180,6 +1297,7 @@
                     if (parsed.planDatabase) planDatabase = parsed.planDatabase;
                     if (parsed.currentDates) currentDates = parsed.currentDates;
                     if (parsed.modelSubParts) modelSubParts = parsed.modelSubParts;
+                    if (parsed.productionLines) productionLines = parsed.productionLines;
                     if (parsed.workingHours) {
                         document.getElementById('working-hours').value = parsed.workingHours;
                     }
