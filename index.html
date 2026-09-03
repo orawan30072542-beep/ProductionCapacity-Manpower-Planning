@@ -22,23 +22,10 @@
                 <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-blue-600 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-xs mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model, ไลน์ย่อย และกะการผลิต (Shift Allocation)</p>
+                <p class="text-slate-400 text-xs mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model และไลน์การผลิต (กำหนดชิ้นส่วนย่อยอิสระ)</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
-                <!-- Shift Selector Button -->
-                <div class="bg-[#090d16] p-1 rounded-xl border border-blue-950/80 flex items-center gap-1 shadow-inner">
-                    <button onclick="switchShift('ALL')" id="shift-btn-ALL" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-md">
-                        ⚡ ทุกกะ (All)
-                    </button>
-                    <button onclick="switchShift('Shift A')" id="shift-btn-Shift A" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        🌅 กะ A
-                    </button>
-                    <button onclick="switchShift('Shift B')" id="shift-btn-Shift B" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        🌙 กะ B
-                    </button>
-                </div>
-
                 <div class="bg-[#090d16] p-1.5 rounded-xl border border-blue-950/80 flex items-center gap-1 shadow-inner">
                     <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
                         📋 Matrix View
@@ -49,6 +36,10 @@
                     <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
                         ⚙️ จัดการชิ้นส่วน & KPI
                     </button>
+                </div>
+
+                <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-[#090d16] px-4 py-2.5 rounded-xl border border-blue-950/80 shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> ระบบพร้อมใช้งาน
                 </div>
             </div>
         </header>
@@ -134,7 +125,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, ไลน์ย่อย และเป้าหมายการผลิต</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิต</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -153,14 +144,18 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate (Line 1/2) หรือ Bottom Plate (Line 1/2)</p>
+                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกวันที่:</span>
+                        <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
                         <select id="config-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
                         </select>
                     </div>
+                </div>
+
+                <!-- KPI Card: Back Plate & Bottom Plate พร้อมตัวเลือก Shift ไลน์ผลิต (Line#1 / Line#2) -->
+                <div class="mb-6 bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-xl" id="kpi-cards-container">
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -183,7 +178,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate (Line 1 หรือ 2) หรือ Bottom Plate (Line 1 หรือ 2) พร้อมระบุสัดส่วนและกะการผลิต</p>
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate หรือ Bottom Plate พร้อมระบุจำนวน</p>
 
                             <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar" id="active-model-parts-editor">
                             </div>
@@ -195,7 +190,7 @@
                                     + เพิ่มชิ้นส่วนย่อยใหม่
                                 </button>
                                 <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-900/60 transition-all">
-                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน[cite: 3]
+                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน (Door, Bottom, Back)
                                 </button>
                             </div>
                             <button onclick="saveActiveModelConfig()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all">
@@ -216,7 +211,7 @@
                 <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
                 <div>
                     <h3 id="modal-line-title" class="text-xl font-bold text-white">ชื่อไลน์การผลิต</h3>
-                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยอิสระต่อรุ่น, ไลน์ย่อย และเป้าหมายการผลิต</p>
+                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยอิสระต่อรุ่น และเป้าหมายการผลิต</p>
                 </div>
             </div>
             
@@ -236,7 +231,7 @@
 
         <div class="p-4 bg-[#0e1626] border-t border-blue-950/60 flex justify-between items-center px-8 shrink-0">
             <div class="text-xs text-slate-400">
-                ระบบจัดการสายการผลิตอัจฉริยะ (Production Line Multi-Part & Shift View)
+                ระบบจัดการสายการผลิตอัจฉริยะ (Production Line Multi-Part View)
             </div>
             <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-blue-600/30 transition-all">
                 บันทึกและกลับสู่หน้าหลัก
@@ -269,21 +264,41 @@
         ];
 
         let productionLines = [
-            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (รวม Door Metal)", hasSubMachines: false, selectedModels: [] },
-            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ (Door Glass)", hasSubMachines: false, selectedModels: [] },
-            { name: "Back Plate Line 1", description: "สายการผลิตแผ่นหลังตู้ (Back Plate - ไลน์ย่อย 1)", hasSubMachines: false, selectedModels: [] },
-            { name: "Back Plate Line 2", description: "สายการผลิตแผ่นหลังตู้ (Back Plate - ไลน์ย่อย 2)", hasSubMachines: false, selectedModels: [] },
-            { name: "Bottom Plate Line 1", description: "สายการผลิตแผ่นฐานตู้ (Bottom Plate - ไลน์ย่อย 1)", hasSubMachines: false, selectedModels: [] },
-            { name: "Bottom Plate Line 2", description: "สายการผลิตแผ่นฐานตู้ (Bottom Plate - ไลน์ย่อย 2)", hasSubMachines: false, selectedModels: [] },
-            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", hasSubMachines: false, selectedModels: [] },
-            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", hasSubMachines: false, selectedModels: [] },
-            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", hasSubMachines: false, selectedModels: [] },
-            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", hasSubMachines: false, selectedModels: [] }
+            { 
+                name: "Press Machine", 
+                description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม (รวม Door Metal)", 
+                hasSubMachines: true,
+                subMachines: [
+                    { 
+                        name: "400T Press Machine", 
+                        selectedModels: ["159C", "159F"],
+                        processes: [{ name: "Blanking", timePerUnit: 15 }]
+                    },
+                    { 
+                        name: "200T Press Machine", 
+                        selectedModels: ["199C", "199F", "TM545#212", "TM545#235"],
+                        processes: [{ name: "Piercing", timePerUnit: 10 }]
+                    },
+                    { 
+                        name: "100T Press Machine", 
+                        selectedModels: ["G3 ECO 320", "G3 ECO 350"],
+                        processes: [{ name: "Trimming", timePerUnit: 12 }]
+                    }
+                ]
+            },
+            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ (Door Glass)", hasSubMachines: false, selectedModels: ["T DOOR H Glass", "T DOOR H Glass WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้ (แยก Back Plate และ Bottom Plate พร้อมเลือก Line#1 / Line#2)", hasSubMachines: false, selectedModels: ["TM10", "TM12", "TM14", "TM-19 K", "TM-19 L", "TM-21 K", "TM-21 T"] },
+            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐานและตู้แช่ทั่วไป", hasSubMachines: false, selectedModels: ["FUF14 D", "FUF14 L", "FUF14 Q", "FUF14 S", "FUF18 D", "FUF18 L", "FUF18 Q", "FUF18 S", "FUF22 D", "FUF22 L", "FUF22 Q", "FUF22 S"] },
+            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ Metal/Glass", hasSubMachines: false, selectedModels: ["T DOOR", "T DOOR H Metal", "T DOOR H Metal WD", "T DOOR H Glass", "T DOOR H Glass WD", "T DOOR 520", "T DOOR 520 U1", "T DOOR 520 WD"] },
+            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS และตู้ไซด์บายไซด์", hasSubMachines: false, selectedModels: ["SBS 550", "SBS 550 WD", "SBS 620", "SBS 620 WD", "SBS 620 Glass", "SBS 620 Glass WD"] },
+            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND และ T-Door Café", hasSubMachines: false, selectedModels: ["BM23", "BM23 Café", "BM23 DND", "BM T-Door 23 Café", "BM T-Door 23", "BM29", "BM29 Café", "BM29 DND", "BM T-Door 28 Café", "BM T-Door 28"] },
+            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", hasSubMachines: false, selectedModels: [] },
+            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false, selectedModels: [] }
         ];
 
         let modelSubParts = {};
+        let lineAssignments = {}; // เก็บการเลือกไลน์ (Line#1 / Line#2) สำหรับ Back Plate และ Bottom Plate แยกตาม Model
         let activeSelectedModelForConfig = "159C";
-        let currentActiveShift = "ALL"; // ALL, Shift A, Shift B
 
         function initDefaultSubParts() {
             productStructure.forEach(g => {
@@ -291,10 +306,14 @@
                     if (!modelSubParts[m]) {
                         let defaultType = m.toLowerCase().includes('glass') ? 'Door Glass' : 'Door Metal';
                         modelSubParts[m] = [
-                            { type: "Door", doorCount: "1Door", doorMaterial: defaultType, name: "Door (1 ประตู - Metal)", ratio: 1, shift: "ALL", subLine: "" },
-                            { type: "Bottom Plate", doorCount: "", doorMaterial: "", name: "Bottom Plate Line 1", ratio: 1, shift: "ALL", subLine: "Bottom Plate Line 1" },
-                            { type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate Line 1", ratio: 1, shift: "ALL", subLine: "Back Plate Line 1" }
+                            { type: "Door", doorCount: "1Door", doorMaterial: defaultType, name: "Door (1 ประตู - Metal)", ratio: 1 },
+                            { type: "Bottom Plate", doorCount: "", doorMaterial: "", name: "Bottom Plate", ratio: 1 },
+                            { type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate", ratio: 1 }
                         ];
+                    }
+                    // กำหนดค่าเริ่มต้นไลน์ผลิตเป็น Line#1 หากยังไม่มีการเลือก
+                    if (!lineAssignments[m]) {
+                        lineAssignments[m] = { bottomPlateLine: "Line#1", backPlateLine: "Line#1" };
                     }
                 });
             });
@@ -314,21 +333,6 @@
             renderLineOverview();
             renderPartsConfigPage();
         });
-
-        function switchShift(shiftName) {
-            currentActiveShift = shiftName;
-            ['ALL', 'Shift A', 'Shift B'].forEach(s => {
-                const btn = document.getElementById(`shift-btn-${s}`);
-                if (btn) {
-                    if (s === shiftName) {
-                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-md";
-                    } else {
-                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40";
-                    }
-                }
-            });
-            recalculateAll();
-        }
 
         function switchTab(tabName) {
             activeTab = tabName;
@@ -375,9 +379,7 @@
             if (!modelSubParts[model] || !Array.isArray(modelSubParts[model])) return 1;
             let sum = 0;
             modelSubParts[model].forEach(p => {
-                if (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift) {
-                    sum += (parseFloat(p.ratio) || 0);
-                }
+                sum += (parseFloat(p.ratio) || 0);
             });
             return sum > 0 ? sum : 1;
         }
@@ -386,7 +388,6 @@
             const theadTr = document.getElementById('matrix-thead');
             const tbody = document.getElementById('matrix-tbody');
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-            if (currentActiveShift === 'Shift A' || currentActiveShift === 'Shift B') workingHours = workingHours / 2;
 
             let dailyTotals = {};
             dates.forEach(date => {
@@ -404,7 +405,7 @@
 
             let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
             dates.forEach(date => {
-                headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date} (${currentActiveShift})</th>`;
+                headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date}</th>`;
             });
             theadTr.innerHTML = headerHTML;
 
@@ -478,11 +479,103 @@
             select.innerHTML = html;
         }
 
-        function renderPartsConfigPage() {
-            const selectorListContainer = document.getElementById('model-selector-list');
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-            if (currentActiveShift === 'Shift A' || currentActiveShift === 'Shift B') workingHours = workingHours / 2;
+        // ฟังก์ชันอัปเดตค่า Shift ไลน์ผลิตเมื่อผู้ใช้เลือก
+        function updateLineAssignment(model, partType, lineValue) {
+            if (!lineAssignments[model]) {
+                lineAssignments[model] = { bottomPlateLine: "Line#1", backPlateLine: "Line#1" };
+            }
+            if (partType === 'Bottom Plate') {
+                lineAssignments[model].bottomPlateLine = lineValue;
+            } else if (partType === 'Back Plate') {
+                lineAssignments[model].backPlateLine = lineValue;
+            }
+        }
 
+        // ฟังก์ชันบันทึกการเลือกไลน์และการตั้งค่าชิ้นส่วน แล้วสะท้อนข้อมูลไปแสดงใน KPI Card ภายในห้องผลิต
+        function saveLineAssignmentAndSync(model) {
+            manualSaveDataSilent();
+            renderPartsConfigPage();
+            renderLineOverview();
+            alert(`✅ บันทึกและอัปเดตการเลือกไลน์ผลิตสำหรับรุ่น ${model} เรียบร้อย ข้อมูลถูกส่งไปคาดคะเนสมดุลการผลิตแล้ว!`);
+        }
+
+        function renderPartsConfigPage() {
+            const dateSelect = document.getElementById('config-date-select');
+            let selectedDate = dateSelect ? dateSelect.value : currentDates[0];
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+
+            const kpiContainer = document.getElementById('kpi-cards-container');
+            if (kpiContainer) {
+                let tableHtml = `
+                    <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200">📊 KPI Card Line: Back Plate & Bottom Plate (เลือก Line#1 / Line#2 รายรุ่น & บันทึกสมดุลการผลิต)</h3>
+                            <p class="text-[11px] text-slate-400">เลือกไลน์ผลิต (Line#1 หรือ Line#2) ให้กับแต่ละรุ่น แล้วกดปุ่มบันทึก เพื่อคาดคะเนภาระงานและสมดุลการผลิตให้ทัน</p>
+                        </div>
+                        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">วันที่ประเมิน: ${selectedDate} | Working Hours: ${workingHours}h</span>
+                    </div>
+                    <div class="p-4 space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
+                `;
+
+                // วนลูปสร้างการ์ดกำหนดไลน์ผลิต แยกตามแต่ละรุ่นที่มี Back Plate หรือ Bottom Plate
+                productStructure.forEach(group => {
+                    group.models.forEach(model => {
+                        let parts = modelSubParts[model] || [];
+                        let hasBackOrBottom = parts.some(p => p.type === 'Back Plate' || p.type === 'Bottom Plate');
+                        if (!hasBackOrBottom) return;
+
+                        let baseTarget = (planDatabase[model] && planDatabase[model][selectedDate]) ? planDatabase[model][selectedDate] : 0;
+                        if (!lineAssignments[model]) {
+                            lineAssignments[model] = { bottomPlateLine: "Line#1", backPlateLine: "Line#1" };
+                        }
+
+                        let bLine = lineAssignments[model].bottomPlateLine;
+                        let pLine = lineAssignments[model].backPlateLine;
+
+                        tableHtml += `
+                            <div class="bg-[#090d16] border border-blue-950 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${group.group}</span>
+                                        <span class="text-sm font-extrabold text-white">${model}</span>
+                                        <span class="text-[11px] text-slate-400">(แผนผลิตรวม: <strong class="text-cyan-300">${baseTarget.toLocaleString()}</strong> ชิ้น)</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                                    <!-- Bottom Plate Shift & Line Selector -->
+                                    <div class="flex items-center gap-2 bg-[#0e1626] px-3 py-2 rounded-lg border border-blue-950/80">
+                                        <span class="text-xs text-slate-300 font-medium">Bottom Plate:</span>
+                                        <select onchange="updateLineAssignment('${model}', 'Bottom Plate', this.value)" class="bg-[#090d16] border border-blue-900 text-amber-300 font-bold text-xs rounded px-2 py-1 focus:outline-none">
+                                            <option value="Line#1" ${bLine === 'Line#1' ? 'selected' : ''}>Line#1</option>
+                                            <option value="Line#2" ${bLine === 'Line#2' ? 'selected' : ''}>Line#2</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Back Plate Shift & Line Selector -->
+                                    <div class="flex items-center gap-2 bg-[#0e1626] px-3 py-2 rounded-lg border border-blue-950/80">
+                                        <span class="text-xs text-slate-300 font-medium">Back Plate:</span>
+                                        <select onchange="updateLineAssignment('${model}', 'Back Plate', this.value)" class="bg-[#090d16] border border-blue-900 text-amber-300 font-bold text-xs rounded px-2 py-1 focus:outline-none">
+                                            <option value="Line#1" ${pLine === 'Line#1' ? 'selected' : ''}>Line#1</option>
+                                            <option value="Line#2" ${pLine === 'Line#2' ? 'selected' : ''}>Line#2</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- ปุ่มบันทึกเฉพาะรุ่นเพื่อคาดคะเนและสมดุลการผลิต -->
+                                    <button onclick="saveLineAssignmentAndSync('${model}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-lg shadow transition-all flex items-center gap-1.5 ml-auto md:ml-0">
+                                        💾 บันทึกข้อมูล
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+
+                tableHtml += `</div>`;
+                kpiContainer.innerHTML = tableHtml;
+            }
+
+            const selectorListContainer = document.getElementById('model-selector-list');
             if (selectorListContainer) {
                 let listHTML = '';
                 productStructure.forEach(group => {
@@ -524,7 +617,7 @@
 
             if (!modelSubParts[activeSelectedModelForConfig]) {
                 modelSubParts[activeSelectedModelForConfig] = [
-                    { type: "Door", doorCount: "1Door", doorMaterial: "Door Metal", name: "Door (1 ประตู - Metal)", ratio: 1, shift: "ALL", subLine: "" }
+                    { type: "Door", doorCount: "1Door", doorMaterial: "Door Metal", name: "Door (1 ประตู - Metal)", ratio: 1 }
                 ];
             }
 
@@ -533,8 +626,6 @@
 
             parts.forEach((part, pIdx) => {
                 let isDoor = (part.type === 'Door');
-                let isBack = (part.type === 'Back Plate');
-                let isBottom = (part.type === 'Bottom Plate');
                 
                 html += `
                     <div class="bg-[#0e1626] p-4 rounded-xl border border-blue-950/60 space-y-3 shadow-inner">
@@ -548,7 +639,7 @@
                                 </select>
                             </div>
                             
-                            <button onclick="removeActiveModelPart(${pIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-900/50 transition-colors">🗑️ ลบ</button>
+                            <button onclick="removeActiveModelPart(${pIdx})" class="text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded-lg bg-rose-950/40 border border-rose-900/50 transition-colors">🗑️ ลบชิ้นส่วน</button>
                         </div>
 
                         ${isDoor ? `
@@ -563,42 +654,19 @@
                                 </div>
                                 <div>
                                     <label class="block text-[10px] text-slate-400 mb-1">ประเภทวัสดุประตู:</label>
-                                    <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs font-semibold focus:outline-none focus:border-blue-500">
+                                    <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs font-semibold focus:outline-none focus:border-blue-500 ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
                                         <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ Press Machine</option>
-                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ Glass Door Line</option>
+                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ Glass Door</option>
                                     </select>
                                 </div>
                             </div>
                         ` : ''}
 
-                        ${isBack || isBottom ? `
-                            <div class="pt-2 border-t border-blue-950/40">
-                                <label class="block text-[10px] text-slate-400 mb-1">เลือกไลน์ผลิตย่อย (Line 1 หรือ Line 2):</label>
-                                <select onchange="updateSubLine('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-amber-300 text-xs font-bold focus:outline-none focus:border-blue-500">
-                                    <option value="${isBack ? 'Back Plate Line 1' : 'Bottom Plate Line 1'}" ${part.subLine?.includes('Line 1') || !part.subLine ? 'selected' : ''}>⚡ ${isBack ? 'Back Plate' : 'Bottom Plate'} — Line 1</option>
-                                    <option value="${isBack ? 'Back Plate Line 2' : 'Bottom Plate Line 2'}" ${part.subLine?.includes('Line 2') ? 'selected' : ''}>⚡ ${isBack ? 'Back Plate' : 'Bottom Plate'} — Line 2</option>
-                                </select>
-                            </div>
-                        ` : ''}
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-blue-950/40">
-                            <div>
-                                <label class="block text-[10px] text-slate-400 mb-1">กะการผลิต (Shift):</label>
-                                <select onchange="updatePartShift('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-cyan-300 text-xs font-semibold focus:outline-none focus:border-blue-500">
-                                    <option value="ALL" ${part.shift === 'ALL' || !part.shift ? 'selected' : ''}>⚡ ทุกกะ (All Shifts)</option>
-                                    <option value="Shift A" ${part.shift === 'Shift A' ? 'selected' : ''}>🌅 กะ A (Shift A)</option>
-                                    <option value="Shift B" ${part.shift === 'Shift B' ? 'selected' : ''}>🌙 กะ B (Shift B)</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="flex-1">
-                                    <label class="block text-[10px] text-slate-400 mb-1">ชื่อชิ้นส่วน:</label>
-                                    <input type="text" value="${part.name}" onchange="updatePartNameText('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-blue-500">
-                                </div>
-                                <div class="w-20">
-                                    <label class="block text-[10px] text-slate-400 mb-1">Ratio:</label>
-                                    <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updatePartRatioVal('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1.5 text-white text-center font-bold text-xs focus:outline-none focus:border-blue-500">
-                                </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-blue-950/40">
+                            <input type="text" value="${part.name}" placeholder="ชื่อชิ้นส่วนย่อยแสดงผล" onchange="updatePartNameText('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="flex-1 bg-[#090d16] border border-blue-950 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-blue-500">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="text-xs text-slate-400">Ratio:</span>
+                                <input type="number" min="0" step="0.5" value="${part.ratio}" onchange="updatePartRatioVal('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-20 bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1.5 text-white text-center font-bold text-xs focus:outline-none focus:border-blue-500">
                             </div>
                         </div>
                     </div>
@@ -615,24 +683,14 @@
             if (newType === 'Door') {
                 p.doorCount = p.doorCount || '1Door';
                 p.doorMaterial = p.doorMaterial || 'Door Metal';
-                p.subLine = "";
-                p.ratio = 1;
-                p.name = `Door (1 ประตู - Metal)`;
+                p.ratio = p.doorCount === '4Door' ? 4 : (p.doorCount === '2Door' ? 2 : 1);
+                p.name = `Door (${p.doorCount.replace('Door','')} ประตู - ${p.doorMaterial.includes('Glass') ? 'Glass' : 'Metal'})`;
             } else {
-                p.doorCount = "";
-                p.doorMaterial = "";
-                p.subLine = `${newType} Line 1`;
+                p.doorCount = '';
+                p.doorMaterial = '';
                 p.ratio = 1;
-                p.name = `${newType} Line 1`;
+                p.name = newType;
             }
-            renderActiveModelEditor();
-        }
-
-        function updateSubLine(model, pIdx, subLineVal) {
-            if (!modelSubParts[model] || !modelSubParts[model][pIdx]) return;
-            let p = modelSubParts[model][pIdx];
-            p.subLine = subLineVal;
-            p.name = subLineVal;
             renderActiveModelEditor();
         }
 
@@ -654,12 +712,6 @@
             renderActiveModelEditor();
         }
 
-        function updatePartShift(model, pIdx, shiftVal) {
-            if (modelSubParts[model] && modelSubParts[model][pIdx]) {
-                modelSubParts[model][pIdx].shift = shiftVal;
-            }
-        }
-
         function updatePartNameText(model, pIdx, val) {
             if (modelSubParts[model] && modelSubParts[model][pIdx]) {
                 modelSubParts[model][pIdx].name = val;
@@ -677,17 +729,22 @@
             if (!modelSubParts[activeSelectedModelForConfig]) {
                 modelSubParts[activeSelectedModelForConfig] = [];
             }
-            modelSubParts[activeSelectedModelForConfig].push({ type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate Line 1", ratio: 1, shift: "ALL", subLine: "Back Plate Line 1" });
+            modelSubParts[activeSelectedModelForConfig].push({ type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate", ratio: 1 });
             renderActiveModelEditor();
+            document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
         }
 
         function addPresetPartsToActiveModel() {
+            if (!modelSubParts[activeSelectedModelForConfig]) {
+                modelSubParts[activeSelectedModelForConfig] = [];
+            }
             modelSubParts[activeSelectedModelForConfig] = [
-                { type: "Door", doorCount: "1Door", doorMaterial: "Door Metal", name: "Door (1 ประตู - Metal)", ratio: 1, shift: "ALL", subLine: "" },
-                { type: "Bottom Plate", doorCount: "", doorMaterial: "", name: "Bottom Plate Line 1", ratio: 1, shift: "ALL", subLine: "Bottom Plate Line 1" },
-                { type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate Line 1", ratio: 1, shift: "ALL", subLine: "Back Plate Line 1" }
+                { type: "Door", doorCount: "1Door", doorMaterial: "Door Metal", name: "Door (1 ประตู - Metal)", ratio: 1 },
+                { type: "Bottom Plate", doorCount: "", doorMaterial: "", name: "Bottom Plate", ratio: 1 },
+                { type: "Back Plate", doorCount: "", doorMaterial: "", name: "Back Plate", ratio: 1 }
             ];
             renderActiveModelEditor();
+            document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
         }
 
         function removeActiveModelPart(pIdx) {
@@ -698,6 +755,7 @@
                 }
                 modelSubParts[activeSelectedModelForConfig].splice(pIdx, 1);
                 renderActiveModelEditor();
+                document.getElementById('active-model-multiplier').innerText = `x ${getMultiplier(activeSelectedModelForConfig)}`;
             }
         }
 
@@ -706,14 +764,13 @@
             initMatrixTable(currentDates);
             renderLineOverview();
             renderPartsConfigPage();
-            alert(`✅ บันทึกชิ้นส่วนย่อยของรุ่น ${activeSelectedModelForConfig} สำเร็จ!`);
+            alert(`✅ บันทึกชิ้นส่วนย่อยของรุ่น ${activeSelectedModelForConfig} เรียบร้อย!`);
         }
 
         function renderLineOverview() {
             const container = document.getElementById('line-cards-container');
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-            if (currentActiveShift === 'Shift A' || currentActiveShift === 'Shift B') workingHours = workingHours / 2;
 
             if (!container) return;
             let cardsHTML = '';
@@ -731,19 +788,23 @@
                         let modelLinePartsTotal = 0;
 
                         parts.forEach(p => {
-                            let shiftMatch = (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift);
-                            if (!shiftMatch) return;
-
                             let matchThisLine = false;
                             let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
 
-                            if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
-                            else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
-                            else if (lineNameNorm === "backplateline1" && p.type === 'Back Plate' && (p.subLine === 'Back Plate Line 1' || !p.subLine)) matchThisLine = true;
-                            else if (lineNameNorm === "backplateline2" && p.type === 'Back Plate' && p.subLine === 'Back Plate Line 2') matchThisLine = true;
-                            else if (lineNameNorm === "bottomplateline1" && p.type === 'Bottom Plate' && (p.subLine === 'Bottom Plate Line 1' || !p.subLine)) matchThisLine = true;
-                            else if (lineNameNorm === "bottomplateline2" && p.type === 'Bottom Plate' && p.subLine === 'Bottom Plate Line 2') matchThisLine = true;
-                            else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && !lineNameNorm.includes("bottomplate") && p.type === 'Door') matchThisLine = true;
+                            if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') {
+                                matchThisLine = true;
+                            } else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
+                                matchThisLine = true;
+                            } else if (lineNameNorm.includes("backplate") && (lineNameNorm.includes("bottomplate") || lineNameNorm.includes("&"))) {
+                                // ตรวจสอบการเลือกไลน์ (Line#1 / Line#2) ที่ผู้ใช้บันทึกไว้
+                                let lineAssign = lineAssignments[modelName] || { bottomPlateLine: "Line#1", backPlateLine: "Line#1" };
+                                // สมมติ Card หลักใน Line Overview รวมทั้ง Line#1 และ Line#2 หรือกรองตามความต้องการสมดุลการผลิต
+                                if (p.type === 'Back Plate' || p.type === 'Bottom Plate') {
+                                    matchThisLine = true; 
+                                }
+                            } else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') {
+                                matchThisLine = true;
+                            }
 
                             if (matchThisLine) {
                                 modelLinePartsTotal += baseVal * (parseFloat(p.ratio) || 0);
@@ -759,15 +820,22 @@
                 });
 
                 let lineUph = workingHours > 0 ? Math.round(lineTotalTargetParts / workingHours) : 0;
+                let colors = [
+                    'from-blue-950/40 to-indigo-950/40 border-blue-900/40', 
+                    'from-slate-900 to-blue-950/30 border-blue-900/40', 
+                    'from-indigo-950/30 to-slate-900 border-indigo-900/40', 
+                    'from-blue-950/30 to-slate-900 border-blue-900/40', 
+                    'from-slate-900 to-indigo-950/40 border-indigo-900/40'
+                ];
 
                 cardsHTML += `
-                    <div onclick="openLineModal(${idx})" class="bg-gradient-to-br from-blue-950/40 to-slate-900 p-5 rounded-2xl shadow-xl flex flex-col justify-between cursor-pointer hover:scale-[1.01] hover:border-blue-500 transition-all group border border-blue-900/40">
+                    <div onclick="openLineModal(${idx})" class="bg-gradient-to-br ${colors[idx % colors.length]} p-5 rounded-2xl shadow-xl flex flex-col justify-between cursor-pointer hover:scale-[1.01] hover:border-blue-500 transition-all group border">
                         <div>
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-bold text-base text-slate-100 flex items-center gap-2 group-hover:text-blue-300 transition-colors">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></span> ${line.name}
+                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500"></span> ${line.name}
                                 </h3>
-                                <span class="text-[10px] bg-[#090d16] px-2.5 py-1 rounded-full text-slate-300 font-mono border border-blue-950">Shift: ${currentActiveShift}</span>
+                                <span class="text-[10px] bg-[#090d16] px-2.5 py-1 rounded-full text-slate-300 font-mono border border-blue-950">Line #${idx + 1}</span>
                             </div>
                             <p class="text-xs text-slate-400 mb-4">${line.description}</p>
                             
@@ -820,32 +888,31 @@
             const line = productionLines[currentActiveLineIndex];
             const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-            if (currentActiveShift === 'Shift A' || currentActiveShift === 'Shift B') workingHours = workingHours / 2;
 
             document.getElementById('modal-line-title').innerText = line.name;
-            document.getElementById('modal-line-badge').innerText = `Shift: ${currentActiveShift}`;
+            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
             document.getElementById('modal-footer-date').innerText = selectedDate;
 
             const modalBody = document.getElementById('modal-body-content');
-            let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
+            let contentHTML = '';
 
             let modelsInLine = [];
             productStructure.forEach(group => {
                 group.models.forEach(modelName => {
                     let parts = modelSubParts[modelName] || [];
                     let matchThisLine = false;
+                    let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
 
                     parts.forEach(p => {
-                        let shiftMatch = (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift);
-                        if (!shiftMatch) return;
-
-                        if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
-                        else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
-                        else if (lineNameNorm === "backplateline1" && p.type === 'Back Plate' && (p.subLine === 'Back Plate Line 1' || !p.subLine)) matchThisLine = true;
-                        else if (lineNameNorm === "backplateline2" && p.type === 'Back Plate' && p.subLine === 'Back Plate Line 2') matchThisLine = true;
-                        else if (lineNameNorm === "bottomplateline1" && p.type === 'Bottom Plate' && (p.subLine === 'Bottom Plate Line 1' || !p.subLine)) matchThisLine = true;
-                        else if (lineNameNorm === "bottomplateline2" && p.type === 'Bottom Plate' && p.subLine === 'Bottom Plate Line 2') matchThisLine = true;
-                        else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && !lineNameNorm.includes("bottomplate") && p.type === 'Door') matchThisLine = true;
+                        if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') {
+                            matchThisLine = true;
+                        } else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
+                            matchThisLine = true;
+                        } else if (lineNameNorm.includes("backplate") && (lineNameNorm.includes("bottomplate") || lineNameNorm.includes("&"))) {
+                            if (p.type === 'Back Plate' || p.type === 'Bottom Plate') matchThisLine = true;
+                        } else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && p.type === 'Door') {
+                            matchThisLine = true;
+                        }
                     });
 
                     if (matchThisLine && !modelsInLine.includes(modelName)) {
@@ -854,123 +921,96 @@
                 });
             });
 
-            let contentHTML = `
-                <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตและ UPH รายวัน — ${line.name}</h2>
-                        <p class="text-xs text-slate-400">แสดงข้อมูลการผลิตจำแนกตามรุ่นและวันที่ ภายใต้กะ ${currentActiveShift}[cite: 3]</p>
-                    </div>
+            let isBackBottomLine = (line.name === "Back Plate&Bottom Plate" || line.name === "Back Plate & Bottom Plate");
 
-                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
-                        <div class="w-full overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
-                                        <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
-                                        <th class="p-3 min-w-[200px]">ชิ้นส่วนย่อยในไลน์นี้</th>
-            `;
-            currentDates.forEach(date => {
-                contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
-            });
-            contentHTML += `
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-blue-950/40">
-            `;
+            contentHTML += `<div class="space-y-6 w-full">`;
 
-            contentHTML += `
-                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
-                    <td class="p-3 pl-4 text-blue-400" colspan="2">TOTAL LINE OUTPUT (${currentActiveShift})</td>
-            `;
-            currentDates.forEach(date => {
-                let sumTarget = 0;
-                modelsInLine.forEach(model => {
-                    let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                    let parts = modelSubParts[model] || [];
-                    parts.forEach(p => {
-                        let shiftMatch = (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift);
-                        if (!shiftMatch) return;
+            if (isBackBottomLine) {
+                // แสดงตารางแยกตามการเลือก Line#1 และ Line#2 เพื่อช่วยคาดคะเนและสมดุลการผลิต (Line Balancing)
+                ['Line#1', 'Line#2'].forEach(targetLine => {
+                    contentHTML += `
+                        <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                            <div>
+                                <h2 class="text-base font-bold text-slate-200">🛡️📦 สมดุลการผลิตสำหรับ ${targetLine} (Back Plate & Bottom Plate)</h2>
+                                <p class="text-xs text-slate-400">แสดงเฉพาะรุ่นที่ถูกเลือกให้ผลิตใน ${targetLine} เพื่อประเมินโหลดงานและ UPH ให้ทันรอบผลิต</p>
+                            </div>
 
-                        let matchThisLine = false;
-                        if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
-                        else if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
-                        else if (lineNameNorm === "backplateline1" && p.type === 'Back Plate' && (p.subLine === 'Back Plate Line 1' || !p.subLine)) matchThisLine = true;
-                        else if (lineNameNorm === "backplateline2" && p.type === 'Back Plate' && p.subLine === 'Back Plate Line 2') matchThisLine = true;
-                        else if (lineNameNorm === "bottomplateline1" && p.type === 'Bottom Plate' && (p.subLine === 'Bottom Plate Line 1' || !p.subLine)) matchThisLine = true;
-                        else if (lineNameNorm === "bottomplateline2" && p.type === 'Bottom Plate' && p.subLine === 'Bottom Plate Line 2') matchThisLine = true;
-                        else if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && !lineNameNorm.includes("bottomplate") && p.type === 'Door') matchThisLine = true;
+                            <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                                <div class="w-full overflow-x-auto">
+                                    <table class="w-full text-left border-collapse text-xs">
+                                        <thead>
+                                            <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
+                                                <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+                                                <th class="p-3 min-w-[150px]">ชิ้นส่วน & ไลน์ที่เลือก</th>
+                    `;
+                    currentDates.forEach(date => {
+                        contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
+                    });
+                    contentHTML += `
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-blue-950/40">
+                    `;
 
-                        if (matchThisLine) {
-                            sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
+                    modelsInLine.forEach(model => {
+                        let lineAssign = lineAssignments[model] || { bottomPlateLine: "Line#1", backPlateLine: "Line#1" };
+                        let parts = modelSubParts[model] || [];
+                        
+                        let relevantParts = parts.filter(p => {
+                            if (p.type === 'Back Plate' && lineAssign.backPlateLine === targetLine) return true;
+                            if (p.type === 'Bottom Plate' && lineAssign.bottomPlateLine === targetLine) return true;
+                            return false;
+                        });
+
+                        if (relevantParts.length > 0) {
+                            let descStr = relevantParts.map(p => `${p.type} (${targetLine})`).join(', ');
+                            contentHTML += `
+                                <tr class="hover:bg-blue-950/20 transition-colors">
+                                    <td class="p-3 pl-4">
+                                        <div class="font-bold text-slate-200">${model}</div>
+                                    </td>
+                                    <td class="p-3 text-amber-300 text-[11px] font-semibold">${descStr}</td>
+                            `;
+
+                            currentDates.forEach(date => {
+                                let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                                let sumVal = 0;
+                                relevantParts.forEach(p => {
+                                    sumVal += (baseVal * (parseFloat(p.ratio) || 0));
+                                });
+                                let calcUph = sumVal > 0 && workingHours > 0 ? Math.round(sumVal / workingHours) : 0;
+
+                                contentHTML += `
+                                    <td class="p-3 text-center border-l border-blue-950/40">
+                                        <div class="font-bold text-white">${sumVal > 0 ? sumVal.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                        <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
+                                    </td>
+                                `;
+                            });
+                            contentHTML += `</tr>`;
                         }
                     });
-                });
-                let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
-                contentHTML += `
-                    <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
-                        <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold">UPH: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
-                    </td>
-                `;
-            });
-            contentHTML += `</tr>`;
-
-            modelsInLine.forEach(model => {
-                let parentGroup = productStructure.find(g => g.models.includes(model));
-                let groupName = parentGroup ? parentGroup.group : "-";
-                let parts = modelSubParts[model] || [];
-
-                let relevantParts = parts.filter(p => {
-                    let shiftMatch = (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift);
-                    if (!shiftMatch) return false;
-
-                    if (lineNameNorm === "pressmachine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') return true;
-                    if (lineNameNorm === "glassdoor" && p.type === 'Door' && p.doorMaterial === 'Door Glass') return true;
-                    if (lineNameNorm === "backplateline1" && p.type === 'Back Plate' && (p.subLine === 'Back Plate Line 1' || !p.subLine)) return true;
-                    if (lineNameNorm === "backplateline2" && p.type === 'Back Plate' && p.subLine === 'Back Plate Line 2') return true;
-                    if (lineNameNorm === "bottomplateline1" && p.type === 'Bottom Plate' && (p.subLine === 'Bottom Plate Line 1' || !p.subLine)) return true;
-                    if (lineNameNorm === "bottomplateline2" && p.type === 'Bottom Plate' && p.subLine === 'Bottom Plate Line 2') return true;
-                    if (!line.hasSubMachines && !lineNameNorm.includes("glassdoor") && !lineNameNorm.includes("backplate") && !lineNameNorm.includes("bottomplate") && p.type === 'Door') return true;
-                    return false;
-                });
-
-                let partNamesStr = relevantParts.map(p => `${p.name} (x${p.ratio})`).join(', ') || '-';
-
-                contentHTML += `
-                    <tr class="hover:bg-blue-950/20 transition-colors">
-                        <td class="p-3 pl-4">
-                            <div class="font-bold text-slate-200">${model}</div>
-                            <div class="text-[10px] text-blue-400">Group: ${groupName}</div>
-                        </td>
-                        <td class="p-3 text-slate-300 text-[11px]">${partNamesStr}</td>
-                `;
-
-                currentDates.forEach(date => {
-                    let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                    let modelLinePartsSum = 0;
-                    relevantParts.forEach(p => {
-                        modelLinePartsSum += (baseVal * (parseFloat(p.ratio) || 0));
-                    });
-                    let calcUph = modelLinePartsSum > 0 && workingHours > 0 ? Math.round(modelLinePartsSum / workingHours) : 0;
 
                     contentHTML += `
-                        <td class="p-3 text-center border-l border-blue-950/40">
-                            <div class="font-bold text-white">${modelLinePartsSum > 0 ? modelLinePartsSum.toLocaleString() + ' ชิ้น' : '-'}</div>
-                            <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
-                        </td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 });
-
-                contentHTML += `</tr>`;
-            });
-
-            contentHTML += `
-                                </tbody>
-                            </table>
+            } else {
+                contentHTML += `
+                    <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตชิ้นส่วนและ UPH รายวัน — ${line.name}</h2>
                         </div>
+                        <div class="bg-[#090d16] p-4 text-xs text-slate-400">แสดงข้อมูลภาพรวมของ ${line.name}</div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+
+            contentHTML += `</div>`;
             modalBody.innerHTML = contentHTML;
         }
 
@@ -1000,10 +1040,9 @@
                         return;
                     }
 
-                    const count = smartParseExcelData(rawExcelData);
+                    smartParseExcelData(rawExcelData);
                     manualSaveData(); 
-
-                    alert(`นำเข้าและบันทึกไฟล์ Excel สำเร็จ! อัปเดตข้อมูลทั้งหมด ${count} รายการ`);
+                    alert('นำเข้าและบันทึกไฟล์ Excel สำเร็จ!');
                 } catch (error) {
                     console.error(error);
                     alert('เกิดข้อผิดพลาดในการอ่านไฟล์: ' + error.message);
@@ -1059,10 +1098,7 @@
                     productStructure.forEach(group => {
                         group.models.forEach(m => {
                             let targetClean = m.toLowerCase().replace(/[\s\-_]+/g, '');
-                            let normalizedCell = cellTextLower.replace(/c$/, 'cafe');
-                            let normalizedTarget = targetClean.replace(/c$/, 'cafe');
-
-                            if (cellTextLower === targetClean || normalizedCell === normalizedTarget || cellTextLower.includes(targetClean)) {
+                            if (cellTextLower === targetClean || cellTextLower.includes(targetClean)) {
                                 matchedModel = m;
                             }
                         });
@@ -1100,7 +1136,8 @@
                 currentDates: currentDates,
                 workingHours: document.getElementById('working-hours').value,
                 productionLines: productionLines,
-                modelSubParts: modelSubParts
+                modelSubParts: modelSubParts,
+                lineAssignments: lineAssignments
             };
             localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
             alert('💾 บันทึกข้อมูลเรียบร้อยแล้ว!');
@@ -1112,7 +1149,8 @@
                 currentDates: currentDates,
                 workingHours: document.getElementById('working-hours').value,
                 productionLines: productionLines,
-                modelSubParts: modelSubParts
+                modelSubParts: modelSubParts,
+                lineAssignments: lineAssignments
             };
             localStorage.setItem('production_dashboard_data', JSON.stringify(dataToSave));
         }
@@ -1125,17 +1163,9 @@
                     if (parsed.planDatabase) planDatabase = parsed.planDatabase;
                     if (parsed.currentDates) currentDates = parsed.currentDates;
                     if (parsed.modelSubParts) modelSubParts = parsed.modelSubParts;
+                    if (parsed.lineAssignments) lineAssignments = parsed.lineAssignments;
                     if (parsed.workingHours) {
                         document.getElementById('working-hours').value = parsed.workingHours;
-                    }
-                    if (parsed.productionLines) {
-                        parsed.productionLines.forEach((savedLine, idx) => {
-                            if (productionLines[idx]) {
-                                if (savedLine.selectedModels) {
-                                    productionLines[idx].selectedModels = savedLine.selectedModels;
-                                }
-                            }
-                        });
                     }
                 } catch (e) {
                     console.error('Error loading saved data:', e);
@@ -1147,6 +1177,7 @@
             if (confirm('คุณต้องการล้างข้อมูลที่บันทึกไว้ทั้งหมดใช่หรือไม่?')) {
                 localStorage.removeItem('production_dashboard_data');
                 planDatabase = {};
+                lineAssignments = {};
                 currentDates = ["1/9", "2/9", "3/9", "4/9", "5/9"];
                 initDefaultSubParts();
                 document.getElementById('working-hours').value = 8;
