@@ -153,17 +153,14 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
+                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config)</h2>
                         <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate (Line 1/2) หรือ Bottom Plate (Line 1/2)</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
+                        <span class="text-xs text-slate-400">เลือกวันที่:</span>
                         <select id="config-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
                         </select>
                     </div>
-                </div>
-
-                <div class="mb-6 bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-xl" id="kpi-cards-container">
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -186,7 +183,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate (Line 1 หรือ 2) หรือ Bottom Plate (Line 1 หรือ 2) พร้อมระบุสัดส่วนและกะการผลิต[cite: 3, 10]</p>
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door, Back Plate (Line 1 หรือ 2) หรือ Bottom Plate (Line 1 หรือ 2) พร้อมระบุสัดส่วนและกะการผลิต</p>
 
                             <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar" id="active-model-parts-editor">
                             </div>
@@ -198,7 +195,7 @@
                                     + เพิ่มชิ้นส่วนย่อยใหม่
                                 </button>
                                 <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-900/60 transition-all">
-                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน[cite: 3, 10]
+                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน[cite: 3]
                                 </button>
                             </div>
                             <button onclick="saveActiveModelConfig()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all">
@@ -397,16 +394,7 @@
                 productStructure.forEach(group => {
                     group.models.forEach(model => {
                         if (planDatabase[model] && planDatabase[model][date]) {
-                            let base = planDatabase[model][date];
-                            let ratioSum = 0;
-                            if (modelSubParts[model]) {
-                                modelSubParts[model].forEach(p => {
-                                    if (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift) {
-                                        ratioSum += (parseFloat(p.ratio) || 0);
-                                    }
-                                });
-                            }
-                            sumTarget += base; 
+                            sumTarget += planDatabase[model][date]; 
                         }
                     });
                 });
@@ -491,92 +479,10 @@
         }
 
         function renderPartsConfigPage() {
-            const kpiContainer = document.getElementById('kpi-cards-container');
+            const selectorListContainer = document.getElementById('model-selector-list');
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             if (currentActiveShift === 'Shift A' || currentActiveShift === 'Shift B') workingHours = workingHours / 2;
 
-            let subLinesConfig = [
-                { name: "Press Machine (Door Metal)", match: (p) => p.type === 'Door' && p.doorMaterial === 'Door Metal' },
-                { name: "Glass Door (Door Glass)", match: (p) => p.type === 'Door' && p.doorMaterial === 'Door Glass' },
-                { name: "Back Plate Line 1", match: (p) => p.type === 'Back Plate' && (p.subLine === 'Back Plate Line 1' || !p.subLine) },
-                { name: "Back Plate Line 2", match: (p) => p.type === 'Back Plate' && p.subLine === 'Back Plate Line 2' },
-                { name: "Bottom Plate Line 1", match: (p) => p.type === 'Bottom Plate' && (p.subLine === 'Bottom Plate Line 1' || !p.subLine) },
-                { name: "Bottom Plate Line 2", match: (p) => p.type === 'Bottom Plate' && p.subLine === 'Bottom Plate Line 2' }
-            ];
-
-            if (kpiContainer) {
-                let tableHtml = `
-                    <div class="px-6 py-4 bg-blue-950/20 border-b border-blue-950/60 flex justify-between items-center flex-wrap gap-2">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-200">📊 สรุปยอดผลิตรายวัน — ตาม Sub-line (แยก Back Plate และ Bottom Plate เป็น 2 ไลน์ย่อย)</h3>
-                            <p class="text-[11px] text-slate-400">แสดงจำนวนชิ้นส่วนและค่า UPH ของแต่ละ Sub-line ภายใต้กะ: ${currentActiveShift}[cite: 3, 10]</p>
-                        </div>
-                        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Shift: ${currentActiveShift} (${workingHours} h)</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
-                                    <th class="p-3.5 pl-6 min-w-[200px]">Sub-line / Category</th>
-                `;
-
-                currentDates.forEach(date => {
-                    tableHtml += `<th class="p-3.5 text-center min-w-[130px]">${date}</th>`;
-                });
-
-                tableHtml += `
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-blue-950/40">
-                `;
-
-                subLinesConfig.forEach(sub => {
-                    tableHtml += `
-                        <tr class="hover:bg-blue-950/20 transition-colors">
-                            <td class="p-3.5 pl-6 font-bold text-blue-300">
-                                <div>${sub.name}</div>
-                                <div class="text-[10px] text-cyan-400 font-normal">ยอดผลิต / UPH (ชม.)</div>
-                            </td>
-                    `;
-
-                    currentDates.forEach(date => {
-                        let dailyTarget = 0;
-                        productStructure.forEach(g => {
-                            g.models.forEach(m => {
-                                let baseTarget = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
-                                if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
-                                    modelSubParts[m].forEach(p => {
-                                        let shiftMatch = (currentActiveShift === 'ALL' || !p.shift || p.shift === 'ALL' || p.shift === currentActiveShift);
-                                        if (shiftMatch && sub.match(p)) {
-                                            dailyTarget += baseTarget * (parseFloat(p.ratio) || 0);
-                                        }
-                                    });
-                                }
-                            });
-                        });
-
-                        let uphVal = workingHours > 0 ? Math.round(dailyTarget / workingHours) : 0;
-
-                        tableHtml += `
-                            <td class="p-3.5 text-center border-l border-blue-950/40">
-                                <div class="font-extrabold text-amber-400 text-sm">${dailyTarget > 0 ? dailyTarget.toLocaleString() + ' ชิ้น' : '-'}</div>
-                                <div class="text-[10px] text-cyan-300 font-semibold mt-0.5">UPH: ${uphVal > 0 ? uphVal.toLocaleString() : '0'}</div>
-                            </td>
-                        `;
-                    });
-
-                    tableHtml += `</tr>`;
-                });
-
-                tableHtml += `
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-                kpiContainer.innerHTML = tableHtml;
-            }
-
-            const selectorListContainer = document.getElementById('model-selector-list');
             if (selectorListContainer) {
                 let listHTML = '';
                 productStructure.forEach(group => {
@@ -952,7 +858,7 @@
                 <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
                     <div>
                         <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตและ UPH รายวัน — ${line.name}</h2>
-                        <p class="text-xs text-slate-400">แสดงข้อมูลการผลิตจำแนกตามรุ่นและวันที่ ภายใต้กะ ${currentActiveShift}[cite: 3, 10]</p>
+                        <p class="text-xs text-slate-400">แสดงข้อมูลการผลิตจำแนกตามรุ่นและวันที่ ภายใต้กะ ${currentActiveShift}[cite: 3]</p>
                     </div>
 
                     <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
