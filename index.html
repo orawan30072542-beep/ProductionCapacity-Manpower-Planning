@@ -996,123 +996,123 @@ function renderModalContent() {
             const modalBody = document.getElementById('modal-body-content');
             let contentHTML = '';
 
-            let lineNameNorm = line.name.replace(/\s+/g, '').toLowerCase();
+            let modelsInLine = [];
+            if (line.hasSubMachines && line.subMachines) {
+                line.subMachines.forEach(sub => {
+                    if (sub.selectedModels) modelsInLine.push(...sub.selectedModels);
+                });
+            } else if (line.selectedModels) {
+                modelsInLine = [...line.selectedModels];
+            }
+            modelsInLine = [...new Set(modelsInLine)];
 
-            // ค้นหารุ่นทั้งหมดที่มีชิ้นส่วนตรงกับเงื่อนไขของไลน์นี้จริงๆ
-            let matchedModelsData = [];
-            
-            productStructure.forEach(group => {
-                group.models.forEach(modelName => {
-                    let baseVal = (planDatabase[modelName] && planDatabase[modelName][selectedDate]) ? planDatabase[modelName][selectedDate] : 0;
-                    let parts = modelSubParts[modelName] || [];
-                    
-                    let modelLinePartsTotal = 0;
-                    let relevantPartsList = [];
+            let isBackBottomLine = (line.name === "Back Plate&Bottom Plate" || line.name === "Back Plate & Bottom Plate");
 
+            contentHTML += `
+                <div class="bg-[#0e1626] p-4 md:p-6 rounded-2xl border border-blue-950/60 space-y-4 shadow-xl w-full">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-200">📊 ตารางสรุปยอดผลิตชิ้นส่วนและ UPH รายวัน — ${line.name}</h2>
+                            <p class="text-xs text-slate-400">${isBackBottomLine ? 'แสดงการแยกชิ้นส่วน Back Plate และ Bottom Plate อย่างอิสระ' : 'คำนวณยอดผลิตจริงจากชิ้นส่วนย่อยที่กำหนดไว้ในแต่ละรุ่น'}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#090d16] rounded-xl border border-blue-950 overflow-hidden shadow-inner">
+                        <div class="w-full overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950/60">
+                                        <th class="p-3 pl-4 min-w-[160px]">Product Model</th>
+                                        <th class="p-3 min-w-[200px]">ชิ้นส่วนย่อยที่ผลิตในไลน์นี้</th>
+            `;
+            currentDates.forEach(date => {
+                contentHTML += `<th class="p-3 text-center min-w-[120px]">${date}</th>`;
+            });
+            contentHTML += `
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-blue-950/40">
+            `;
+
+            contentHTML += `
+                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
+                    <td class="p-3 pl-4 text-blue-400" colspan="2">TOTAL LINE OUTPUT (ทุกรุ่นรวมกัน)</td>
+            `;
+            currentDates.forEach(date => {
+                let sumTarget = 0;
+                modelsInLine.forEach(model => {
+                    let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                    let parts = modelSubParts[model] || [];
                     parts.forEach(p => {
                         let matchThisLine = false;
-                        let pTypeNorm = (p.type || '').replace(/\s+/g, '').toLowerCase();
-                        let pMatNorm = (p.doorMaterial || '').replace(/\s+/g, '').toLowerCase();
-
-                        if (lineNameNorm === "pressmachine" && pTypeNorm === 'door' && pMatNorm.includes('metal')) {
-                            matchThisLine = true;
-                        } else if (lineNameNorm === "glassdoor" && pTypeNorm === 'door' && pMatNorm.includes('glass')) {
-                            matchThisLine = true;
-                        } else if (lineNameNorm.includes("backplate") && (pTypeNorm.includes('backplate') || pTypeNorm.includes('bottomplate'))) {
-                            matchThisLine = true;
-                        } else if (!line.hasSubMachines && lineNameNorm !== "glassdoor" && !lineNameNorm.includes("backplate")) {
-                            // สำหรับไลน์ประตูทั่วไป (เช่น Door A, Door B, Door C, Door In Door) ตรวจสอบว่าประเภทและชื่อสอดคล้องกับไลน์
-                            if (pTypeNorm === 'door') {
-                                matchThisLine = true;
-                            }
-                        }
+                        if (line.name === "Press Machine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') matchThisLine = true;
+                        else if (line.name === "Glass Door" && p.type === 'Door' && p.doorMaterial === 'Door Glass') matchThisLine = true;
+                        else if ((line.name === "Back Plate&Bottom Plate" || line.name === "Back Plate & Bottom Plate") && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) matchThisLine = true;
+                        else if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate&Bottom Plate" && line.name !== "Back Plate & Bottom Plate" && p.type === 'Door') matchThisLine = true;
 
                         if (matchThisLine) {
-                            let calculatedPartQty = baseVal * (parseFloat(p.ratio) || 0);
-                            modelLinePartsTotal += calculatedPartQty;
-                            relevantPartsList.push(`${p.name} (x${p.ratio})`);
+                            sumTarget += (baseVal * (parseFloat(p.ratio) || 0));
                         }
                     });
-
-                    if (modelLinePartsTotal > 0 || baseVal > 0) {
-                        matchedModelsData.push({
-                            group: group.group,
-                            model: modelName,
-                            baseTarget: baseVal,
-                            lineParts: modelLinePartsTotal,
-                            partsDesc: relevantPartsList.join(', ') || '-'
-                        });
-                    }
                 });
+                let sumUph = workingHours > 0 ? Math.round(sumTarget / workingHours) : 0;
+                contentHTML += `
+                    <td class="p-3 text-center bg-blue-900/20 border-l border-blue-950/60">
+                        <div class="text-amber-400 font-extrabold">${sumTarget > 0 ? sumTarget.toLocaleString() : '-'} ชิ้น</div>
+                        <div class="text-[10px] text-cyan-300 font-semibold">UPH Total: ${sumUph > 0 ? sumUph.toLocaleString() : '0'}</div>
+                    </td>
+                `;
             });
+            contentHTML += `</tr>`;
 
-            let totalLineSum = matchedModelsData.reduce((acc, curr) => acc + curr.lineParts, 0);
-            let totalUPH = workingHours > 0 ? Math.round(totalLineSum / workingHours) : 0;
-            let activeMatched = matchedModelsData.filter(item => item.lineParts > 0);
+            if (modelsInLine.length === 0) {
+                contentHTML += `<tr><td colspan="${currentDates.length + 2}" class="p-6 text-center text-slate-500 italic">ยังไม่มีการเลือกรุ่นสินค้าในไลน์นี้</td></tr>`;
+            } else {
+                modelsInLine.forEach(model => {
+                    let parentGroup = productStructure.find(g => g.models.includes(model));
+                    let groupName = parentGroup ? parentGroup.group : "-";
+                    let parts = modelSubParts[model] || [];
 
-            contentHTML += `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-[#0e1626] border border-blue-950/60 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400 block">ยอดผลิตรวมชิ้นส่วนในไลน์ (วันที่ ${selectedDate})</span>
-                        <span class="text-2xl font-extrabold text-amber-400">${totalLineSum.toLocaleString()} ชิ้น</span>
-                    </div>
-                    <div class="bg-[#0e1626] border border-blue-950/60 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400 block">กำลังผลิต UPH (${workingHours} ชม.)</span>
-                        <span class="text-2xl font-extrabold text-cyan-300">${totalUPH.toLocaleString()} <span class="text-xs font-normal text-slate-400">ชิ้น/ชม.</span></span>
-                    </div>
-                    <div class="bg-[#0e1626] border border-blue-950/60 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400 block">จำนวนรุ่นที่มีชิ้นส่วนในไลน์นี้</span>
-                        <span class="text-2xl font-extrabold text-blue-400">${activeMatched.length} รุ่น</span>
-                    </div>
-                </div>
+                    let relevantParts = parts.filter(p => {
+                        if (line.name === "Press Machine" && p.type === 'Door' && p.doorMaterial === 'Door Metal') return true;
+                        if (line.name === "Glass Door" && p.type === 'Door' && p.doorMaterial === 'Door Glass') return true;
+                        if ((line.name === "Back Plate&Bottom Plate" || line.name === "Back Plate & Bottom Plate") && (p.type === 'Back Plate' || p.type === 'Bottom Plate')) return true;
+                        if (!line.hasSubMachines && line.name !== "Glass Door" && line.name !== "Back Plate&Bottom Plate" && line.name !== "Back Plate & Bottom Plate" && p.type === 'Door') return true;
+                        return false;
+                    });
 
-                <div class="bg-[#0e1626] border border-blue-950/60 rounded-xl overflow-hidden shadow-xl">
-                    <div class="p-4 bg-blue-950/20 border-b border-blue-950/60 font-bold text-slate-200 text-xs flex justify-between items-center">
-                        <span>📋 รายละเอียดการคำนวณแยกตามรุ่นสินค้า (ประจำวันที่ ${selectedDate})</span>
-                        <span class="text-cyan-400 font-mono text-[11px]">Line Filter: ${line.name}</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950/60">
-                                    <th class="p-3 pl-4">Product Group</th>
-                                    <th class="p-3">Model</th>
-                                    <th class="p-3">ชิ้นส่วนย่อยในไลน์นี้</th>
-                                    <th class="p-3 text-center">แผนผลิตรุ่น (ตู้)</th>
-                                    <th class="p-3 text-center">ชิ้นส่วนในไลน์นี้ (ชิ้น)</th>
-                                    <th class="p-3 text-center">UPH (รุ่นนี้)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-blue-950/40">
-            `;
+                    let partNamesStr = relevantParts.map(p => `${p.name} (x${p.ratio})`).join(', ') || '-';
 
-            if (activeMatched.length > 0) {
-                activeMatched.forEach(item => {
-                    let itemUPH = workingHours > 0 ? Math.round(item.lineParts / workingHours) : 0;
                     contentHTML += `
                         <tr class="hover:bg-blue-950/20 transition-colors">
-                            <td class="p-3 pl-4 font-semibold text-blue-400">${item.group}</td>
-                            <td class="p-3 font-bold text-slate-200">${item.model}</td>
-                            <td class="p-3 text-slate-300 text-[11px]">${item.partsDesc}</td>
-                            <td class="p-3 text-center text-slate-300">${item.baseTarget > 0 ? item.baseTarget.toLocaleString() : '-'}</td>
-                            <td class="p-3 text-center font-bold text-amber-400">${item.lineParts.toLocaleString()}</td>
-                            <td class="p-3 text-center font-semibold text-cyan-300">${itemUPH.toLocaleString()}</td>
-                        </tr>
+                            <td class="p-3 pl-4">
+                                <div class="font-bold text-slate-200">${model}</div>
+                                <div class="text-[10px] text-blue-400">Group: ${groupName}</div>
+                            </td>
+                            <td class="p-3 text-slate-300 text-[11px]">
+                                ${partNamesStr}
+                            </td>
                     `;
+
+                    currentDates.forEach(date => {
+                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        let modelLinePartsSum = 0;
+                        relevantParts.forEach(p => {
+                            modelLinePartsSum += (baseVal * (parseFloat(p.ratio) || 0));
+                        });
+                        let calcUph = modelLinePartsSum > 0 && workingHours > 0 ? Math.round(modelLinePartsSum / workingHours) : 0;
+
+                        contentHTML += `
+                            <td class="p-3 text-center border-l border-blue-950/40">
+                                <div class="font-bold text-white">${modelLinePartsSum > 0 ? modelLinePartsSum.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                <div class="text-[10px] text-cyan-300">UPH: ${calcUph}</div>
+                            </td>
+                        `;
+                    });
+
+                    contentHTML += `</tr>`;
                 });
-            } else {
-                contentHTML += `<tr><td colspan="6" class="p-6 text-center text-slate-500 italic">ยังไม่มีข้อมูลแผนการผลิตหรือชิ้นส่วนที่เชื่อมโยงกับไลน์นี้ในวันที่เลือก</td></tr>`;
             }
-
-            contentHTML += `
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-
-            modalBody.innerHTML = contentHTML;
-        }
 
             contentHTML += `
                                 </tbody>
