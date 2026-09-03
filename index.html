@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Capacity & Manpower Planning Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -47,9 +47,9 @@
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                            📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                            📁 อัปโหลดไฟล์แผนผลิต (Excel)[cite: 6]
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ[cite: 6]</p>
                     </div>
                     
                     <div class="relative border-2 border-dashed border-slate-700 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-slate-950/50 group">
@@ -67,9 +67,9 @@
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                            ⚙️ ตั้งค่าและการบันทึกข้อมูล
+                            ⚙️ ตั้งค่าและการบันทึกข้อมูล[cite: 6]
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช</p>
+                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช[cite: 6]</p>
                     </div>
                     
                     <div class="space-y-4">
@@ -97,7 +97,7 @@
 
             <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น</h3>
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น[cite: 6]</h3>
                     <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">Data Grid</span>
                 </div>
                 
@@ -120,8 +120,8 @@
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิต</p>
+                        <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)[cite: 6]</h2>
+                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์การผลิต เพื่อเปิดหน้าจอ Full Screen จัดการรุ่น, กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิต[cite: 6]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -139,8 +139,8 @@
             <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ (คลิกที่ KPI Card เพื่อดูตารางออเดอร์รายวัน)</p>
+                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)[cite: 6]</h2>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ[cite: 3, 6]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
@@ -172,7 +172,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมระบุจำนวน</p>
+                            <p class="text-xs text-slate-400 mb-4">กำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมระบุจำนวน[cite: 3]</p>
 
                             <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2" id="active-model-parts-editor">
                             </div>
@@ -184,7 +184,7 @@
                                     + เพิ่มชิ้นส่วนย่อยใหม่
                                 </button>
                                 <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-900/50 hover:bg-indigo-900 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-800 transition-all">
-                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน (Door Metal, Glass, Bottom, Back)
+                                    ✨ เพิ่มชิ้นส่วนมาตรฐาน (Door Metal, Glass, Bottom, Back)[cite: 3]
                                 </button>
                             </div>
                             <button onclick="saveActiveModelConfig()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg transition-all">
@@ -198,7 +198,6 @@
 
     </div>
 
-    <!-- Line Modal -->
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
         <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
             <div class="flex items-center gap-3">
@@ -229,53 +228,6 @@
             </div>
             <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition-all shadow-lg">
                 บันทึกและกลับสู่หน้าหลัก
-            </button>
-        </div>
-    </div>
-
-    <!-- KPI Detail Modal -->
-    <div id="kpi-detail-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
-        <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
-            <div class="flex items-center gap-3">
-                <span id="kpi-modal-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">KPI Breakdown</span>
-                <div>
-                    <h3 id="kpi-modal-title" class="text-xl font-bold text-white">รายละเอียดออเดอร์รายวันตาม KPI</h3>
-                    <p class="text-xs text-slate-400">แสดงยอดออเดอร์และชิ้นส่วนย่อยรายวันแยกตามรุ่น (Matrix View Format)</p>
-                </div>
-            </div>
-            <button onclick="closeKpiModal()" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg flex items-center gap-2">
-                ✕ ปิดหน้าจอ
-            </button>
-        </div>
-        
-        <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปยอดผลิตรายวัน (Matrix View)</h3>
-                    <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">KPI Detail View</span>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse" id="kpi-modal-table">
-                        <thead>
-                            <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="kpi-modal-thead">
-                                <th class="p-3.5 pl-6">Product Group</th>
-                                <th class="p-3.5">Model</th>
-                            </tr>
-                        </thead>
-                        <tbody id="kpi-modal-tbody" class="divide-y divide-slate-800/60 text-sm">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-between items-center px-8">
-            <div class="text-xs text-slate-400">
-                ระบบวิเคราะห์ข้อมูล KPI และแผนการผลิตรายวัน
-            </div>
-            <button onclick="closeKpiModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition-all shadow-lg">
-                ปิดหน้าจอ
             </button>
         </div>
     </div>
@@ -539,7 +491,7 @@
                                 if (p.doorMaterial === 'Door Glass') {
                                     totalDoorGlassParts += partQty;
                                 } else {
-                                    totalDoorMetalParts += partQty;
+                                    totalDoorMetalParts += partQty; 
                                 }
                             } else {
                                 totalOtherParts += partQty;
@@ -556,31 +508,31 @@
             const kpiContainer = document.getElementById('kpi-cards-container');
             if (kpiContainer) {
                 kpiContainer.innerHTML = `
-                    <div onclick="openKpiModal('total')" class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-blue-400 hover:scale-[1.02] transition-all">
+                    <div class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
                         <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate}) [คลิกดูตาราง]</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
                             <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
                         </div>
                     </div>
-                    <div onclick="openKpiModal('press')" class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-amber-400 hover:scale-[1.02] transition-all">
+                    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal) [คลิกดูตาราง]</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)[cite: 3]</span>
                             <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphPress.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div onclick="openKpiModal('glass')" class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-cyan-400 hover:scale-[1.02] transition-all">
+                    <div class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
                         <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door [คลิกดูตาราง]</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door[cite: 3]</span>
                             <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphGlass.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div onclick="openKpiModal('other')" class="bg-slate-950 border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-purple-400 hover:scale-[1.02] transition-all">
+                    <div class="bg-slate-950 border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
                         <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.) [คลิกดูตาราง]</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)</span>
                             <h4 class="text-lg font-extrabold text-purple-300">${totalOtherParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
                         </div>
                     </div>
@@ -609,122 +561,6 @@
             }
 
             renderActiveModelEditor();
-        }
-
-        function openKpiModal(type) {
-            const modal = document.getElementById('kpi-detail-modal');
-            const titleEl = document.getElementById('kpi-modal-title');
-            const badgeEl = document.getElementById('kpi-modal-badge');
-            const theadTr = document.getElementById('kpi-modal-thead');
-            const tbody = document.getElementById('kpi-modal-tbody');
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
-
-            let titles = {
-                'total': { title: 'ยอดแผนผลิตรวม (Master Plan Target)', badge: 'Total Plan' },
-                'press': { title: 'KPI: Press Machine - Door Metal', badge: 'Press Machine' },
-                'glass': { title: 'KPI: Glass Door', badge: 'Glass Door' },
-                'other': { title: 'ชิ้นส่วนอื่นๆ (Back/Bottom Plate)', badge: 'Other Parts' }
-            };
-
-            titleEl.innerText = titles[type].title;
-            badgeEl.innerText = titles[type].badge;
-
-            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
-            currentDates.forEach(date => {
-                headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date}</th>`;
-            });
-            theadTr.innerHTML = headerHTML;
-
-            let dailyTotals = {};
-            currentDates.forEach(date => {
-                let sumVal = 0;
-                productStructure.forEach(group => {
-                    group.models.forEach(model => {
-                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        if (baseVal > 0) {
-                            if (type === 'total') {
-                                sumVal += baseVal;
-                            } else if (modelSubParts[model] && Array.isArray(modelSubParts[model])) {
-                                modelSubParts[model].forEach(p => {
-                                    let ratio = parseFloat(p.ratio) || 0;
-                                    if (type === 'press' && p.type === 'Door' && p.doorMaterial !== 'Door Glass') {
-                                        sumVal += baseVal * ratio;
-                                    } else if (type === 'glass' && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
-                                        sumVal += baseVal * ratio;
-                                    } else if (type === 'other' && p.type !== 'Door') {
-                                        sumVal += baseVal * ratio;
-                                    }
-                                });
-                            }
-                        }
-                    });
-                });
-                let uph = workingHours > 0 ? Math.round(sumVal / workingHours) : 0;
-                dailyTotals[date] = { val: sumVal, uph: uph };
-            });
-
-            let tbodyHTML = `
-                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
-                    <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
-                    <td class="p-3.5 text-blue-300">Total KPI Output</td>
-            `;
-            currentDates.forEach(date => {
-                let t = dailyTotals[date];
-                tbodyHTML += `
-                    <td class="p-3.5 text-center bg-blue-900/20 border-l border-slate-800/40">
-                        <div class="text-amber-400 font-extrabold">${t.val > 0 ? t.val.toLocaleString() + ' ชิ้น' : '-'}</div>
-                        <div class="text-[10px] text-cyan-300 font-semibold">UPH: ${t.uph > 0 ? t.uph.toLocaleString() : '0'}</div>
-                    </td>
-                `;
-            });
-            tbodyHTML += `</tr>`;
-
-            productStructure.forEach(group => {
-                group.models.forEach((model, index) => {
-                    tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors">`;
-                    if (index === 0) {
-                        tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
-                    }
-                    tbodyHTML += `<td class="p-3.5 font-medium text-slate-300"><div>${model}</div></td>`;
-
-                    currentDates.forEach(date => {
-                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
-                        let itemVal = 0;
-                        if (baseVal > 0) {
-                            if (type === 'total') {
-                                itemVal = baseVal;
-                            } else if (modelSubParts[model] && Array.isArray(modelSubParts[model])) {
-                                modelSubParts[model].forEach(p => {
-                                    let ratio = parseFloat(p.ratio) || 0;
-                                    if (type === 'press' && p.type === 'Door' && p.doorMaterial !== 'Door Glass') {
-                                        itemVal += baseVal * ratio;
-                                    } else if (type === 'glass' && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
-                                        itemVal += baseVal * ratio;
-                                    } else if (type === 'other' && p.type !== 'Door') {
-                                        itemVal += baseVal * ratio;
-                                    }
-                                });
-                            }
-                        }
-                        let calcUph = itemVal > 0 && workingHours > 0 ? Math.round(itemVal / workingHours) : 0;
-
-                        tbodyHTML += `
-                            <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
-                                <div class="font-bold text-white">${itemVal > 0 ? itemVal.toLocaleString() + ' ชิ้น' : '-'}</div>
-                                <div class="text-[10px] text-blue-400">${itemVal > 0 ? 'UPH: ' + calcUph : ''}</div>
-                            </td>
-                        `;
-                    });
-                    tbodyHTML += `</tr>`;
-                });
-            });
-
-            tbody.innerHTML = tbodyHTML;
-            modal.classList.remove('hidden');
-        }
-
-        function closeKpiModal() {
-            document.getElementById('kpi-detail-modal').classList.add('hidden');
         }
 
         function selectModelForConfig(modelName) {
@@ -783,8 +619,8 @@
                                 <div>
                                     <label class="block text-[10px] text-slate-400 mb-1">ประเภทวัสดุประตู (KPI Destination):</label>
                                     <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs font-semibold ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
-                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine</option>
-                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door</option>
+                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine[cite: 3]</option>
+                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door[cite: 3]</option>
                                     </select>
                                 </div>
                             </div>
@@ -892,7 +728,7 @@
             initMatrixTable(currentDates);
             renderLineOverview();
             renderPartsConfigPage();
-            alert(`✅ บันทึกชิ้นส่วนย่อยของรุ่น ${activeSelectedModelForConfig} และเชื่อมโยง KPI Card สำเร็จ!`);
+            alert(`✅ บันทึกชิ้นส่วนย่อยของรุ่น ${activeSelectedModelForConfig} และเชื่อมโยง KPI Card สำเร็จ![cite: 3]`);
         }
 
         function renderLineOverview() {
@@ -1002,190 +838,190 @@
             document.getElementById('line-modal').classList.remove('hidden');
         }
 
-       let currentLineSubTab = 'target';
+        let currentLineSubTab = 'target';
+        function switchLineSubTab(tab) {
+            currentLineSubTab = tab;
+            const btnTarget = document.getElementById('linetab-btn-target');
+            const btnParts = document.getElementById('linetab-btn-parts');
+            const btnModel = document.getElementById('linetab-btn-model');
+            const container = document.getElementById('line-subtab-content-container');
+            const line = productionLines[currentActiveLineIndex];
+            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
-function switchLineSubTab(tab) {
-    currentLineSubTab = tab;
-    const btnTarget = document.getElementById('linetab-btn-target');
-    const btnParts = document.getElementById('linetab-btn-parts');
-    const btnModel = document.getElementById('linetab-btn-model');
-    const container = document.getElementById('line-subtab-content-container');
-    const line = productionLines[currentActiveLineIndex];
-    const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+            if (tab === 'target') {
+                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
+            } else if (tab === 'parts') {
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
+            } else {
+                btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
+                btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
+                container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
+            }
+        }
 
-    if (tab === 'target') {
-        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        container.innerHTML = generateTargetInputTableHTML(line.selectedModels, selectedDate);
-    } else if (tab === 'parts') {
-        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        container.innerHTML = generatePartsConfigTableHTML(line.selectedModels);
-    } else {
-        btnModel.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow";
-        btnTarget.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        btnParts.className = "px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white";
-        container.innerHTML = generateModelCheckboxTableHTML(line.selectedModels, (cb, m) => handleModelCheckboxChange(cb, m), () => toggleAllModelsInModal(true), () => toggleAllModelsInModal(false));
-    }
-function renderModalContent() {
-    const line = productionLines[currentActiveLineIndex];
-    const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
+        function renderModalContent() {
+            const line = productionLines[currentActiveLineIndex];
+            const selectedDate = document.getElementById('overview-date-select').value || currentDates[0];
 
-    document.getElementById('modal-line-title').innerText = line.name;
-    document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
-    document.getElementById('modal-footer-date').innerText = selectedDate;
+            document.getElementById('modal-line-title').innerText = line.name;
+            document.getElementById('modal-line-badge').innerText = line.hasSubMachines ? "Press Machine Groups" : `Line #${currentActiveLineIndex + 1}`;
+            document.getElementById('modal-footer-date').innerText = selectedDate;
 
-    const modalBody = document.getElementById('modal-body-content');
-    let contentHTML = '';
+            const modalBody = document.getElementById('modal-body-content');
+            let contentHTML = '';
 
-    if (line.hasSubMachines) {
-        // กรณีเป็น Press Machine ที่มีเครื่องจักรย่อย (Sub-machines)
-        if (selectedSubMachineIndex === null) {
-            contentHTML += `
-                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
-                    <div>
-                        <p class="text-sm text-blue-400 font-bold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
-                        <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละกลุ่ม</p>
-                    </div>
-                    <span class="text-xs bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full border border-purple-500/30 font-semibold">3 Machine Groups</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            `;
-
-            line.subMachines.forEach((sub, subIdx) => {
-                let modelCount = sub.selectedModels ? sub.selectedModels.length : 0;
-                let subColors = ['border-purple-500/40 bg-purple-950/20 text-purple-300', 'border-blue-500/40 bg-blue-950/20 text-blue-300', 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300'];
-
-                let subTargetPartsSum = 0;
-                if (sub.selectedModels) {
-                    sub.selectedModels.forEach(m => {
-                        let baseVal = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
-                        subTargetPartsSum += (baseVal * getMultiplier(m));
-                    });
-                }
-
-                contentHTML += `
-                    <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${subColors[subIdx % subColors.length]} p-6 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all shadow-xl flex flex-col justify-between group bg-slate-900">
-                        <div>
-                            <div class="flex justify-between items-start mb-3">
-                                <span class="font-bold text-base text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
-                                <span class="text-[11px] bg-slate-950 px-3 py-1 rounded-full text-slate-300 font-medium">${modelCount} รุ่น</span>
+            if (line.hasSubMachines) {
+                if (selectedSubMachineIndex === null) {
+                    contentHTML += `
+                        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex justify-between items-center shadow-lg">
+                            <div>
+                                <p class="text-sm text-blue-400 font-bold">🏭 เลือกกลุ่มเครื่องจักรใหญ่ใน Press Machine</p>
+                                <p class="text-xs text-slate-400 mt-1">คลิกการ์ดเพื่อตั้งค่าชิ้นส่วนย่อยอิสระ, กรอกเป้าหมาย และเวลาของแต่ละกลุ่ม</p>
                             </div>
+                            <span class="text-xs bg-purple-600/20 text-purple-300 px-4 py-2 rounded-full border border-purple-500/30 font-semibold">3 Machine Groups</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    `;
 
-                            <div class="my-4 space-y-3">
-                                <div class="bg-slate-950 border border-amber-500/30 p-3 rounded-xl flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xs text-amber-400 font-bold">🎯</div>
-                                    <div>
-                                        <p class="text-[10px] text-slate-400 font-medium">รวมชิ้นส่วนผลิต (${selectedDate})</p>
-                                        <h4 class="text-sm font-extrabold text-amber-400">${subTargetPartsSum.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
+                    line.subMachines.forEach((sub, subIdx) => {
+                        let modelCount = sub.selectedModels ? sub.selectedModels.length : 0;
+                        let subColors = ['border-purple-500/40 bg-purple-950/20 text-purple-300', 'border-blue-500/40 bg-blue-950/20 text-blue-300', 'border-emerald-500/40 bg-emerald-950/20 text-emerald-300'];
+
+                        let subTargetPartsSum = 0;
+                        if (sub.selectedModels) {
+                            sub.selectedModels.forEach(m => {
+                                let baseVal = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
+                                subTargetPartsSum += (baseVal * getMultiplier(m));
+                            });
+                        }
+
+                        contentHTML += `
+                            <div onclick="selectSubMachineToEdit(${subIdx})" class="border ${subColors[subIdx % subColors.length]} p-6 rounded-2xl cursor-pointer hover:scale-[1.02] transition-all shadow-xl flex flex-col justify-between group bg-slate-900">
+                                <div>
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="font-bold text-base text-white group-hover:text-cyan-300 transition-colors">⚙️ ${sub.name}</span>
+                                        <span class="text-[11px] bg-slate-950 px-3 py-1 rounded-full text-slate-300 font-medium">${modelCount} รุ่น</span>
+                                    </div>
+
+                                    <div class="my-4 space-y-3">
+                                        <div class="bg-slate-950 border border-amber-500/30 p-3 rounded-xl flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-xs text-amber-400 font-bold">🎯</div>
+                                            <div>
+                                                <p class="text-[10px] text-slate-400 font-medium">รวมชิ้นส่วนผลิต (${selectedDate})</p>
+                                                <h4 class="text-sm font-extrabold text-amber-400">${subTargetPartsSum.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="mt-5 pt-3 border-t border-slate-800 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
-                            ตั้งค่าชิ้นส่วนย่อยและเป้าหมาย ➔
-                        </div>
-                    </div>
-                `;
-            });
-            contentHTML += `</div>`;
-        } else {
-            let sub = line.subMachines[selectedSubMachineIndex];
-            if (!sub.processes) sub.processes = [];
-
-            contentHTML += `
-                <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <button onclick="backToSubMachineList()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
-                            ⬅️ กลับหน้าเลือกกลุ่มเครื่อง
-                        </button>
-                        <div class="border-l border-slate-700 pl-4">
-                            <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
-                        <button onclick="switchSubMachineSubTab('target')" id="subtab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'target' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
-                            🎯 กรอกเป้าหมาย (${selectedDate})
-                        </button>
-                        <button onclick="switchSubMachineSubTab('parts')" id="subtab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'parts' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
-                            ⚙️ จัดการชิ้นส่วนย่อย
-                        </button>
-                        <button onclick="switchSubMachineSubTab('process')" id="subtab-btn-process" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'process' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
-                            ⏱️ กระบวนการ & เวลา
-                        </button>
-                        <button onclick="switchSubMachineSubTab('model')" id="subtab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'model' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
-                            📋 เลือกรุ่น
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            if (subMachineSubTab === 'target') {
-                contentHTML += generateTargetInputTableHTML(sub.selectedModels, selectedDate);
-            } else if (subMachineSubTab === 'parts') {
-                contentHTML += generatePartsConfigTableHTML(sub.selectedModels);
-            } else if (subMachineSubTab === 'process') {
-                contentHTML += `
-                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6 shadow-xl">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-bold text-slate-200">🛠️ กระบวนการทำงานและเวลา (${sub.name})</span>
-                            <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition-all">+ เพิ่มกระบวนการ</button>
-                        </div>
-                        <div class="space-y-3 max-h-[55vh] overflow-y-auto">
-                `;
-                if (sub.processes.length > 0) {
-                    sub.processes.forEach((proc, pIdx) => {
-                        contentHTML += `
-                            <div class="flex items-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                                <input type="text" value="${proc.name}" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white">
-                                <div class="flex items-center gap-2">
-                                    <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white text-center font-bold">
-                                    <span class="text-xs text-slate-400">วินาที/ชิ้น</span>
+                                <div class="mt-5 pt-3 border-t border-slate-800 flex justify-end items-center text-xs text-blue-400 font-semibold group-hover:underline">
+                                    ตั้งค่าชิ้นส่วนย่อยและเป้าหมาย ➔
                                 </div>
-                                <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 p-3 rounded-xl bg-rose-950/40">🗑️</button>
                             </div>
                         `;
                     });
+
+                    contentHTML += `</div>`;
                 } else {
-                    contentHTML += `<div class="text-xs text-slate-500 italic text-center py-10">ยังไม่มีกระบวนการทำงาน</div>`;
+                    let sub = line.subMachines[selectedSubMachineIndex];
+                    if (!sub.processes) sub.processes = [];
+
+                    contentHTML += `
+                        <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
+                            <div class="flex items-center gap-4">
+                                <button onclick="backToSubMachineList()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
+                                    ⬅️ กลับหน้าเลือกกลุ่มเครื่อง
+                                </button>
+                                <div class="border-l border-slate-700 pl-4">
+                                    <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${sub.name}</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
+                                <button onclick="switchSubMachineSubTab('target')" id="subtab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'target' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    🎯 กรอกเป้าหมาย (${selectedDate})
+                                </button>
+                                <button onclick="switchSubMachineSubTab('parts')" id="subtab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'parts' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    ⚙️ จัดการชิ้นส่วนย่อย[cite: 3]
+                                </button>
+                                <button onclick="switchSubMachineSubTab('process')" id="subtab-btn-process" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'process' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    ⏱️ กระบวนการ & เวลา
+                                </button>
+                                <button onclick="switchSubMachineSubTab('model')" id="subtab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all ${subMachineSubTab === 'model' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                                    📋 เลือกรุ่น
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    if (subMachineSubTab === 'target') {
+                        contentHTML += generateTargetInputTableHTML(sub.selectedModels, selectedDate);
+                    } else if (subMachineSubTab === 'parts') {
+                        contentHTML += generatePartsConfigTableHTML(sub.selectedModels);
+                    } else if (subMachineSubTab === 'process') {
+                        contentHTML += `
+                            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-6 shadow-xl">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-bold text-slate-200">🛠️ กระบวนการทำงานและเวลา (${sub.name})</span>
+                                    <button onclick="addProcessToSubMachine(${selectedSubMachineIndex})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition-all">+ เพิ่มกระบวนการ</button>
+                                </div>
+                                <div class="space-y-3 max-h-[55vh] overflow-y-auto">
+                        `;
+                        if (sub.processes.length > 0) {
+                            sub.processes.forEach((proc, pIdx) => {
+                                contentHTML += `
+                                    <div class="flex items-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                        <input type="text" value="${proc.name}" onchange="updateProcessName(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white">
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" value="${proc.timePerUnit}" min="0.1" step="0.5" onchange="updateProcessTime(${selectedSubMachineIndex}, ${pIdx}, this.value)" class="w-32 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white text-center font-bold">
+                                            <span class="text-xs text-slate-400">วินาที/ชิ้น</span>
+                                        </div>
+                                        <button onclick="removeProcessFromSubMachine(${selectedSubMachineIndex}, ${pIdx})" class="text-rose-400 p-3 rounded-xl bg-rose-950/40">🗑️</button>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            contentHTML += `<div class="text-xs text-slate-500 italic text-center py-10">ยังไม่มีกระบวนการทำงาน</div>`;
+                        }
+                        contentHTML += `</div></div>`;
+                    } else {
+                        contentHTML += generateModelCheckboxTableHTML(sub.selectedModels, null, () => toggleSubMachineModels(selectedSubMachineIndex, true), () => toggleSubMachineModels(selectedSubMachineIndex, false));
+                    }
                 }
-                contentHTML += `</div></div>`;
             } else {
-                contentHTML += generateModelCheckboxTableHTML(sub.selectedModels, null, () => toggleSubMachineModels(selectedSubMachineIndex, true), () => toggleSubMachineModels(selectedSubMachineIndex, false));
+                contentHTML += `
+                    <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
+                        <div>
+                            <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${line.name}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">กำหนดชิ้นส่วนย่อยอิสระ[cite: 3] และเป้าหมายการผลิตสำหรับวันที่ <span class="text-amber-400 font-bold">${selectedDate}</span></p>
+                        </div>
+                        <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
+                            <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow">
+                                🎯 กรอกเป้าหมายผลิต
+                            </button>
+                            <button onclick="switchLineSubTab('parts')" id="linetab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                                ⚙️ จัดการชิ้นส่วนย่อย[cite: 3]
+                            </button>
+                            <button onclick="switchLineSubTab('model')" id="linetab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+                                📋 เลือกรุ่น (Model)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="line-subtab-content-container">
+                        ${generateTargetInputTableHTML(line.selectedModels, selectedDate)}
+                    </div>
+                `;
             }
+
+            modalBody.innerHTML = contentHTML;
         }
-    } else {
-        // กรณีเป็นไลน์การผลิตทั่วไป (ไม่ใช่ Press Machine)
-        contentHTML += `
-            <div class="flex items-center justify-between bg-slate-900 p-5 rounded-2xl border border-slate-800 flex-wrap gap-4 shadow-lg">
-                <div>
-                    <p class="text-sm text-cyan-400 font-bold">⚙️ ตั้งค่า: ${line.name}</p>
-                    <p class="text-xs text-slate-400 mt-0.5">กำหนดชิ้นส่วนย่อยอิสระ และเป้าหมายการผลิตสำหรับวันที่ <span class="text-amber-400 font-bold">${selectedDate}</span></p>
-                </div>
-                <div class="bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex items-center gap-1">
-                    <button onclick="switchLineSubTab('target')" id="linetab-btn-target" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow">
-                        🎯 กรอกเป้าหมายผลิต
-                    </button>
-                    <button onclick="switchLineSubTab('parts')" id="linetab-btn-parts" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
-                        ⚙️ จัดการชิ้นส่วนย่อย
-                    </button>
-                    <button onclick="switchLineSubTab('model')" id="linetab-btn-model" class="px-4 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
-                        📋 เลือกรุ่น (Model)
-                    </button>
-                </div>
-            </div>
-
-            <div id="line-subtab-content-container">
-                ${generateTargetInputTableHTML(line.selectedModels, selectedDate)}
-            </div>
-        `;
-    }
-
-    modalBody.innerHTML = contentHTML;
-}
 
         function switchSubMachineSubTab(subTabName) {
             subMachineSubTab = subTabName;
@@ -1265,8 +1101,8 @@ function renderModalContent() {
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น</span>
-                            <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู</p>
+                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น[cite: 3]</span>
+                            <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู[cite: 3]</p>
                         </div>
                     </div>
                     
@@ -1276,7 +1112,7 @@ function renderModalContent() {
                                 <thead>
                                     <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
                                         <th class="p-3.5 pl-6 w-44">Model</th>
-                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)</th>
+                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)[cite: 3]</th>
                                         <th class="p-3.5 text-center w-32">ตัวคูณรวม</th>
                                     </tr>
                                 </thead>
@@ -1323,8 +1159,8 @@ function renderModalContent() {
                                             <option value="4Door" ${part.doorCount === '4Door' ? 'selected' : ''}>4 ประตู (x4)</option>
                                         </select>
                                         <select onchange="updateDoorMaterialModal('${model}', ${pIdx}, this.value)" class="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-[11px] font-semibold ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
-                                            <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal (Press)</option>
-                                            <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass (Glass Door)</option>
+                                            <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal (Press)[cite: 3]</option>
+                                            <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass (Glass Door)[cite: 3]</option>
                                         </select>
                                     </div>
                                 ` : ''}
