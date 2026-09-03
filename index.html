@@ -140,7 +140,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ</p>
+                        <p class="text-xs text-slate-400">เลือกรุ่นสินค้า เพื่อกำหนดชิ้นส่วนย่อย เลือกว่าเป็น Door (Metal/Glass), Back Plate, Bottom Plate และเชื่อมโยงเข้า KPI Card อัตโนมัติ (คลิกที่ KPI Card เพื่อดูตารางออเดอร์รายวัน)</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
@@ -198,6 +198,7 @@
 
     </div>
 
+    <!-- Line Modal -->
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
         <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
             <div class="flex items-center gap-3">
@@ -228,6 +229,53 @@
             </div>
             <button onclick="closeLineModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition-all shadow-lg">
                 บันทึกและกลับสู่หน้าหลัก
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Detail Modal -->
+    <div id="kpi-detail-modal" class="fixed inset-0 z-50 flex flex-col bg-slate-950 hidden">
+        <div class="px-6 py-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center shadow-md">
+            <div class="flex items-center gap-3">
+                <span id="kpi-modal-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">KPI Breakdown</span>
+                <div>
+                    <h3 id="kpi-modal-title" class="text-xl font-bold text-white">รายละเอียดออเดอร์รายวันตาม KPI</h3>
+                    <p class="text-xs text-slate-400">แสดงยอดออเดอร์และชิ้นส่วนย่อยรายวันแยกตามรุ่น (Matrix View Format)</p>
+                </div>
+            </div>
+            <button onclick="closeKpiModal()" class="bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg flex items-center gap-2">
+                ✕ ปิดหน้าจอ
+            </button>
+        </div>
+        
+        <div class="flex-1 p-6 md:p-8 overflow-y-auto space-y-6 max-w-7xl mx-auto w-full">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปยอดผลิตรายวัน (Matrix View)</h3>
+                    <span class="text-xs bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20">KPI Detail View</span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="kpi-modal-table">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 text-xs border-b border-slate-800" id="kpi-modal-thead">
+                                <th class="p-3.5 pl-6">Product Group</th>
+                                <th class="p-3.5">Model</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kpi-modal-tbody" class="divide-y divide-slate-800/60 text-sm">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-between items-center px-8">
+            <div class="text-xs text-slate-400">
+                ระบบวิเคราะห์ข้อมูล KPI และแผนการผลิตรายวัน
+            </div>
+            <button onclick="closeKpiModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition-all shadow-lg">
+                ปิดหน้าจอ
             </button>
         </div>
     </div>
@@ -292,7 +340,6 @@
         let modelSubParts = {};
         let activeSelectedModelForConfig = "159C";
 
-        // โครงสร้างชิ้นส่วนย่อยเริ่มต้นตามที่ผู้ใช้กำหนด (รองรับ Door: Metal/Glass, 1/2/4 Doors, Back/Bottom plate)[cite: 3]
         function initDefaultSubParts() {
             productStructure.forEach(g => {
                 g.models.forEach(m => {
@@ -492,7 +539,7 @@
                                 if (p.doorMaterial === 'Door Glass') {
                                     totalDoorGlassParts += partQty;
                                 } else {
-                                    totalDoorMetalParts += partQty; // Door Metal ส่งเข้า KPI Card Press Machine[cite: 3]
+                                    totalDoorMetalParts += partQty;
                                 }
                             } else {
                                 totalOtherParts += partQty;
@@ -509,31 +556,31 @@
             const kpiContainer = document.getElementById('kpi-cards-container');
             if (kpiContainer) {
                 kpiContainer.innerHTML = `
-                    <div class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div onclick="openKpiModal('total')" class="bg-slate-950 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-blue-400 hover:scale-[1.02] transition-all">
                         <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate}) [คลิกดูตาราง]</span>
                             <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div onclick="openKpiModal('press')" class="bg-slate-950 border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-amber-400 hover:scale-[1.02] transition-all">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal) [คลิกดูตาราง]</span>
                             <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphPress.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div onclick="openKpiModal('glass')" class="bg-slate-950 border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-cyan-400 hover:scale-[1.02] transition-all">
                         <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door [คลิกดูตาราง]</span>
                             <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphGlass.toLocaleString()})</span></h4>
                         </div>
                     </div>
-                    <div class="bg-slate-950 border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg">
+                    <div onclick="openKpiModal('other')" class="bg-slate-950 border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-lg cursor-pointer hover:border-purple-400 hover:scale-[1.02] transition-all">
                         <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)</span>
+                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.) [คลิกดูตาราง]</span>
                             <h4 class="text-lg font-extrabold text-purple-300">${totalOtherParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
                         </div>
                     </div>
@@ -562,6 +609,122 @@
             }
 
             renderActiveModelEditor();
+        }
+
+        function openKpiModal(type) {
+            const modal = document.getElementById('kpi-detail-modal');
+            const titleEl = document.getElementById('kpi-modal-title');
+            const badgeEl = document.getElementById('kpi-modal-badge');
+            const theadTr = document.getElementById('kpi-modal-thead');
+            const tbody = document.getElementById('kpi-modal-tbody');
+            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+
+            let titles = {
+                'total': { title: 'ยอดแผนผลิตรวม (Master Plan Target)', badge: 'Total Plan' },
+                'press': { title: 'KPI: Press Machine - Door Metal', badge: 'Press Machine' },
+                'glass': { title: 'KPI: Glass Door', badge: 'Glass Door' },
+                'other': { title: 'ชิ้นส่วนอื่นๆ (Back/Bottom Plate)', badge: 'Other Parts' }
+            };
+
+            titleEl.innerText = titles[type].title;
+            badgeEl.innerText = titles[type].badge;
+
+            let headerHTML = `<th class="p-3.5 pl-6">Product Group</th><th class="p-3.5">Model</th>`;
+            currentDates.forEach(date => {
+                headerHTML += `<th class="p-3.5 text-center min-w-[140px]">${date}</th>`;
+            });
+            theadTr.innerHTML = headerHTML;
+
+            let dailyTotals = {};
+            currentDates.forEach(date => {
+                let sumVal = 0;
+                productStructure.forEach(group => {
+                    group.models.forEach(model => {
+                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        if (baseVal > 0) {
+                            if (type === 'total') {
+                                sumVal += baseVal;
+                            } else if (modelSubParts[model] && Array.isArray(modelSubParts[model])) {
+                                modelSubParts[model].forEach(p => {
+                                    let ratio = parseFloat(p.ratio) || 0;
+                                    if (type === 'press' && p.type === 'Door' && p.doorMaterial !== 'Door Glass') {
+                                        sumVal += baseVal * ratio;
+                                    } else if (type === 'glass' && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
+                                        sumVal += baseVal * ratio;
+                                    } else if (type === 'other' && p.type !== 'Door') {
+                                        sumVal += baseVal * ratio;
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+                let uph = workingHours > 0 ? Math.round(sumVal / workingHours) : 0;
+                dailyTotals[date] = { val: sumVal, uph: uph };
+            });
+
+            let tbodyHTML = `
+                <tr class="bg-blue-950/40 border-b-2 border-blue-500/30 font-bold text-slate-100">
+                    <td class="p-3.5 pl-6 text-blue-400">TOTAL</td>
+                    <td class="p-3.5 text-blue-300">Total KPI Output</td>
+            `;
+            currentDates.forEach(date => {
+                let t = dailyTotals[date];
+                tbodyHTML += `
+                    <td class="p-3.5 text-center bg-blue-900/20 border-l border-slate-800/40">
+                        <div class="text-amber-400 font-extrabold">${t.val > 0 ? t.val.toLocaleString() + ' ชิ้น' : '-'}</div>
+                        <div class="text-[10px] text-cyan-300 font-semibold">UPH: ${t.uph > 0 ? t.uph.toLocaleString() : '0'}</div>
+                    </td>
+                `;
+            });
+            tbodyHTML += `</tr>`;
+
+            productStructure.forEach(group => {
+                group.models.forEach((model, index) => {
+                    tbodyHTML += `<tr class="hover:bg-slate-800/40 transition-colors">`;
+                    if (index === 0) {
+                        tbodyHTML += `<td class="p-3.5 pl-6 font-semibold text-blue-400 align-middle" rowspan="${group.models.length}">${group.group}</td>`;
+                    }
+                    tbodyHTML += `<td class="p-3.5 font-medium text-slate-300"><div>${model}</div></td>`;
+
+                    currentDates.forEach(date => {
+                        let baseVal = (planDatabase[model] && planDatabase[model][date]) ? planDatabase[model][date] : 0;
+                        let itemVal = 0;
+                        if (baseVal > 0) {
+                            if (type === 'total') {
+                                itemVal = baseVal;
+                            } else if (modelSubParts[model] && Array.isArray(modelSubParts[model])) {
+                                modelSubParts[model].forEach(p => {
+                                    let ratio = parseFloat(p.ratio) || 0;
+                                    if (type === 'press' && p.type === 'Door' && p.doorMaterial !== 'Door Glass') {
+                                        itemVal += baseVal * ratio;
+                                    } else if (type === 'glass' && p.type === 'Door' && p.doorMaterial === 'Door Glass') {
+                                        itemVal += baseVal * ratio;
+                                    } else if (type === 'other' && p.type !== 'Door') {
+                                        itemVal += baseVal * ratio;
+                                    }
+                                });
+                            }
+                        }
+                        let calcUph = itemVal > 0 && workingHours > 0 ? Math.round(itemVal / workingHours) : 0;
+
+                        tbodyHTML += `
+                            <td class="p-3.5 text-center bg-slate-950/20 border-l border-slate-800/40">
+                                <div class="font-bold text-white">${itemVal > 0 ? itemVal.toLocaleString() + ' ชิ้น' : '-'}</div>
+                                <div class="text-[10px] text-blue-400">${itemVal > 0 ? 'UPH: ' + calcUph : ''}</div>
+                            </td>
+                        `;
+                    });
+                    tbodyHTML += `</tr>`;
+                });
+            });
+
+            tbody.innerHTML = tbodyHTML;
+            modal.classList.remove('hidden');
+        }
+
+        function closeKpiModal() {
+            document.getElementById('kpi-detail-modal').classList.add('hidden');
         }
 
         function selectModelForConfig(modelName) {
@@ -620,8 +783,8 @@
                                 <div>
                                     <label class="block text-[10px] text-slate-400 mb-1">ประเภทวัสดุประตู (KPI Destination):</label>
                                     <select onchange="updateDoorMaterial('${activeSelectedModelForConfig}', ${pIdx}, this.value)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-white text-xs font-semibold ${part.doorMaterial === 'Door Glass' ? 'text-cyan-300' : 'text-amber-300'}">
-                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine[cite: 3]</option>
-                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door[cite: 3]</option>
+                                        <option value="Door Metal" ${part.doorMaterial === 'Door Metal' ? 'selected' : ''}>⚡ Door Metal ➔ KPI Press Machine</option>
+                                        <option value="Door Glass" ${part.doorMaterial === 'Door Glass' ? 'selected' : ''}>🚪 Door Glass ➔ KPI Glass Door</option>
                                     </select>
                                 </div>
                             </div>
@@ -1102,8 +1265,8 @@
                 <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
                     <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center flex-wrap gap-2">
                         <div>
-                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น[cite: 3]</span>
-                            <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู[cite: 3]</p>
+                            <span class="text-xs font-bold text-slate-200">⚙️ กำหนดชิ้นส่วนย่อยอิสระ (Sub-parts) รายรุ่น</span>
+                            <p class="text-[11px] text-slate-400 mt-0.5">เลือกประเภท Door (Metal/Glass), Back Plate หรือ Bottom Plate พร้อมกำหนดจำนวนบานประตู</p>
                         </div>
                     </div>
                     
@@ -1113,7 +1276,7 @@
                                 <thead>
                                     <tr class="bg-slate-900 text-slate-400 text-xs border-b border-slate-800 sticky top-0">
                                         <th class="p-3.5 pl-6 w-44">Model</th>
-                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)[cite: 3]</th>
+                                        <th class="p-3.5">รายการชิ้นส่วนย่อย (Door Metal/Glass, Back/Bottom Plate)</th>
                                         <th class="p-3.5 text-center w-32">ตัวคูณรวม</th>
                                     </tr>
                                 </thead>
