@@ -476,98 +476,102 @@
         }
 
         function renderPartsConfigPage() {
-            const dateSelect = document.getElementById('config-date-select');
-            const selectedDate = dateSelect ? dateSelect.value : currentDates[0];
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
+    // ตัดการพึ่งพา dateSelect ด้านนอกออก และใช้ currentDates ในการวนลูปคำนวณรายวันทั้งหมด[cite: 7]
+    let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            let totalMasterPlanTarget = 0;
-            let totalDoorMetalParts = 0;
-            let totalDoorGlassParts = 0;
-            let totalOtherParts = 0;
+    let totalMasterPlanTarget = 0;
+    let totalDoorMetalParts = 0;
+    let totalDoorGlassParts = 0;
+    let totalOtherParts = 0;
 
-            productStructure.forEach(g => {
-                g.models.forEach(m => {
-                    let baseTarget = (planDatabase[m] && planDatabase[m][selectedDate]) ? planDatabase[m][selectedDate] : 0;
-                    totalMasterPlanTarget += baseTarget;
+    // วนลูปคำนวณยอดรวมทุกรุ่นจากทุกๆ วันในระบบ (Daily Breakdown)[cite: 7]
+    productStructure.forEach(g => {
+        g.models.forEach(m => {
+            currentDates.forEach(date => {
+                let baseTarget = (planDatabase[m] && planDatabase[m][date]) ? planDatabase[m][date] : 0;
+                totalMasterPlanTarget += baseTarget;
 
-                    if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
-                        modelSubParts[m].forEach(p => {
-                            let partQty = baseTarget * (parseFloat(p.ratio) || 0);
-                            if (p.type === 'Door') {
-                                if (p.doorMaterial === 'Door Glass') {
-                                    totalDoorGlassParts += partQty;
-                                } else {
-                                    totalDoorMetalParts += partQty;
-                                }
+                if (modelSubParts[m] && Array.isArray(modelSubParts[m])) {
+                    modelSubParts[m].forEach(p => {
+                        let partQty = baseTarget * (parseFloat(p.ratio) || 0);
+                        if (p.type === 'Door') {
+                            if (p.doorMaterial === 'Door Glass') {
+                                totalDoorGlassParts += partQty;
                             } else {
-                                totalOtherParts += partQty;
+                                totalDoorMetalParts += partQty;
                             }
-                        });
-                    }
-                });
+                        } else {
+                            totalOtherParts += partQty;
+                        }
+                    });
+                }
             });
+        });
+    });
 
-            let totalAllParts = totalDoorMetalParts + totalDoorGlassParts + totalOtherParts;
-            let uphPress = workingHours > 0 ? Math.round(totalDoorMetalParts / workingHours) : 0;
-            let uphGlass = workingHours > 0 ? Math.round(totalDoorGlassParts / workingHours) : 0;
+    let totalAllParts = totalDoorMetalParts + totalDoorGlassParts + totalOtherParts;
+    // คำนวณ UPH เฉลี่ยรวมตลอดช่วงวัน หรือปรับตามความเหมาะสมของสูตรต่อวัน
+    let totalDays = currentDates.length > 0 ? currentDates.length : 1;
+    let uphPress = workingHours > 0 ? Math.round((totalDoorMetalParts / totalDays) / workingHours) : 0;
+    let uphGlass = workingHours > 0 ? Math.round((totalDoorGlassParts / totalDays) / workingHours) : 0;
 
-            const kpiContainer = document.getElementById('kpi-cards-container');
-            if (kpiContainer) {
-                kpiContainer.innerHTML = `
-                    <div class="bg-[#090d16] border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
+    const kpiContainer = document.getElementById('kpi-cards-container');
+    if (kpiContainer) {
+        kpiContainer.innerHTML = `
+            <div class="bg-[#090d16] border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 text-lg font-bold">🎯</div>
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวมทุกวัน (${currentDates.length} วัน)[cite: 7]</span>
+                    <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
+                </div>
+            </div>
+            <div class="bg-[#090d16] border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)[cite: 3, 7]</span>
+                    <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (เฉลี่ย UPH: ${uphPress.toLocaleString()})</span></h4>
+                </div>
+            </div>
+            <div class="bg-[#090d16] border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door[cite: 3, 7]</span>
+                    <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (เฉลี่ย UPH: ${uphGlass.toLocaleString()})</span></h4>
+                </div>
+            </div>
+            <div class="bg-[#090d16] border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)[cite: 7]</span>
+                    <h4 class="text-lg font-extrabold text-purple-300">${totalOtherParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
+                </div>
+            </div>
+        `;
+    }
+
+    const selectorListContainer = document.getElementById('model-selector-list');
+    if (selectorListContainer) {
+        let listHTML = '';
+        productStructure.forEach(group => {
+            group.models.forEach(model => {
+                let isSelected = (activeSelectedModelForConfig === model);
+                let mult = getMultiplier(model);
+                listHTML += `
+                    <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg' : 'bg-[#0e1626] border-blue-950/60 text-slate-300 hover:bg-blue-950/30'}">
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ยอดแผนผลิตรวม (${selectedDate})</span>
-                            <h4 class="text-lg font-extrabold text-white">${totalMasterPlanTarget.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">รุ่น</span></h4>
+                            <span class="text-[10px] text-slate-400 block">${group.group}</span>
+                            <span class="font-bold text-xs">${model}</span>
                         </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-amber-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg font-bold">🏗️</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Press Machine (Metal)[cite: 3]</span>
-                            <h4 class="text-lg font-extrabold text-amber-400">${totalDoorMetalParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphPress.toLocaleString()})</span></h4>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-cyan-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-bold">🚪</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">KPI: Glass Door[cite: 3]</span>
-                            <h4 class="text-lg font-extrabold text-cyan-300">${totalDoorGlassParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น (UPH: ${uphGlass.toLocaleString()})</span></h4>
-                        </div>
-                    </div>
-                    <div class="bg-[#090d16] border border-purple-500/30 p-4 rounded-xl flex items-center gap-3 shadow-xl">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-lg font-bold">⚙️</div>
-                        <div>
-                            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">ชิ้นส่วนอื่นๆ (Plate/etc.)</span>
-                            <h4 class="text-lg font-extrabold text-purple-300">${totalOtherParts.toLocaleString()} <span class="text-[10px] font-normal text-slate-400">ชิ้น</span></h4>
-                        </div>
+                        <span class="text-xs font-mono bg-[#090d16] px-2.5 py-1 rounded-lg text-amber-400 border border-blue-950">x${mult}</span>
                     </div>
                 `;
-            }
+            });
+        });
+        selectorListContainer.innerHTML = listHTML;
+    }
 
-            const selectorListContainer = document.getElementById('model-selector-list');
-            if (selectorListContainer) {
-                let listHTML = '';
-                productStructure.forEach(group => {
-                    group.models.forEach(model => {
-                        let isSelected = (activeSelectedModelForConfig === model);
-                        let mult = getMultiplier(model);
-                        listHTML += `
-                            <div onclick="selectModelForConfig('${model}')" class="p-3 rounded-xl cursor-pointer border transition-all flex justify-between items-center ${isSelected ? 'bg-blue-600/20 border-blue-500 text-white shadow-lg' : 'bg-[#0e1626] border-blue-950/60 text-slate-300 hover:bg-blue-950/30'}">
-                                <div>
-                                    <span class="text-[10px] text-slate-400 block">${group.group}</span>
-                                    <span class="font-bold text-xs">${model}</span>
-                                </div>
-                                <span class="text-xs font-mono bg-[#090d16] px-2.5 py-1 rounded-lg text-amber-400 border border-blue-950">x${mult}</span>
-                            </div>
-                        `;
-                    });
-                });
-                selectorListContainer.innerHTML = listHTML;
-            }
-
-            renderActiveModelEditor();
-        }
+    renderActiveModelEditor();
+}
 
         function selectModelForConfig(modelName) {
             activeSelectedModelForConfig = modelName;
