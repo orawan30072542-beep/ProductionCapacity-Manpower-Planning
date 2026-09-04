@@ -662,88 +662,135 @@
         }
 
         function renderProcessDataTable() {
-            let list = processDataStore[currentSelectedProcessLine] || [];
-            if (list.length === 0) {
-                processDataStore[currentSelectedProcessLine] = [{
-                    title: `${currentSelectedProcessLine} — Standard Model`,
-                    badge: (lineSubStationsMap[currentSelectedProcessLine] || ["Standard"])[0],
-                    line: currentSelectedProcessLine,
-                    models: ["159C", "159F"],
-                    stations: [
-                        { id: "STA01", p1: "กระบวนการเตรียมชิ้นส่วน", p2: "ประกอบชิ้นงาน", p3: "—", wt1: 10.0, wt2: 15.0, wt3: 0, loss: 1.0, ct: 26.0 },
-                        { id: "STA02", p1: "ตรวจสอบคุณภาพ", p2: "แพ็คกิ้ง", p3: "—", wt1: 12.0, wt2: 12.0, wt3: 0, loss: 0, ct: 24.0 }
-                    ]
-                }];
-                list = processDataStore[currentSelectedProcessLine];
-            }
+    let list = processDataStore[currentSelectedProcessLine] || [];
+    if (list.length === 0) {
+        processDataStore[currentSelectedProcessLine] = [{
+            title: `${currentSelectedProcessLine} — Standard Model`,
+            badge: (lineSubStationsMap[currentSelectedProcessLine] || ["Standard"])[0],
+            line: currentSelectedProcessLine,
+            models: ["159C", "159F"],
+            stations: [
+                { id: "STA01", p1: "กระบวนการเตรียมชิ้นส่วน", p2: "ประกอบชิ้นงาน", p3: "—", wt1: 10.0, wt2: 15.0, wt3: 0, loss: 1.0, ct: 26.0 },
+                { id: "STA02", p1: "ตรวจสอบคุณภาพ", p2: "แพ็คกิ้ง", p3: "—", wt1: 12.0, wt2: 12.0, wt3: 0, loss: 0, ct: 24.0 }
+            ]
+        }];
+        list = processDataStore[currentSelectedProcessLine];
+    }
 
-            if (activeCardIndex >= list.length) activeCardIndex = 0;
-            let currentCard = list[activeCardIndex];
+    if (activeCardIndex >= list.length) activeCardIndex = 0;
+    let currentCard = list[activeCardIndex];
 
-            document.getElementById('current-process-title').innerText = currentCard.title;
-            document.getElementById('current-process-badge').innerText = currentCard.badge;
-            document.getElementById('current-line-badge').innerText = currentCard.line || currentSelectedProcessLine;
+    document.getElementById('current-process-title').innerText = currentCard.title;
+    document.getElementById('current-process-badge').innerText = currentCard.badge;
+    document.getElementById('current-line-badge').innerText = currentCard.line || currentSelectedProcessLine;
 
-            let tagsHTML = '';
-            (currentCard.models || []).forEach(m => {
-                tagsHTML += `<span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">${m}</span>`;
-            });
-            document.getElementById('process-model-tags').innerHTML = tagsHTML;
+    let tagsHTML = '';
+    (currentCard.models || []).forEach(m => {
+        tagsHTML += `<span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">${m}</span>`;
+    });
+    document.getElementById('process-model-tags').innerHTML = tagsHTML;
 
-            let searchText = (document.getElementById('work-search-input')?.value || "").toLowerCase();
-            let stations = currentCard.stations.filter(st => {
-                let matchSearch = st.id.toLowerCase().includes(searchText) || st.p1.toLowerCase().includes(searchText) || st.p2.toLowerCase().includes(searchText) || st.p3.toLowerCase().includes(searchText);
-                if (!matchSearch) return false;
-                
-                if (currentStationFilter !== 'all') {
-                    let matchSub = currentCard.badge === currentStationFilter || st.id.toLowerCase().includes(currentStationFilter.toLowerCase());
-                    if (!matchSub) return false;
-                }
-                return true;
-            });
+    let searchText = (document.getElementById('work-search-input')?.value || "").toLowerCase();
+    let totalStations = currentCard.stations.length;
+    let maxCt = 0;
+    let totalCt = 0;
+    currentCard.stations.forEach(s => {
+        if (s.ct > maxCt) maxCt = s.ct;
+        totalCt += s.ct;
+    });
+    let taktTime = maxCt > 0 ? maxCt : 36.6;
+    let balance = totalStations > 0 ? Math.round((totalCt / (taktTime * totalStations)) * 100) : 59;
 
-            let totalStations = currentCard.stations.length;
-            let maxCt = 0;
-            let totalCt = 0;
-            currentCard.stations.forEach(s => {
-                if (s.ct > maxCt) maxCt = s.ct;
-                totalCt += s.ct;
-            });
-            let taktTime = maxCt > 0 ? maxCt : 36.6;
-            let balance = totalStations > 0 ? Math.round((totalCt / (taktTime * totalStations)) * 100) : 59;
+    document.getElementById('metric-takt').innerText = taktTime.toFixed(1) + ' s';
+    document.getElementById('metric-bottleneck').innerText = maxCt.toFixed(2) + ' s';
+    document.getElementById('metric-stations').innerText = totalStations;
+    document.getElementById('metric-balance').innerText = balance + '%';
+    document.getElementById('count-st-all').innerText = totalStations;
 
-            document.getElementById('metric-takt').innerText = taktTime.toFixed(1) + ' s';
-            document.getElementById('metric-bottleneck').innerText = maxCt.toFixed(2) + ' s';
-            document.getElementById('metric-stations').innerText = totalStations;
-            document.getElementById('metric-balance').innerText = balance + '%';
-            document.getElementById('count-st-all').innerText = totalStations;
+    const theadTr = document.querySelector('#page-workprocess table thead tr');
+    const tbody = document.getElementById('process-stations-tbody');
 
-            let tbodyHTML = '';
-            stations.forEach(st => {
-                let isBottleneck = (st.ct === maxCt && maxCt > 0);
-                let rowBg = isBottleneck ? "bg-rose-950/25 hover:bg-rose-950/40" : "hover:bg-blue-950/20";
-                let ctColor = isBottleneck ? "text-rose-400" : "text-cyan-300";
-                let ctText = isBottleneck ? `${st.ct.toFixed(2)} (Bottleneck)` : st.ct.toFixed(2);
-                let wtTotal = (st.wt1 + st.wt2 + st.wt3).toFixed(2);
-
-                tbodyHTML += `
-                    <tr class="${rowBg}">
-                        <td class="p-3.5 pl-5 font-bold ${isBottleneck ? 'text-rose-400' : 'text-white'} font-mono">${st.id}</td>
-                        <td class="p-3.5">${st.p1 && st.p1 !== '—' ? st.p1 : '<span class="text-slate-600">—</span>'}</td>
-                        <td class="p-3.5">${st.p2 && st.p2 !== '—' ? st.p2 : '<span class="text-slate-600">—</span>'}</td>
-                        <td class="p-3.5">${st.p3 && st.p3 !== '—' ? st.p3 : '<span class="text-slate-600">—</span>'}</td>
-                        <td class="p-3.5 text-center font-mono">${st.wt1 > 0 ? st.wt1.toFixed(2) : '—'}</td>
-                        <td class="p-3.5 text-center font-mono">${st.wt2 > 0 ? st.wt2.toFixed(2) : '—'}</td>
-                        <td class="p-3.5 text-center font-mono">${st.wt3 > 0 ? st.wt3.toFixed(2) : '—'}</td>
-                        <td class="p-3.5 text-center font-mono font-bold text-amber-300">${wtTotal}</td>
-                        <td class="p-3.5 text-center font-mono text-slate-400">${st.loss > 0 ? st.loss.toFixed(2) : '—'}</td>
-                        <td class="p-3.5 text-center font-mono font-bold ${ctColor}">${ctText}</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('process-stations-tbody').innerHTML = tbodyHTML;
+    // ตรวจสอบว่าถ้าเลือกปุ่ม All ให้เปลี่ยนหัวตารางและเนื้อหาเป็น 4 คอลัมน์พิเศษ
+    if (currentStationFilter === 'all') {
+        if (theadTr) {
+            theadTr.innerHTML = `
+                <th class="p-3.5 pl-5">Product</th>
+                <th class="p-3.5">รุ่น (Model)</th>
+                <th class="p-3.5 text-center">Leadtime (Total CT)</th>
+                <th class="p-3.5 text-center">Max CT</th>
+            `;
         }
 
+        let tbodyHTML = '';
+        // ดึงข้อมูลรุ่นทั้งหมดที่ผูกกับ Process นี้มาแสดงสรุป
+        let assignedModels = currentCard.models && currentCard.models.length > 0 ? currentCard.models : ["Standard Model"];
+        
+        assignedModels.forEach(modelName => {
+            // ค้นหา Product Group จากโครงสร้างกลาง (productStructure)
+            let foundGroup = productStructure.find(g => g.models.includes(modelName));
+            let productGroupName = foundGroup ? foundGroup.group : currentSelectedProcessLine;
+
+            tbodyHTML += `
+                <tr class="hover:bg-blue-950/20 transition-colors">
+                    <td class="p-3.5 pl-5 font-bold text-blue-400">${productGroupName}</td>
+                    <td class="p-3.5 font-semibold text-white">${modelName}</td>
+                    <td class="p-3.5 text-center font-mono font-bold text-amber-300">${totalCt.toFixed(2)} s</td>
+                    <td class="p-3.5 text-center font-mono font-bold text-rose-400">${maxCt.toFixed(2)} s</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = tbodyHTML;
+
+    } else {
+        // หากเลือกสถานีปกติ (เช่น 400T, Welding Machine ฯลฯ) ให้แสดงตารางสถานีตามเดิม
+        if (theadTr) {
+            theadTr.innerHTML = `
+                <th class="p-3.5 pl-5">Station</th>
+                <th class="p-3.5">Process 1</th>
+                <th class="p-3.5">Process 2</th>
+                <th class="p-3.5">Process 3</th>
+                <th class="p-3.5 text-center">WT 1</th>
+                <th class="p-3.5 text-center">WT 2</th>
+                <th class="p-3.5 text-center">WT 3</th>
+                <th class="p-3.5 text-center">WT Total</th>
+                <th class="p-3.5 text-center">Loss</th>
+                <th class="p-3.5 text-center">Cycle Time</th>
+            `;
+        }
+
+        let stations = currentCard.stations.filter(st => {
+            let matchSearch = st.id.toLowerCase().includes(searchText) || st.p1.toLowerCase().includes(searchText) || st.p2.toLowerCase().includes(searchText) || st.p3.toLowerCase().includes(searchText);
+            if (!matchSearch) return false;
+            let matchSub = currentCard.badge === currentStationFilter || st.id.toLowerCase().includes(currentStationFilter.toLowerCase());
+            return matchSub;
+        });
+
+        let tbodyHTML = '';
+        stations.forEach(st => {
+            let isBottleneck = (st.ct === maxCt && maxCt > 0);
+            let rowBg = isBottleneck ? "bg-rose-950/25 hover:bg-rose-950/40" : "hover:bg-blue-950/20";
+            let ctColor = isBottleneck ? "text-rose-400" : "text-cyan-300";
+            let ctText = isBottleneck ? `${st.ct.toFixed(2)} (Bottleneck)` : st.ct.toFixed(2);
+            let wtTotal = (st.wt1 + st.wt2 + st.wt3).toFixed(2);
+
+            tbodyHTML += `
+                <tr class="${rowBg}">
+                    <td class="p-3.5 pl-5 font-bold ${isBottleneck ? 'text-rose-400' : 'text-white'} font-mono">${st.id}</td>
+                    <td class="p-3.5">${st.p1 && st.p1 !== '—' ? st.p1 : '<span class="text-slate-600">—</span>'}</td>
+                    <td class="p-3.5">${st.p2 && st.p2 !== '—' ? st.p2 : '<span class="text-slate-600">—</span>'}</td>
+                    <td class="p-3.5">${st.p3 && st.p3 !== '—' ? st.p3 : '<span class="text-slate-600">—</span>'}</td>
+                    <td class="p-3.5 text-center font-mono">${st.wt1 > 0 ? st.wt1.toFixed(2) : '—'}</td>
+                    <td class="p-3.5 text-center font-mono">${st.wt2 > 0 ? st.wt2.toFixed(2) : '—'}</td>
+                    <td class="p-3.5 text-center font-mono">${st.wt3 > 0 ? st.wt3.toFixed(2) : '—'}</td>
+                    <td class="p-3.5 text-center font-mono font-bold text-amber-300">${wtTotal}</td>
+                    <td class="p-3.5 text-center font-mono text-slate-400">${st.loss > 0 ? st.loss.toFixed(2) : '—'}</td>
+                    <td class="p-3.5 text-center font-mono font-bold ${ctColor}">${ctText}</td>
+                </tr>
+            `;
+        });
+        tbody.innerHTML = tbodyHTML;
+    }
+}
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
