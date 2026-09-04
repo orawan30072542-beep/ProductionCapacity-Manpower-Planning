@@ -661,7 +661,7 @@
             renderProcessDataTable();
         }
 
-        function renderProcessDataTable() {
+function renderProcessDataTable() {
     let list = processDataStore[currentSelectedProcessLine] || [];
     if (list.length === 0) {
         processDataStore[currentSelectedProcessLine] = [{
@@ -710,7 +710,6 @@
     const theadTr = document.querySelector('#page-workprocess table thead tr');
     const tbody = document.getElementById('process-stations-tbody');
 
-    // ตรวจสอบว่าถ้าเลือกปุ่ม All ให้เปลี่ยนหัวตารางและเนื้อหาเป็น 4 คอลัมน์พิเศษ
     if (currentStationFilter === 'all') {
         if (theadTr) {
             theadTr.innerHTML = `
@@ -722,11 +721,9 @@
         }
 
         let tbodyHTML = '';
-        // ดึงข้อมูลรุ่นทั้งหมดที่ผูกกับ Process นี้มาแสดงสรุป
         let assignedModels = currentCard.models && currentCard.models.length > 0 ? currentCard.models : ["Standard Model"];
         
         assignedModels.forEach(modelName => {
-            // ค้นหา Product Group จากโครงสร้างกลาง (productStructure)
             let foundGroup = productStructure.find(g => g.models.includes(modelName));
             let productGroupName = foundGroup ? foundGroup.group : currentSelectedProcessLine;
 
@@ -742,7 +739,6 @@
         tbody.innerHTML = tbodyHTML;
 
     } else {
-        // หากเลือกสถานีปกติ (เช่น 400T, Welding Machine ฯลฯ) ให้แสดงตารางสถานีตามเดิม
         if (theadTr) {
             theadTr.innerHTML = `
                 <th class="p-3.5 pl-5">Station</th>
@@ -758,11 +754,10 @@
             `;
         }
 
+        // ปรับเงื่อนไขให้แสดงสถานีทั้งหมดใน Card ปัจจุบันเมื่อเลือกสับเซ็ต หรือกรองตามคำค้นหา
         let stations = currentCard.stations.filter(st => {
             let matchSearch = st.id.toLowerCase().includes(searchText) || st.p1.toLowerCase().includes(searchText) || st.p2.toLowerCase().includes(searchText) || st.p3.toLowerCase().includes(searchText);
-            if (!matchSearch) return false;
-            let matchSub = currentCard.badge === currentStationFilter || st.id.toLowerCase().includes(currentStationFilter.toLowerCase());
-            return matchSub;
+            return matchSearch;
         });
 
         let tbodyHTML = '';
