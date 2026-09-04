@@ -222,6 +222,11 @@
                     <button onclick="selectProcessLine('Door C')" id="pill-line-Door C" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door C</button>
                 </div>
 
+                <!-- Cards Selector Pills (Fixing shared / hidden data issue) -->
+                <div class="flex flex-wrap items-center gap-2 py-1" id="process-cards-selector-pills">
+                    <!-- Injected dynamically by JS -->
+                </div>
+
                 <!-- Sub Station Filters & Search -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-2" id="station-sub-pills">
@@ -545,6 +550,7 @@
             renderLineOverview();
             renderPartsConfigPage();
             renderLineBalancePage();
+            renderProcessCardPills();
             renderProcessDataTable();
         });
 
@@ -566,7 +572,10 @@
             if (tabName === 'overview') renderLineOverview();
             if (tabName === 'partsconfig') renderPartsConfigPage();
             if (tabName === 'linebalance') renderLineBalancePage();
-            if (tabName === 'workprocess') renderProcessDataTable();
+            if (tabName === 'workprocess') {
+                renderProcessCardPills();
+                renderProcessDataTable();
+            }
         }
 
         function selectProcessLine(lineName) {
@@ -582,6 +591,30 @@
                     }
                 }
             });
+            renderProcessCardPills();
+            renderProcessDataTable();
+        }
+
+        function renderProcessCardPills() {
+            const container = document.getElementById('process-cards-selector-pills');
+            if (!container) return;
+            let list = processDataStore[currentSelectedProcessLine] || [];
+            let html = `<span class="text-xs text-slate-400 font-bold uppercase mr-1">CARDS:</span>`;
+            if (list.length === 0) {
+                container.innerHTML = html + `<span class="text-xs text-slate-500">ไม่มีการ์ดกระบวนการในไลน์นี้</span>`;
+                return;
+            }
+            list.forEach((card, idx) => {
+                let isActive = (idx === activeCardIndex);
+                let btnClass = isActive ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-md border border-indigo-400" : "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500";
+                html += `<button onclick="selectProcessCard(${idx})" class="${btnClass}">${card.badge || card.title}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function selectProcessCard(idx) {
+            activeCardIndex = idx;
+            renderProcessCardPills();
             renderProcessDataTable();
         }
 
@@ -681,7 +714,7 @@
             document.getElementById('process-stations-tbody').innerHTML = tbodyHTML;
         }
 
-        // --- EDIT MODAL LOGIC WITH AUTO LINE & MULTI-SELECT MODELS ---
+        // --- EDIT MODAL LOGIC WITH DEEP COPY & ISOLATION ---
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
@@ -689,11 +722,8 @@
 
             document.getElementById('edit-modal-title').value = card.title;
             document.getElementById('edit-modal-badge').value = card.badge;
-            
-            // ตั้งค่าสถานีงานอัตโนมัติเป็นไลน์ปัจจุบัน
             document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
 
-            // Render Multi-select model checkboxes
             let container = document.getElementById('edit-modal-models-checkboxes');
             let allModels = [];
             productStructure.forEach(g => { allModels.push(...g.models); });
@@ -777,13 +807,13 @@
 
         function saveEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
+            if (!list || list.length <= activeCardIndex) return;
             let card = list[activeCardIndex];
 
             card.title = document.getElementById('edit-modal-title').value;
             card.badge = document.getElementById('edit-modal-badge').value;
-            card.line = currentSelectedProcessLine; // บันทึกไลน์อัตโนมัติ
+            card.line = currentSelectedProcessLine;
 
-            // เก็บค่ารุ่นที่ถูกติ๊กเลือกหลายรุ่น (Multi-select)
             let selectedModels = [];
             document.querySelectorAll('.edit-model-chk:checked').forEach(chk => {
                 selectedModels.push(chk.value);
@@ -810,10 +840,15 @@
             });
 
             card.stations = updatedStations;
+            
+            // ใช้ Deep Copy ป้องกันการแชร์ Object reference ซ้ำซ้อนกันระหว่างสถานี
+            list[activeCardIndex] = JSON.parse(JSON.stringify(card));
+
             closeEditProcessModal();
+            renderProcessCardPills();
             renderProcessDataTable();
             manualSaveDataSilent();
-            alert("✅ บันทึกข้อมูลและรุ่นที่เลือกสำเร็จ!");
+            alert("✅ บันทึกข้อมูลและแยกข้อมูลแยกตามสถานีเรียบร้อยแล้ว!");
         }
 
         function openAddNewModelModal() {
@@ -835,7 +870,8 @@
             }
 
             if (!processDataStore[line]) processDataStore[line] = [];
-            processDataStore[line].push({
+            
+            let newCard = {
                 title: title,
                 badge: badge || title,
                 line: line,
@@ -843,10 +879,15 @@
                 stations: [
                     { id: "ST01", p1: "กระบวนการเริ่มต้น", p2: "—", p3: "—", wt1: 10.0, wt2: 0, wt3: 0, loss: 0, ct: 10.0 }
                 ]
-            });
+            };
+
+            processDataStore[line].push(JSON.parse(JSON.stringify(newCard)));
 
             closeAddNewModelModal();
             selectProcessLine(line);
+            activeCardIndex = processDataStore[line].length - 1;
+            renderProcessCardPills();
+            renderProcessDataTable();
             manualSaveDataSilent();
             alert(`✅ เพิ่มรุ่นและกระบวนการทำงานใหม่ในไลน์ ${line} สำเร็จ!`);
         }
