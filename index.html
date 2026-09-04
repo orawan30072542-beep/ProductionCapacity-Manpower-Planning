@@ -222,11 +222,6 @@
                     <button onclick="selectProcessLine('Door C')" id="pill-line-Door C" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door C</button>
                 </div>
 
-                <!-- Cards Selector Pills (Fixing shared / hidden data issue) -->
-                <div class="flex flex-wrap items-center gap-2 py-1" id="process-cards-selector-pills">
-                    <!-- Injected dynamically by JS -->
-                </div>
-
                 <!-- Sub Station Filters & Search -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-2" id="station-sub-pills">
@@ -550,7 +545,6 @@
             renderLineOverview();
             renderPartsConfigPage();
             renderLineBalancePage();
-            renderProcessCardPills();
             renderProcessDataTable();
         });
 
@@ -572,10 +566,7 @@
             if (tabName === 'overview') renderLineOverview();
             if (tabName === 'partsconfig') renderPartsConfigPage();
             if (tabName === 'linebalance') renderLineBalancePage();
-            if (tabName === 'workprocess') {
-                renderProcessCardPills();
-                renderProcessDataTable();
-            }
+            if (tabName === 'workprocess') renderProcessDataTable();
         }
 
         function selectProcessLine(lineName) {
@@ -591,30 +582,6 @@
                     }
                 }
             });
-            renderProcessCardPills();
-            renderProcessDataTable();
-        }
-
-        function renderProcessCardPills() {
-            const container = document.getElementById('process-cards-selector-pills');
-            if (!container) return;
-            let list = processDataStore[currentSelectedProcessLine] || [];
-            let html = `<span class="text-xs text-slate-400 font-bold uppercase mr-1">CARDS:</span>`;
-            if (list.length === 0) {
-                container.innerHTML = html + `<span class="text-xs text-slate-500">ไม่มีการ์ดกระบวนการในไลน์นี้</span>`;
-                return;
-            }
-            list.forEach((card, idx) => {
-                let isActive = (idx === activeCardIndex);
-                let btnClass = isActive ? "px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-md border border-indigo-400" : "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500";
-                html += `<button onclick="selectProcessCard(${idx})" class="${btnClass}">${card.badge || card.title}</button>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function selectProcessCard(idx) {
-            activeCardIndex = idx;
-            renderProcessCardPills();
             renderProcessDataTable();
         }
 
@@ -714,7 +681,6 @@
             document.getElementById('process-stations-tbody').innerHTML = tbodyHTML;
         }
 
-        // --- EDIT MODAL LOGIC WITH DEEP COPY & ISOLATION ---
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
@@ -807,7 +773,6 @@
 
         function saveEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
-            if (!list || list.length <= activeCardIndex) return;
             let card = list[activeCardIndex];
 
             card.title = document.getElementById('edit-modal-title').value;
@@ -826,10 +791,8 @@
                 let id = r.querySelector('.st-id').value;
                 let p1 = r.querySelector('.st-p1').value || "—";
                 let wt1 = parseFloat(r.querySelector('.st-wt1').value) || 0;
-                
                 let p2 = r.querySelector('.st-p2').value || "—";
                 let wt2 = parseFloat(r.querySelector('.st-wt2').value) || 0;
-
                 let p3 = r.querySelector('.st-p3').value || "—";
                 let wt3 = parseFloat(r.querySelector('.st-wt3').value) || 0;
 
@@ -840,15 +803,10 @@
             });
 
             card.stations = updatedStations;
-            
-            // ใช้ Deep Copy ป้องกันการแชร์ Object reference ซ้ำซ้อนกันระหว่างสถานี
-            list[activeCardIndex] = JSON.parse(JSON.stringify(card));
-
             closeEditProcessModal();
-            renderProcessCardPills();
             renderProcessDataTable();
             manualSaveDataSilent();
-            alert("✅ บันทึกข้อมูลและแยกข้อมูลแยกตามสถานีเรียบร้อยแล้ว!");
+            alert("✅ บันทึกข้อมูลและรุ่นที่เลือกสำเร็จ!");
         }
 
         function openAddNewModelModal() {
@@ -870,8 +828,7 @@
             }
 
             if (!processDataStore[line]) processDataStore[line] = [];
-            
-            let newCard = {
+            processDataStore[line].push({
                 title: title,
                 badge: badge || title,
                 line: line,
@@ -879,15 +836,10 @@
                 stations: [
                     { id: "ST01", p1: "กระบวนการเริ่มต้น", p2: "—", p3: "—", wt1: 10.0, wt2: 0, wt3: 0, loss: 0, ct: 10.0 }
                 ]
-            };
-
-            processDataStore[line].push(JSON.parse(JSON.stringify(newCard)));
+            });
 
             closeAddNewModelModal();
             selectProcessLine(line);
-            activeCardIndex = processDataStore[line].length - 1;
-            renderProcessCardPills();
-            renderProcessDataTable();
             manualSaveDataSilent();
             alert(`✅ เพิ่มรุ่นและกระบวนการทำงานใหม่ในไลน์ ${line} สำเร็จ!`);
         }
@@ -1127,21 +1079,107 @@
             renderLineOverview();
         }
 
+        // --- ส่วนการจัดการและประมวลผลไฟล์ Excel ที่ถูกรวมเข้ามา ---
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             document.getElementById('file-label-text').innerText = `ไฟล์: ${file.name}`;
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    let raw = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                    manualSaveData();
-                    alert(`✅ นำเข้าไฟล์ Excel สำเร็จ!`);
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    if (rows.length < 2) {
+                        alert("⚠️ ไฟล์ Excel มีข้อมูลน้อยเกินไป กรุณาตรวจสอบรูปแบบไฟล์");
+                        return;
+                    }
+
+                    // ค้นหาแถวที่เป็น Header วันที่และรุ่นสินค้า
+                    let headerRowIndex = -1;
+                    let modelColIndex = -1;
+                    let dateCols = {}; // เก็บตำแหน่งคอลัมน์ของแต่ละวันที่
+
+                    for (let r = 0; r < Math.min(rows.length, 10); r++) {
+                        let row = rows[r];
+                        for (let c = 0; c < row.length; c++) {
+                            let cellVal = String(row[c] || "").trim().toLowerCase();
+                            if (cellVal === "model" || cellVal === "รุ่น" || cellVal === "item") {
+                                headerRowIndex = r;
+                                modelColIndex = c;
+                                break;
+                            }
+                        }
+                        if (headerRowIndex !== -1) break;
+                    }
+
+                    if (headerRowIndex === -1) {
+                        // หากไม่พบคำว่า Model ให้ใช้แถวแรกเป็นตัวตั้งต้น
+                        headerRowIndex = 0;
+                        modelColIndex = 0;
+                    }
+
+                    let headerRow = rows[headerRowIndex];
+                    let extractedDates = [];
+
+                    for (let c = 0; c < headerRow.length; c++) {
+                        if (c === modelColIndex) continue;
+                        let val = headerRow[c];
+                        if (val !== undefined && val !== null && String(val).trim() !== "") {
+                            // แปลงรูปแบบวันที่จาก Excel หากจำเป็น
+                            let dateStr = String(val).trim();
+                            extractedDates.push(dateStr);
+                            dateCols[dateStr] = c;
+                        }
+                    }
+
+                    if (extractedDates.length > 0) {
+                        currentDates = extractedDates;
+                    }
+
+                    // ดึงข้อมูลแผนการผลิตแยกตาม Model
+                    let newPlanDB = {};
+                    let allKnownModels = [];
+                    productStructure.forEach(g => { allKnownModels.push(...g.models); });
+
+                    for (let r = headerRowIndex + 1; r < rows.length; r++) {
+                        let row = rows[r];
+                        if (!row || row.length === 0) continue;
+                        let modelName = String(row[modelColIndex] || "").trim();
+                        if (!modelName) continue;
+
+                        // ตรวจสอบโมเดลที่ตรงกับโครงสร้าง
+                        let matchedModel = allKnownModels.find(m => m.toLowerCase() === modelName.toLowerCase());
+                        if (!matchedModel) {
+                            // ตรวจสอบแบบยืดหยุ่น (Partial match)
+                            matchedModel = allKnownModels.find(m => modelName.toLowerCase().includes(m.toLowerCase()));
+                        }
+
+                        if (matchedModel) {
+                            if (!newPlanDB[matchedModel]) newPlanDB[matchedModel] = {};
+                            extractedDates.forEach(dateStr => {
+                                let colIdx = dateCols[dateStr];
+                                let qty = parseFloat(row[colIdx]) || 0;
+                                newPlanDB[matchedModel][dateStr] = qty;
+                            });
+                        }
+                    }
+
+                    planDatabase = newPlanDB;
+                    initOverviewDateDropdown();
+                    initConfigDateDropdown();
+                    initLineBalanceDropdowns();
+                    initMatrixTable(currentDates);
+                    manualSaveDataSilent();
+
+                    alert(`✅ นำเข้าข้อมูลแผนการผลิตจากไฟล์ "${file.name}" สำเร็จ!`);
                 } catch (err) {
-                    alert('เกิดข้อผิดพลาด: ' + err.message);
+                    console.error(err);
+                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel: ' + err.message);
                 }
             };
             reader.readAsArrayBuffer(file);
