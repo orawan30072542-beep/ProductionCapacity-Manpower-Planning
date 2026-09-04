@@ -72,7 +72,7 @@
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
                             📁 อัปโหลดไฟล์แผนผลิต (Excel)
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ[cite: 7]</p>
                     </div>
                     <div class="relative border-2 border-dashed border-blue-900/40 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-[#090d16]/50 group">
                         <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
@@ -80,7 +80,7 @@
                             <svg class="w-8 h-8 text-blue-400/70 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
-                            <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
+                            <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่[cite: 7]</p>
                             <p class="text-[10px] text-slate-500">(.xlsx, .xls)</p>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
                             ⚙️ ตั้งค่าและการบันทึกข้อมูล
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช</p>
+                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช[cite: 7]</p>
                     </div>
                     <div class="space-y-4">
                         <div>
@@ -140,7 +140,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์เพื่อเปิดหน้าจอรายละเอียด, จัดการรุ่น และชิ้นส่วนย่อย</p>
+                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์เพื่อเปิดหน้าจอรายละเอียด, จัดการรุ่น และชิ้นส่วนย่อย[cite: 7]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
@@ -158,7 +158,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อย, วัสดุ และไลน์ผลิต</p>
+                        <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อย, วัสดุ และไลน์ผลิต[cite: 7]</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
@@ -189,14 +189,14 @@
                         <div class="pt-4 border-t border-blue-950/60 flex items-center justify-between flex-wrap gap-3">
                             <div class="flex items-center gap-2">
                                 <button onclick="addNewPartToActiveModel()" class="bg-blue-950 hover:bg-blue-900 text-blue-300 text-xs font-semibold px-4 py-2.5 rounded-xl border border-blue-800/50">
-                                    + เพิ่มชิ้นส่วน
+                                    + เพิ่มชิ้นส่วน[cite: 7]
                                 </button>
                                 <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-900/60">
                                     ✨ ชิ้นส่วนมาตรฐาน
                                 </button>
                             </div>
                             <button onclick="saveActiveModelConfig()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30">
-                                💾 บันทึกการเปลี่ยนแปลง
+                                💾 บันทึกการเปลี่ยนแปลง[cite: 7]
                             </button>
                         </div>
                     </div>
@@ -209,13 +209,13 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl space-y-6">
                 <div>
                     <h2 class="text-xl font-bold text-white">Process Data</h2>
-                    <p class="text-xs text-slate-400 mt-1">Work processes (กระบวนการงาน) and working times (เวลาการทำงาน) for each station, by product group. Click Edit to change process names or times — changes save and sync to the dashboard.</p>
+                    <p class="text-xs text-slate-400 mt-1">Work processes (กระบวนการงาน) and working times (เวลาการทำงาน) for each station, by product group. Click Edit to change process names or times — changes save and sync to the dashboard.[cite: 7]</p>
                 </div>
 
                 <!-- Top Line Pills -->
                 <div class="flex flex-wrap items-center gap-2 pt-2 pb-2 border-b border-blue-950/60" id="process-line-pills">
                     <button onclick="selectProcessLine('Press Machine')" id="pill-line-Press Machine" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Press Machine</button>
-                    <button onclick="selectProcessLine('Back&Bottom Plate')" id="pill-line-Back&Bottom Plate" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500 transition-all flex items-center gap-2">Back&Bottom Plate <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]" id="count-card-backbottom">3</span></button>
+                    <button onclick="selectProcessLine('Back&Bottom Plate')" id="pill-line-Back&Bottom Plate" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500 transition-all flex items-center gap-2">Back&Bottom Plate <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">20</span></button>
                     <button onclick="selectProcessLine('Door Frame&Door Glass')" id="pill-line-Door Frame&Door Glass" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door Frame&Door Glass <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span></button>
                     <button onclick="selectProcessLine('Door A')" id="pill-line-Door A" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door A <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span></button>
                     <button onclick="selectProcessLine('Door B')" id="pill-line-Door B" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door B</button>
@@ -227,7 +227,6 @@
                     <div class="flex flex-wrap items-center gap-2" id="station-sub-pills">
                         <span class="text-xs text-slate-400 font-bold uppercase mr-1">STATION</span>
                         <button onclick="filterWorkStation('all')" id="st-pill-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500">All <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]" id="count-st-all">9</span></button>
-                        <!-- Dynamic Sub-Station Buttons Container -->
                         <span id="dynamic-substation-pills" class="flex flex-wrap items-center gap-2"></span>
                     </div>
                     
@@ -237,29 +236,26 @@
                             <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
                         <button onclick="openAddNewModelModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-lg shadow-blue-600/30 shrink-0">
-                            + Add Model / Process
+                            + Add Model
                         </button>
                     </div>
                 </div>
-
-                <!-- Card Navigation Selector for multi-configurations per line -->
-                <div class="flex items-center gap-2 overflow-x-auto py-2 border-b border-blue-950/40" id="process-card-selector-tabs"></div>
 
                 <!-- Process Data Card Container -->
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl">
                     <div class="p-4 bg-blue-950/20 border-b border-blue-950/60 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div class="flex flex-wrap items-center gap-3">
-                            <span class="font-extrabold text-slate-100 text-sm" id="current-process-title">Bottom plate — One Door</span>
-                            <span class="text-[10px] bg-rose-950/60 text-rose-300 px-2.5 py-0.5 rounded border border-rose-900/50" id="current-process-badge">Bottom Plate</span>
-                            <span class="text-[10px] bg-indigo-950/60 text-indigo-300 px-2.5 py-0.5 rounded border border-indigo-900/50" id="current-line-badge">Back&Bottom Plate</span>
-                            <span class="text-[10px] bg-blue-950/60 text-blue-300 px-2.5 py-0.5 rounded border border-blue-900/50">Configured</span>
+                            <span class="font-extrabold text-slate-100 text-sm" id="current-process-title">Bottom plate #A — One Door</span>
+                            <span class="text-[10px] bg-rose-950/60 text-rose-300 px-2.5 py-0.5 rounded border border-rose-900/50" id="current-process-badge">Bottom plate #A</span>
+                            <span class="text-[10px] bg-indigo-950/60 text-indigo-300 px-2.5 py-0.5 rounded border border-indigo-900/50" id="current-line-badge">A line</span>
+                            <span class="text-[10px] bg-blue-950/60 text-blue-300 px-2.5 py-0.5 rounded border border-blue-900/50">Edited</span>
                         </div>
                         
                         <div class="flex items-center gap-4 flex-wrap">
                             <div class="flex items-center gap-2 text-xs font-mono" id="process-metrics-bar">
                                 <span class="text-slate-400">Takt <strong class="text-amber-400" id="metric-takt">36.6 s</strong></span>
                                 <span class="text-slate-400">Bottleneck <strong class="text-rose-400" id="metric-bottleneck">36.60 s</strong></span>
-                                <span class="text-slate-400">Stations <strong class="text-white" id="metric-stations">3</strong></span>
+                                <span class="text-slate-400">Stations <strong class="text-white" id="metric-stations">9</strong></span>
                                 <span class="text-slate-400">Balance <strong class="text-emerald-400" id="metric-balance">59%</strong></span>
                             </div>
                             <button onclick="openEditProcessModal()" class="bg-[#0e1626] hover:bg-blue-950 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-900/60 flex items-center gap-1.5">
@@ -281,13 +277,13 @@
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-[#0e1626]/80 text-slate-400 border-b border-blue-950 font-semibold">
-                                    <th class="p-3.5 pl-5">Station</th>
-                                    <th class="p-3.5">Process 1</th>
-                                    <th class="p-3.5">Process 2</th>
-                                    <th class="p-3.5">Process 3</th>
-                                    <th class="p-3.5 text-center">WT 1</th>
-                                    <th class="p-3.5 text-center">WT 2</th>
-                                    <th class="p-3.5 text-center">WT 3</th>
+                                    <th class="p-3.5 pl-5">Station[cite: 7]</th>
+                                    <th class="p-3.5">Process 1[cite: 7]</th>
+                                    <th class="p-3.5">Process 2[cite: 7]</th>
+                                    <th class="p-3.5">Process 3[cite: 7]</th>
+                                    <th class="p-3.5 text-center">WT 1[cite: 7]</th>
+                                    <th class="p-3.5 text-center">WT 2[cite: 7]</th>
+                                    <th class="p-3.5 text-center">WT 3[cite: 7]</th>
                                     <th class="p-3.5 text-center">WT Total</th>
                                     <th class="p-3.5 text-center">Loss</th>
                                     <th class="p-3.5 text-center">Cycle Time</th>
@@ -307,7 +303,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">⚖️ หน้าจอวิเคราะห์ความสมดุลสายการผลิต (Line Balancing & Manpower)</h2>
-                        <p class="text-xs text-slate-400">คำนวณ Takt Time, จำนวนพนักงานที่จำเป็น และค่า Line Efficiency (%)</p>
+                        <p class="text-xs text-slate-400">คำนวณ Takt Time, จำนวนพนักงานที่จำเป็น และค่า Line Efficiency (%)[cite: 7]</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-2">
@@ -324,12 +320,12 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="lb-kpi-summary"></div>
                 <div class="bg-[#090d16] border border-blue-950/60 rounded-xl overflow-hidden p-5 space-y-4">
-                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📊 ตารางวิเคราะห์ภาระงานแต่ละ Station</h3>
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📊 ตารางวิเคราะห์ภาระงานแต่ละ Station[cite: 7]</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse" id="lb-table">
                             <thead>
                                 <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950">
-                                    <th class="p-3">Process / Station</th>
+                                    <th class="p-3">Process / Station[cite: 7]</th>
                                     <th class="p-3 text-center">Cycle Time (sec)</th>
                                     <th class="p-3 text-center">Takt Time (sec)</th>
                                     <th class="p-3 text-center">Assigned Workers</th>
@@ -359,23 +355,11 @@
                         <input type="text" id="edit-modal-title" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ย่อย / สถานี (Badge):</label>
-                        <select id="edit-modal-badge" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
-                            <option value="Bottom Plate">Bottom Plate</option>
-                            <option value="Back Plate">Back Plate</option>
-                            <option value="Welding Machine">Welding Machine</option>
-                            <option value="400T">400T</option>
-                            <option value="200T">200T</option>
-                            <option value="100T">100T</option>
-                            <option value="Door Frame">Door Frame</option>
-                            <option value="Door Glass">Door Glass</option>
-                            <option value="Door Bend">Door Bend</option>
-                            <option value="Door Liner">Door Liner</option>
-                            <option value="Door Foam">Door Foam</option>
-                        </select>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ย่อย (Badge):</label>
+                        <input type="text" id="edit-modal-badge" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line) — อัตโนมัติ:</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line) — อัตโนมัติ[cite: 7]:</label>
                         <input type="text" id="edit-modal-line" readonly class="w-full bg-[#090d16]/70 border border-blue-950/80 rounded-xl px-3 py-2 text-xs text-blue-400 font-bold cursor-not-allowed">
                     </div>
                 </div>
@@ -388,18 +372,18 @@
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES</h4>
-                        <button onclick="addModalStationRow()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/30">+ เพิ่ม Station</button>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES[cite: 7]</h4>
+                        <button onclick="addModalStationRow()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/30">+ เพิ่ม Station[cite: 7]</button>
                     </div>
                     <div class="overflow-x-auto border border-blue-950 rounded-xl">
                         <table class="w-full text-left text-xs" id="edit-stations-table">
                             <thead>
                                 <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950">
-                                    <th class="p-2.5">Station ID</th>
-                                    <th class="p-2.5">Process 1 / WT 1</th>
-                                    <th class="p-2.5">Process 2 / WT 2</th>
-                                    <th class="p-2.5">Process 3 / WT 3</th>
-                                    <th class="p-2.5 text-center">Action</th>
+                                    <th class="p-2.5">Station[cite: 7]</th>
+                                    <th class="p-2.5">Process 1 / WT 1[cite: 7]</th>
+                                    <th class="p-2.5">Process 2 / WT 2[cite: 7]</th>
+                                    <th class="p-2.5">Process 3 / WT 3[cite: 7]</th>
+                                    <th class="p-2.5 text-center">Action[cite: 7]</th>
                                 </tr>
                             </thead>
                             <tbody id="edit-stations-tbody" class="divide-y divide-blue-950/40"></tbody>
@@ -409,7 +393,7 @@
             </div>
             <div class="p-4 border-t border-blue-950/80 bg-blue-950/10 flex justify-end gap-3">
                 <button onclick="closeEditProcessModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-400 border border-blue-950">ยกเลิก</button>
-                <button onclick="saveEditProcessModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">บันทึกการเปลี่ยนแปลง</button>
+                <button onclick="saveEditProcessModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">บันทึกการเปลี่ยนแปลง[cite: 7]</button>
             </div>
         </div>
     </div>
@@ -424,10 +408,10 @@
             <div class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">ชื่อรุ่น / หัวข้อแผน (Model & Title):</label>
-                    <input type="text" id="new-model-title-input" placeholder="เช่น Bottom plate — 2 Doors (Model 199C)" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
+                    <input type="text" id="new-model-title-input" placeholder="เช่น Bottom plate #B — Two Doors" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">เลือกไลน์ผลิตหลัก (Process Line):</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">เลือกไลน์ผลิตหลัก (Process Line):[cite: 7]</label>
                     <select id="new-model-line-select" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
                         <option value="Press Machine">Press Machine</option>
                         <option value="Back&Bottom Plate">Back&Bottom Plate</option>
@@ -438,14 +422,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่สถานีหลัก (Badge Station):</label>
-                    <select id="new-model-badge-select" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
-                        <option value="Bottom Plate">Bottom Plate</option>
-                        <option value="Back Plate">Back Plate</option>
-                        <option value="Welding Machine">Welding Machine</option>
-                        <option value="400T">400T</option>
-                        <option value="Door Frame">Door Frame</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ป้ายย่อย (Badge Name):</label>
+                    <input type="text" id="new-model-badge-input" placeholder="เช่น Bottom plate #B" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
                 </div>
             </div>
             <div class="p-4 border-t border-blue-950/80 bg-blue-950/10 flex justify-end gap-3">
@@ -459,10 +437,10 @@
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-[#090d16] hidden">
         <div class="px-6 py-4 border-b border-blue-950/60 bg-[#0e1626] flex justify-between items-center shadow-xl shrink-0">
             <div class="flex items-center gap-3">
-                <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
+                <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail[cite: 7]</span>
                 <div>
                     <h3 id="modal-line-title" class="text-xl font-bold text-white">ชื่อไลน์การผลิต</h3>
-                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยและเป้าหมายการผลิต</p>
+                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยและเป้าหมายการผลิต[cite: 7]</p>
                 </div>
             </div>
             <button onclick="closeLineModal()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 font-semibold text-xs px-5 py-2.5 rounded-xl border border-rose-900/60 transition-all shadow-lg">
@@ -515,8 +493,9 @@
         };
 
         let currentSelectedProcessLine = "Back&Bottom Plate";
-        let currentStationFilter = "Bottom Plate"; 
+        let currentStationFilter = "";
 
+        // ปรับโครงสร้างข้อมูลให้เก็บแยกอิสระตาม Line -> Model (หรือ Process Item) เพื่อไม่ให้ทับกัน[cite: 7]
         let processDataStore = {
             "Press Machine": [
                 {
@@ -532,53 +511,20 @@
             ],
             "Back&Bottom Plate": [
                 {
-                    title: "Bottom Plate — One Door Models (159C, 159F, 199C, 199F)",
+                    title: "Bottom plate #A — One Door",
                     badge: "Bottom Plate",
                     line: "Back&Bottom Plate",
                     models: ["159C", "159F", "199C", "199F"],
                     stations: [
                         { id: "BTA01", p1: "ประกอบขา Leg เข้ากับชิ้นส่วน+เคาะ", p2: "ประกอบชิ้นส่วนด้านข้าง", p3: "—", wt1: 13.90, wt2: 11.30, wt3: 0, loss: 3.21, ct: 28.41 },
-                        { id: "BTA02", p1: "ประกอบโครงยึดฐานล่าง", p2: "ขันสกรูยึดมุม", p3: "—", wt1: 8.80, wt2: 10.20, wt3: 0, loss: 2.54, ct: 21.54 },
-                        { id: "BTA03", p1: "ติดเทปกันกระแทก 1 Pcs.", p2: "ติดเทปซีลรอบขอบ", p3: "—", wt1: 7.68, wt2: 8.62, wt3: 0, loss: 0, ct: 16.30 }
-                    ]
-                },
-                {
-                    title: "Back Plate — One Door Models (159C, 159F, 199C, 199F)",
-                    badge: "Back Plate",
-                    line: "Back&Bottom Plate",
-                    models: ["159C", "159F", "199C", "199F"],
-                    stations: [
-                        { id: "BCK01", p1: "เตรียมแผ่นเหล็กหลังตู้", p2: "พับขึ้นรูปขอบข้างแผ่นหลัง", p3: "—", wt1: 14.50, wt2: 12.00, wt3: 0, loss: 1.50, ct: 28.00 },
-                        { id: "BCK02", p1: "เจาะรูยึดท่อทำความเย็น", p2: "ติดตั้งฉนวนกันความร้อนแผ่นหลัง", p3: "—", wt1: 16.20, wt2: 15.50, wt3: 0, loss: 2.00, ct: 33.70 }
-                    ]
-                },
-                {
-                    title: "Bottom Plate — Two Doors / T-Door (TM545, T DOOR)",
-                    badge: "Bottom Plate",
-                    line: "Back&Bottom Plate",
-                    models: ["TM545#212", "TM545#235", "T DOOR"],
-                    stations: [
-                        { id: "BT2-01", p1: "ประกอบฐานล่างขนาดใหญ่", p2: "เชื่อมจุดยึดโครงสร้างฐาน", p3: "—", wt1: 18.50, wt2: 14.20, wt3: 0, loss: 1.80, ct: 34.50 },
-                        { id: "BT2-02", p1: "ติดตั้งขาปรับระดับและซีลกันรั่ว", p2: "ตรวจสอบความฉาก", p3: "—", wt1: 12.40, wt2: 11.10, wt3: 0, loss: 1.20, ct: 24.70 }
-                    ]
-                },
-                {
-                    title: "Back Plate — Two Doors / T-Door (TM545, T DOOR)",
-                    badge: "Back Plate",
-                    line: "Back&Bottom Plate",
-                    models: ["TM545#212", "TM545#235", "T DOOR"],
-                    stations: [
-                        { id: "BK2-01", p1: "ขึ้นรูปแผ่นหลังขนาดใหญ่พิเศษ", p2: "พับขึ้นรูปโครงยึดคอมเพรสเซอร์", p3: "—", wt1: 19.00, wt2: 16.50, wt3: 0, loss: 2.50, ct: 38.00 },
-                        { id: "BK2-02", p1: "ประกอบท่อระบายความร้อนแผ่นหลัง", p2: "ทดสอบการรั่วซึมรอยต่อ", p3: "—", wt1: 17.50, wt2: 13.80, wt3: 0, loss: 1.70, ct: 33.00 }
-                    ]
-                },
-                {
-                    title: "Welding Machine — Universal Station",
-                    badge: "Welding Machine",
-                    line: "Back&Bottom Plate",
-                    models: ["159C", "199C", "TM545#212", "SBS 550"],
-                    stations: [
-                        { id: "WEL01", p1: "เชื่อมประกอบโครงเหล็กฐานและหลัง", p2: "เจียรแต่งแนวเชื่อม", p3: "—", wt1: 22.00, wt2: 12.50, wt3: 0, loss: 2.10, ct: 36.60 }
+                        { id: "BTA02", p1: "ประกอบขา Leg เข้ากับชิ้นส่วน+เคาะ", p2: "ประกอบชิ้นส่วนด้านข้าง", p3: "—", wt1: 8.80, wt2: 10.20, wt3: 0, loss: 2.54, ct: 21.54 },
+                        { id: "BTA03", p1: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p2: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p3: "ติดเทปเหนียวด้านข้าง 1 Pcs.", wt1: 5.90, wt2: 6.50, wt3: 3.80, loss: 0, ct: 16.20 },
+                        { id: "BTA04", p1: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p2: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p3: "ติดเทปเหนียวด้านข้าง 1 Pcs.", wt1: 7.68, wt2: 4.25, wt3: 8.62, loss: 0, ct: 20.55 },
+                        { id: "BTA05", p1: "ติดเทปด้านข้าง", p2: "—", p3: "—", wt1: 12.15, wt2: 0, wt3: 0, loss: 0, ct: 12.15 },
+                        { id: "BTA06", p1: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p2: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p3: "ติดปืนยิงสกรู Suction", wt1: 9.60, wt2: 8.60, wt3: 18.40, loss: 0, ct: 36.60 },
+                        { id: "BTA07", p1: "ติดเทปเหนียวด้านข้าง 1 Pcs.", p2: "ประกอบชิ้นส่วนด้านข้าง", p3: "ติดปืนยิงสกรู Suction", wt1: 5.80, wt2: 10.10, wt3: 6.90, loss: 0, ct: 22.80 },
+                        { id: "BTA08", p1: "ติด Seal 2 pcs.", p2: "—", p3: "—", wt1: 15.80, wt2: 0, wt3: 0, loss: 0, ct: 15.80 },
+                        { id: "BTA09", p1: "—", p2: "—", p3: "—", wt1: 16.10, wt2: 0, wt3: 0, loss: 5.77, ct: 21.87 }
                     ]
                 }
             ],
@@ -661,7 +607,7 @@
             const subStations = lineSubStationsMap[currentSelectedProcessLine] || [];
             
             let html = '';
-            subStations.forEach((sub) => {
+            subStations.forEach((sub, idx) => {
                 let safeId = sub.replace(/[^a-zA-Z0-9]/g, '_');
                 let isActive = (sub === currentStationFilter);
                 let btnClass = isActive 
@@ -719,38 +665,15 @@
                     line: currentSelectedProcessLine,
                     models: ["159C", "159F"],
                     stations: [
-                        { id: "STA01", p1: "กระบวนการเตรียมชิ้นส่วน", p2: "ประกอบชิ้นงาน", p3: "—", wt1: 10.0, wt2: 15.0, wt3: 0, loss: 1.0, ct: 26.0 }
+                        { id: "STA01", p1: "กระบวนการเตรียมชิ้นส่วน", p2: "ประกอบชิ้นงาน", p3: "—", wt1: 10.0, wt2: 15.0, wt3: 0, loss: 1.0, ct: 26.0 },
+                        { id: "STA02", p1: "ตรวจสอบคุณภาพ", p2: "แพ็คกิ้ง", p3: "—", wt1: 12.0, wt2: 12.0, wt3: 0, loss: 0, ct: 24.0 }
                     ]
                 }];
                 list = processDataStore[currentSelectedProcessLine];
             }
 
-            // Filter cards matching currentStationFilter (e.g. Back Plate vs Bottom Plate)
-            let filteredCards = list.filter(card => {
-                if (currentStationFilter === 'all') return true;
-                return card.badge === currentStationFilter || (card.title && card.title.toLowerCase().includes(currentStationFilter.toLowerCase()));
-            });
-
-            if (filteredCards.length === 0) {
-                filteredCards = list; // fallback if none match exact filter
-            }
-
-            if (activeCardIndex >= filteredCards.length) activeCardIndex = 0;
-            let currentCard = filteredCards[activeCardIndex] || list[0];
-
-            // Render sub-card selection tabs if multiple configurations exist for this station/line
-            let cardTabsContainer = document.getElementById('process-card-selector-tabs');
-            if (cardTabsContainer) {
-                let tabsHtml = `<span class="text-[10px] text-slate-400 font-bold shrink-0">รายการรุ่นย่อย:</span>`;
-                filteredCards.forEach((card, cIdx) => {
-                    let isActiveCard = (card === currentCard);
-                    let tabClass = isActiveCard 
-                        ? "px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow" 
-                        : "px-3 py-1 rounded-lg text-xs font-medium bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500";
-                    tabsHtml += `<button onclick="setActiveCardIndex(${cIdx})" class="${tabClass}">${card.title.split('—')[0].trim()} (${(card.models||[]).slice(0,2).join(', ')}${card.models && card.models.length > 2 ? '...' : ''})</button>`;
-                });
-                cardTabsContainer.innerHTML = tabsHtml;
-            }
+            if (activeCardIndex >= list.length) activeCardIndex = 0;
+            let currentCard = list[activeCardIndex];
 
             document.getElementById('current-process-title').innerText = currentCard.title;
             document.getElementById('current-process-badge').innerText = currentCard.badge;
@@ -762,6 +685,7 @@
             });
             document.getElementById('process-model-tags').innerHTML = tagsHTML;
 
+            let searchText = (document.getElementById('work-search-input')?.value || "").toLowerCase();
             let totalStations = currentCard.stations.length;
             let maxCt = 0;
             let totalCt = 0;
@@ -784,7 +708,7 @@
             if (currentStationFilter === 'all') {
                 if (theadTr) {
                     theadTr.innerHTML = `
-                        <th class="p-3.5 pl-5">Product Group</th>
+                        <th class="p-3.5 pl-5">Product</th>
                         <th class="p-3.5">รุ่น (Model)</th>
                         <th class="p-3.5 text-center">Leadtime (Total CT)</th>
                         <th class="p-3.5 text-center">Max CT</th>
@@ -812,23 +736,24 @@
             } else {
                 if (theadTr) {
                     theadTr.innerHTML = `
-                        <th class="p-3.5 pl-5">Station</th>
-                        <th class="p-3.5">Process 1</th>
-                        <th class="p-3.5">Process 2</th>
-                        <th class="p-3.5">Process 3</th>
-                        <th class="p-3.5 text-center">WT 1</th>
-                        <th class="p-3.5 text-center">WT 2</th>
-                        <th class="p-3.5 text-center">WT 3</th>
+                        <th class="p-3.5 pl-5">Station[cite: 7]</th>
+                        <th class="p-3.5">Process 1[cite: 7]</th>
+                        <th class="p-3.5">Process 2[cite: 7]</th>
+                        <th class="p-3.5">Process 3[cite: 7]</th>
+                        <th class="p-3.5 text-center">WT 1[cite: 7]</th>
+                        <th class="p-3.5 text-center">WT 2[cite: 7]</th>
+                        <th class="p-3.5 text-center">WT 3[cite: 7]</th>
                         <th class="p-3.5 text-center">WT Total</th>
                         <th class="p-3.5 text-center">Loss</th>
                         <th class="p-3.5 text-center">Cycle Time</th>
                     `;
                 }
 
-                let searchText = (document.getElementById('work-search-input')?.value || "").toLowerCase();
                 let stations = currentCard.stations.filter(st => {
                     let matchSearch = st.id.toLowerCase().includes(searchText) || st.p1.toLowerCase().includes(searchText) || st.p2.toLowerCase().includes(searchText) || st.p3.toLowerCase().includes(searchText);
-                    return matchSearch;
+                    if (!matchSearch) return false;
+                    let matchSub = currentCard.badge === currentStationFilter || st.id.toLowerCase().includes(currentStationFilter.toLowerCase());
+                    return matchSub;
                 });
 
                 let tbodyHTML = '';
@@ -858,21 +783,10 @@
             }
         }
 
-        function setActiveCardIndex(idx) {
-            activeCardIndex = idx;
-            renderProcessDataTable();
-        }
-
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
-            
-            let filteredCards = list.filter(card => {
-                if (currentStationFilter === 'all') return true;
-                return card.badge === currentStationFilter || (card.title && card.title.toLowerCase().includes(currentStationFilter.toLowerCase()));
-            });
-            if (filteredCards.length === 0) filteredCards = list;
-            let card = filteredCards[activeCardIndex] || list[0];
+            let card = list[activeCardIndex];
 
             document.getElementById('edit-modal-title').value = card.title;
             document.getElementById('edit-modal-badge').value = card.badge;
@@ -897,9 +811,9 @@
 
             let editTbody = document.getElementById('edit-stations-tbody');
             let html = '';
-            card.stations.forEach((st) => {
+            card.stations.forEach((st, idx) => {
                 html += `
-                    <tr>
+                    <tr data-index="${idx}">
                         <td class="p-2.5"><input type="text" value="${st.id}" class="w-24 bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1.5 text-white font-mono text-xs st-id font-bold"></td>
                         
                         <td class="p-2.5 space-y-1">
@@ -961,12 +875,7 @@
 
         function saveEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
-            let filteredCards = list.filter(card => {
-                if (currentStationFilter === 'all') return true;
-                return card.badge === currentStationFilter || (card.title && card.title.toLowerCase().includes(currentStationFilter.toLowerCase()));
-            });
-            if (filteredCards.length === 0) filteredCards = list;
-            let card = filteredCards[activeCardIndex] || list[0];
+            let card = list[activeCardIndex];
 
             card.title = document.getElementById('edit-modal-title').value;
             card.badge = document.getElementById('edit-modal-badge').value;
@@ -1015,7 +924,7 @@
         function confirmAddNewModel() {
             let title = document.getElementById('new-model-title-input').value.trim();
             let line = document.getElementById('new-model-line-select').value;
-            let badge = document.getElementById('new-model-badge-select').value;
+            let badge = document.getElementById('new-model-badge-input').value.trim();
 
             if (!title) {
                 alert("กรุณากรอกชื่อรุ่นหรือหัวข้อแผน");
@@ -1025,19 +934,18 @@
             if (!processDataStore[line]) processDataStore[line] = [];
             processDataStore[line].push({
                 title: title,
-                badge: badge,
+                badge: badge || title,
                 line: line,
-                models: ["159C", "199C"],
+                models: ["NEW"],
                 stations: [
-                    { id: "ST-NEW1", p1: "กระบวนการเริ่มต้นสถานี", p2: "—", p3: "—", wt1: 15.0, wt2: 0, wt3: 0, loss: 0, ct: 15.0 }
+                    { id: "ST01", p1: "กระบวนการเริ่มต้น", p2: "—", p3: "—", wt1: 10.0, wt2: 0, wt3: 0, loss: 0, ct: 10.0 }
                 ]
             });
 
             closeAddNewModelModal();
             selectProcessLine(line);
-            filterWorkStation(badge);
             manualSaveDataSilent();
-            alert(`✅ เพิ่มกระบวนการทำงานใหม่ในไลน์ ${line} (${badge}) สำเร็จ!`);
+            alert(`✅ เพิ่มรุ่นและกระบวนการทำงานใหม่ในไลน์ ${line} สำเร็จ!`);
         }
 
         function getMultiplier(model) {
