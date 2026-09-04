@@ -196,10 +196,13 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h2 class="text-lg font-bold text-slate-200">🔄 หน้าจอจัดการกระบวนการทำงาน (Work Process Flow & Cycle Time)</h2>
-                        <p class="text-xs text-slate-400">กำหนดขั้นตอนการทำงานย่อย (Operation Steps) และ Cycle Time (วินาที/ชิ้น) ของแต่ละไลน์ผลิต</p>
+                        <p class="text-xs text-slate-400">กำหนดขั้นตอนการทำงานย่อย (Operation Steps) และ Cycle Time (วินาที/ชิ้น) ของแต่ละชิ้นส่วนและไลน์ผลิต</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกไลน์ผลิต:</span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs text-slate-400">เลือกชิ้นส่วน:</span>
+                        <select id="wp-part-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderWorkProcessPage()">
+                        </select>
+                        <span class="text-xs text-slate-400 ml-2">เลือกไลน์ผลิต:</span>
                         <select id="wp-line-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderWorkProcessPage()">
                         </select>
                     </div>
@@ -346,21 +349,35 @@
             { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่" }
         ];
 
+        let workProcessParts = [
+            "Bottom plate", 
+            "Back Plate", 
+            "Press Machine", 
+            "Door A", 
+            "Door B", 
+            "Door C", 
+            "Door In Door"
+        ];
+
         let workProcesses = {};
         let modelSubParts = {};
         let activeSelectedModelForConfig = "159C";
         let activeWpLineIndex = 0;
+        let activeWpPartIndex = 0;
         let selectedWpStepIndex = 0;
 
         function initDefaultWorkProcesses() {
             productionLines.forEach((line) => {
-                if (!workProcesses[line.name]) {
-                    workProcesses[line.name] = [
-                        { stepNo: 1, name: "Preparation / เตรียมวัตถุดิบ", cycleTime: 35, workers: 1 },
-                        { stepNo: 2, name: "Main Assembly / ประกอบชิ้นส่วนหลัก", cycleTime: 50, workers: 1 },
-                        { stepNo: 3, name: "Inspection & QC / ตรวจสอบคุณภาพ", cycleTime: 25, workers: 1 }
-                    ];
-                }
+                workProcessParts.forEach((part) => {
+                    let wpKey = `${part}_${line.name}`;
+                    if (!workProcesses[wpKey]) {
+                        workProcesses[wpKey] = [
+                            { stepNo: 1, name: "Preparation / เตรียมวัตถุดิบ", cycleTime: 35, workers: 1 },
+                            { stepNo: 2, name: "Main Assembly / ประกอบชิ้นส่วนหลัก", cycleTime: 50, workers: 1 },
+                            { stepNo: 3, name: "Inspection & QC / ตรวจสอบคุณภาพ", cycleTime: 25, workers: 1 }
+                        ];
+                    }
+                });
             });
         }
 
@@ -391,7 +408,7 @@
             initMatrixTable(currentDates);
             initOverviewDateDropdown();
             initConfigDateDropdown();
-            initWorkProcessDropdown();
+            initWorkProcessDropdowns();
             initLineBalanceDropdowns();
             renderLineOverview();
             renderPartsConfigPage();
@@ -499,14 +516,24 @@
             });
         }
 
-        function initWorkProcessDropdown() {
-            const select = document.getElementById('wp-line-select');
-            if (!select) return;
-            let html = '';
-            productionLines.forEach((l, idx) => {
-                html += `<option value="${idx}">${l.name}</option>`;
-            });
-            select.innerHTML = html;
+        function initWorkProcessDropdowns() {
+            const lineSelect = document.getElementById('wp-line-select');
+            if (lineSelect) {
+                let lineHtml = '';
+                productionLines.forEach((l, idx) => {
+                    lineHtml += `<option value="${idx}">${l.name}</option>`;
+                });
+                lineSelect.innerHTML = lineHtml;
+            }
+
+            const partSelect = document.getElementById('wp-part-select');
+            if (partSelect) {
+                let partHtml = '';
+                workProcessParts.forEach((p, idx) => {
+                    partHtml += `<option value="${idx}">${p}</option>`;
+                });
+                partSelect.innerHTML = partHtml;
+            }
         }
 
         function initLineBalanceDropdowns() {
@@ -519,17 +546,30 @@
             lineSelect.innerHTML = html;
         }
 
+        function getWorkProcessKey() {
+            let lineName = productionLines[activeWpLineIndex].name;
+            let partName = workProcessParts[activeWpPartIndex];
+            return `${partName}_${lineName}`;
+        }
+
         function renderWorkProcessPage() {
             const lineSelect = document.getElementById('wp-line-select');
-            if (!lineSelect) return;
-            activeWpLineIndex = parseInt(lineSelect.value) || 0;
-            const lineName = productionLines[activeWpLineIndex].name;
+            const partSelect = document.getElementById('wp-part-select');
+            if (!lineSelect || !partSelect) return;
 
-            if (!workProcesses[lineName]) {
-                workProcesses[lineName] = [{ stepNo: 1, name: "Standard Process", cycleTime: 40, workers: 1 }];
+            activeWpLineIndex = parseInt(lineSelect.value) || 0;
+            activeWpPartIndex = parseInt(partSelect.value) || 0;
+            let wpKey = getWorkProcessKey();
+
+            if (!workProcesses[wpKey]) {
+                workProcesses[wpKey] = [
+                    { stepNo: 1, name: "Preparation / เตรียมวัตถุดิบ", cycleTime: 35, workers: 1 },
+                    { stepNo: 2, name: "Main Assembly / ประกอบชิ้นส่วนหลัก", cycleTime: 50, workers: 1 },
+                    { stepNo: 3, name: "Inspection & QC / ตรวจสอบคุณภาพ", cycleTime: 25, workers: 1 }
+                ];
             }
 
-            let steps = workProcesses[lineName];
+            let steps = workProcesses[wpKey];
             const stepsListContainer = document.getElementById('wp-steps-list');
             let listHtml = '';
 
@@ -556,8 +596,8 @@
 
         function renderWpStepEditor() {
             const editorContainer = document.getElementById('wp-step-editor');
-            const lineName = productionLines[activeWpLineIndex].name;
-            let steps = workProcesses[lineName];
+            let wpKey = getWorkProcessKey();
+            let steps = workProcesses[wpKey];
 
             if (!steps || steps.length === 0 || !steps[selectedWpStepIndex]) {
                 editorContainer.innerHTML = `<p class="text-xs text-slate-500 italic">ไม่มีข้อมูลขั้นตอน</p>`;
@@ -592,28 +632,28 @@
         }
 
         function updateWpField(field, val) {
-            const lineName = productionLines[activeWpLineIndex].name;
-            if (workProcesses[lineName] && workProcesses[lineName][selectedWpStepIndex]) {
-                workProcesses[lineName][selectedWpStepIndex][field] = val;
+            let wpKey = getWorkProcessKey();
+            if (workProcesses[wpKey] && workProcesses[wpKey][selectedWpStepIndex]) {
+                workProcesses[wpKey][selectedWpStepIndex][field] = val;
                 renderWorkProcessPage();
             }
         }
 
         function addWorkProcessStep() {
-            const lineName = productionLines[activeWpLineIndex].name;
-            if (!workProcesses[lineName]) workProcesses[lineName] = [];
-            workProcesses[lineName].push({ stepNo: workProcesses[lineName].length + 1, name: "New Operation", cycleTime: 30, workers: 1 });
-            selectedWpStepIndex = workProcesses[lineName].length - 1;
+            let wpKey = getWorkProcessKey();
+            if (!workProcesses[wpKey]) workProcesses[wpKey] = [];
+            workProcesses[wpKey].push({ stepNo: workProcesses[wpKey].length + 1, name: "New Operation", cycleTime: 30, workers: 1 });
+            selectedWpStepIndex = workProcesses[wpKey].length - 1;
             renderWorkProcessPage();
         }
 
         function removeWpStep(idx) {
-            const lineName = productionLines[activeWpLineIndex].name;
-            if (workProcesses[lineName].length <= 1) {
+            let wpKey = getWorkProcessKey();
+            if (workProcesses[wpKey].length <= 1) {
                 alert("ต้องมีขั้นตอนการทำงานอย่างน้อย 1 ขั้นตอน");
                 return;
             }
-            workProcesses[lineName].splice(idx, 1);
+            workProcesses[wpKey].splice(idx, 1);
             selectedWpStepIndex = 0;
             renderWorkProcessPage();
         }
@@ -632,7 +672,8 @@
             let line = productionLines[lineIdx];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
 
-            let steps = workProcesses[line.name] || [];
+            let wpKey = `${workProcessParts[0]}_${line.name}`;
+            let steps = workProcesses[wpKey] || [];
             let totalCycleTime = 0;
             let maxCycleTime = 0;
 
