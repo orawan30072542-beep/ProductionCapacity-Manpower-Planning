@@ -36,30 +36,30 @@
                 <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-blue-600 bg-clip-text text-transparent">
                     📊 Production Overview Dashboard
                 </h1>
-                <p class="text-slate-400 text-xs mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model, ไลน์การผลิต และการสมดุลสายการผลิต</p>
+                <p class="text-slate-400 text-xs mt-1">ระบบสรุปยอดผลิตแยกตาม Product, Model, ไลน์การผลิต และการสมดุลสายการผลิต[cite: 6]</p>
             </div>
             
             <div class="flex flex-col sm:flex-row items-center gap-4">
                 <div class="bg-[#090d16] p-1.5 rounded-xl border border-blue-950/80 flex flex-wrap items-center gap-1 shadow-inner">
                     <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30">
-                        📋 Matrix
+                        📋 Matrix[cite: 6]
                     </button>
                     <button onclick="switchTab('overview')" id="tab-btn-overview" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        🏢 Line Overview
+                        🏢 Line Overview[cite: 6]
                     </button>
                     <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        ⚙️ ชิ้นส่วน & KPI
+                        ⚙️ ชิ้นส่วน & KPI[cite: 6]
                     </button>
                     <button onclick="switchTab('workprocess')" id="tab-btn-workprocess" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        🔄 Process Data
+                        🔄 Process Data[cite: 6]
                     </button>
                     <button onclick="switchTab('linebalance')" id="tab-btn-linebalance" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
-                        ⚖️ Line Balance
+                        ⚖️ Line Balance[cite: 6]
                     </button>
                 </div>
 
                 <div class="flex items-center gap-2 text-emerald-400 text-xs font-medium bg-[#090d16] px-4 py-2.5 rounded-xl border border-blue-950/80 shadow-inner">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> พร้อมใช้งาน
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> พร้อมใช้งาน[cite: 6]
                 </div>
             </div>
         </header>
@@ -70,9 +70,9 @@
                 <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                            📁 อัปโหลดไฟล์แผนผลิต (Excel)
+                            📁 อัปโหลดไฟล์แผนผลิต (Excel)[cite: 6]
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ</p>
+                        <p class="text-xs text-slate-400 mb-4">อัปโหลดไฟล์ .xlsx ระบบจะค้นหารุ่น Model และวันที่จากไฟล์ให้อัตโนมัติ[cite: 6]</p>
                     </div>
                     <div class="relative border-2 border-dashed border-blue-900/40 hover:border-blue-500 rounded-xl p-6 text-center transition-all bg-[#090d16]/50 group">
                         <input type="file" id="excel-file-input" accept=".xlsx, .xls" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleExcelUpload(event)">
@@ -80,8 +80,8 @@
                             <svg class="w-8 h-8 text-blue-400/70 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                             </svg>
-                            <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
-                            <p class="text-[10px] text-slate-500">(.xlsx, .xls)</p>
+                            <p id="file-label-text" class="text-sm font-medium text-slate-300">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่[cite: 6]</p>
+                            <p class="text-[10px] text-slate-500">(.xlsx, .xls)[cite: 6]</p>
                         </div>
                     </div>
                 </div>
@@ -89,26 +89,26 @@
                 <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                     <div>
                         <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                            ⚙️ ตั้งค่าและการบันทึกข้อมูล
+                            ⚙️ ตั้งค่าและการบันทึกข้อมูล[cite: 6]
                         </h2>
-                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช</p>
+                        <p class="text-xs text-slate-400 mb-4">กำหนดชั่วโมงทำงาน และบันทึกข้อมูลเก็บไว้ไม่ให้หายเมื่อรีเฟรช[cite: 6]</p>
                     </div>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):</label>
+                            <label class="block text-xs font-medium text-slate-400 mb-1.5">กำหนดเวลาการทำงานหลัก (ชม./วัน):[cite: 6]</label>
                             <div class="flex items-center gap-3">
                                 <input type="number" id="working-hours" value="8" min="1" max="24" step="0.5" 
                                     class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500 transition-colors"
                                     onchange="recalculateAll()">
-                                <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน</span>
+                                <span class="text-sm text-slate-400 whitespace-nowrap">ชม. / วัน[cite: 6]</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 pt-2">
                             <button onclick="manualSaveData()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs py-3 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2">
-                                💾 บันทึกข้อมูล
+                                💾 บันทึกข้อมูล[cite: 6]
                             </button>
                             <button onclick="clearSavedData()" class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 font-semibold text-xs py-3 px-4 rounded-xl border border-rose-900/60 transition-all" title="ล้างข้อมูล">
-                                🗑️ ล้างข้อมูล
+                                🗑️ ล้างข้อมูล[cite: 6]
                             </button>
                         </div>
                     </div>
@@ -117,15 +117,15 @@
 
             <div class="bg-[#0e1626] border border-blue-950/60 rounded-2xl shadow-xl overflow-hidden">
                 <div class="p-6 border-b border-blue-950/60 flex justify-between items-center bg-blue-950/20">
-                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น</h3>
-                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Data Grid</span>
+                    <h3 class="font-bold text-slate-200">📋 ตารางสรุปแผนการผลิตและ UPH รายรุ่น[cite: 6]</h3>
+                    <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20 font-mono">Data Grid[cite: 6]</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse" id="matrix-table">
                         <thead>
                             <tr class="bg-[#090d16] text-slate-400 text-xs border-b border-blue-950/60" id="matrix-thead">
-                                <th class="p-3.5 pl-6">Product Group</th>
-                                <th class="p-3.5">Model</th>
+                                <th class="p-3.5 pl-6">Product Group[cite: 6]</th>
+                                <th class="p-3.5">Model[cite: 6]</th>
                             </tr>
                         </thead>
                         <tbody id="matrix-tbody" class="divide-y divide-blue-950/40 text-sm"></tbody>
@@ -139,11 +139,11 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)</h2>
-                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์เพื่อเปิดหน้าจอรายละเอียด, จัดการรุ่น และชิ้นส่วนย่อย</p>
+                        <h2 class="text-lg font-bold text-slate-200">🏢 ภาพรวมกำลังการผลิตแยกตามไลน์การผลิต (Line Overview)[cite: 6]</h2>
+                        <p class="text-xs text-slate-400">คลิกการ์ดไลน์เพื่อเปิดหน้าจอรายละเอียด, จัดการรุ่น และชิ้นส่วนย่อย[cite: 6]</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:</span>
+                        <span class="text-xs text-slate-400">เลือกวันที่ดูภาพรวม:[cite: 6]</span>
                         <select id="overview-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineOverview()">
                         </select>
                     </div>
@@ -157,11 +157,11 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)</h2>
-                        <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อย, วัสดุ และไลน์ผลิต</p>
+                        <h2 class="text-lg font-bold text-slate-200">⚙️ หน้าจอจัดการชิ้นส่วนย่อยของรุ่น (Model Sub-Parts Config & KPI Link)[cite: 6]</h2>
+                        <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อย, วัสดุ และไลน์ผลิต[cite: 6]</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:</span>
+                        <span class="text-xs text-slate-400">เลือกวันที่ประเมิน KPI:[cite: 6]</span>
                         <select id="config-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderPartsConfigPage()">
                         </select>
                     </div>
@@ -169,19 +169,19 @@
                 <div class="mb-6 bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-xl" id="kpi-cards-container"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-[#090d16] border border-blue-950/60 p-4 rounded-xl space-y-3">
-                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">📋 เลือกรุ่นสินค้า (Models)</h3>
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">📋 เลือกรุ่นสินค้า (Models)[cite: 6]</h3>
                         <div class="space-y-1.5 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar" id="model-selector-list"></div>
                     </div>
                     <div class="lg:col-span-2 bg-[#090d16] border border-blue-950/60 p-6 rounded-xl space-y-6 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-center pb-4 border-b border-blue-950/60 mb-4">
                                 <div>
-                                    <span class="text-[10px] text-blue-400 font-mono bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">Active Model</span>
+                                    <span class="text-[10px] text-blue-400 font-mono bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">Active Model[cite: 6]</span>
                                     <h3 id="active-model-title" class="text-xl font-extrabold text-white mt-1">-</h3>
                                 </div>
                                 <div class="text-right">
-                                    <span class="text-[10px] text-slate-400 block">ตัวคูณชิ้นส่วนรวม (Multiplier)</span>
-                                    <span id="active-model-multiplier" class="text-xl font-extrabold text-amber-400">x 1</span>
+                                    <span class="text-[10px] text-slate-400 block">ตัวคูณชิ้นส่วนรวม (Multiplier)[cite: 6]</span>
+                                    <span id="active-model-multiplier" class="text-xl font-extrabold text-amber-400">x 1[cite: 6]</span>
                                 </div>
                             </div>
                             <div class="space-y-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar" id="active-model-parts-editor"></div>
@@ -189,14 +189,14 @@
                         <div class="pt-4 border-t border-blue-950/60 flex items-center justify-between flex-wrap gap-3">
                             <div class="flex items-center gap-2">
                                 <button onclick="addNewPartToActiveModel()" class="bg-blue-950 hover:bg-blue-900 text-blue-300 text-xs font-semibold px-4 py-2.5 rounded-xl border border-blue-800/50">
-                                    + เพิ่มชิ้นส่วน
+                                    + เพิ่มชิ้นส่วน[cite: 6]
                                 </button>
                                 <button onclick="addPresetPartsToActiveModel()" class="bg-indigo-950/60 hover:bg-indigo-900/60 text-indigo-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-indigo-900/60">
-                                    ✨ ชิ้นส่วนมาตรฐาน
+                                    ✨ ชิ้นส่วนมาตรฐาน[cite: 6]
                                 </button>
                             </div>
                             <button onclick="saveActiveModelConfig()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/30">
-                                💾 บันทึกการเปลี่ยนแปลง
+                                💾 บันทึกการเปลี่ยนแปลง[cite: 6]
                             </button>
                         </div>
                     </div>
@@ -208,28 +208,27 @@
         <div id="page-workprocess" class="space-y-6 hidden">
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl space-y-6">
                 <div>
-                    <h2 class="text-xl font-bold text-white">Process Data</h2>
-                    <p class="text-xs text-slate-400 mt-1">Work processes (กระบวนการงาน) and working times (เวลาการทำงาน) for each station, by product group. Click Edit to change process names or times — changes save and sync to the dashboard.</p>
+                    <h2 class="text-xl font-bold text-white">Process Data[cite: 6]</h2>
+                    <p class="text-xs text-slate-400 mt-1">Work processes (กระบวนการงาน) and working times (เวลาการทำงาน) for each station, by product group. Click Edit to change process names or times — changes save and sync to the dashboard.[cite: 6]</p>
                 </div>
 
-                <!-- Top Line Pills -->
+                <!-- Top Line Pills (อัปเดตตามโครงสร้างจริง 6 ไลน์) -->
                 <div class="flex flex-wrap items-center gap-2 pt-2 pb-2 border-b border-blue-950/60" id="process-line-pills">
-                    <button onclick="selectProcessLine('Press Machine')" id="pill-line-Press Machine" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Press Machine</button>
-                    <button onclick="selectProcessLine('Back&Bottom Plate')" id="pill-line-Back&Bottom Plate" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500 transition-all flex items-center gap-2">Back&Bottom Plate <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">20</span></button>
-                    <button onclick="selectProcessLine('Door Frame')" id="pill-line-Door Frame" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door Frame&Door Glass <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span></button>
-                    <button onclick="selectProcessLine('Door A')" id="pill-line-Door A" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door A <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span></button>
-                    <button onclick="selectProcessLine('Door B')" id="pill-line-Door B" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door B</button>
-                    <button onclick="selectProcessLine('Door C')" id="pill-line-Door C" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door C</button>
+                    <button onclick="selectProcessLine('Press Machine')" id="pill-line-Press Machine" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Press Machine[cite: 6]</button>
+                    <button onclick="selectProcessLine('Back&Bottom Plate')" id="pill-line-Back&Bottom Plate" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500 transition-all flex items-center gap-2">Back&Bottom Plate <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">20</span>[cite: 6]</button>
+                    <button onclick="selectProcessLine('Door Frame&Door Glass')" id="pill-line-Door Frame&Door Glass" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door Frame&Door Glass <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span>[cite: 6]</button>
+                    <button onclick="selectProcessLine('Door A')" id="pill-line-Door A" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all flex items-center gap-2">Door A <span class="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">6</span>[cite: 6]</button>
+                    <button onclick="selectProcessLine('Door B')" id="pill-line-Door B" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door B[cite: 6]</button>
+                    <button onclick="selectProcessLine('Door C')" id="pill-line-Door C" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500 transition-all">Door C[cite: 6]</button>
                 </div>
 
                 <!-- Sub Station Filters & Search -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-2" id="station-sub-pills">
-                        <span class="text-xs text-slate-400 font-bold uppercase mr-1">STATION</span>
-                        <button onclick="filterWorkStation('all')" id="st-pill-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md">All stations <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]" id="count-st-all">9</span></button>
-                        <button onclick="filterWorkStation('welding')" id="st-pill-welding" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500">Welding <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]">2</span></button>
-                        <button onclick="filterWorkStation('backplate')" id="st-pill-backplate" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500">Back plate <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]">4</span></button>
-                        <button onclick="filterWorkStation('bottomplate')" id="st-pill-bottomplate" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500">Bottom plate <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]">3</span></button>
+                        <span class="text-xs text-slate-400 font-bold uppercase mr-1">STATION[cite: 6]</span>
+                        <button onclick="filterWorkStation('all')" id="st-pill-all" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md">All stations <span class="bg-black/30 px-1.5 py-0.5 rounded text-[10px]" id="count-st-all">9</span>[cite: 6]</button>
+                        <!-- Dynamic Sub-Station Buttons Container -->
+                        <span id="dynamic-substation-pills" class="flex flex-wrap items-center gap-2"></span>
                     </div>
                     
                     <div class="flex items-center gap-3 w-full md:w-auto">
@@ -238,7 +237,7 @@
                             <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </div>
                         <button onclick="openAddNewModelModal()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-lg shadow-blue-600/30 shrink-0">
-                            + Add Model
+                            + Add Model[cite: 6]
                         </button>
                     </div>
                 </div>
@@ -247,31 +246,31 @@
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl">
                     <div class="p-4 bg-blue-950/20 border-b border-blue-950/60 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div class="flex flex-wrap items-center gap-3">
-                            <span class="font-extrabold text-slate-100 text-sm" id="current-process-title">Bottom plate #A — One Door</span>
-                            <span class="text-[10px] bg-rose-950/60 text-rose-300 px-2.5 py-0.5 rounded border border-rose-900/50" id="current-process-badge">Bottom plate #A</span>
-                            <span class="text-[10px] bg-indigo-950/60 text-indigo-300 px-2.5 py-0.5 rounded border border-indigo-900/50" id="current-line-badge">A line</span>
-                            <span class="text-[10px] bg-blue-950/60 text-blue-300 px-2.5 py-0.5 rounded border border-blue-900/50">Edited</span>
+                            <span class="font-extrabold text-slate-100 text-sm" id="current-process-title">Bottom plate #A — One Door[cite: 6]</span>
+                            <span class="text-[10px] bg-rose-950/60 text-rose-300 px-2.5 py-0.5 rounded border border-rose-900/50" id="current-process-badge">Bottom plate #A[cite: 6]</span>
+                            <span class="text-[10px] bg-indigo-950/60 text-indigo-300 px-2.5 py-0.5 rounded border border-indigo-900/50" id="current-line-badge">A line[cite: 6]</span>
+                            <span class="text-[10px] bg-blue-950/60 text-blue-300 px-2.5 py-0.5 rounded border border-blue-900/50">Edited[cite: 6]</span>
                         </div>
                         
                         <div class="flex items-center gap-4 flex-wrap">
                             <div class="flex items-center gap-2 text-xs font-mono" id="process-metrics-bar">
-                                <span class="text-slate-400">Takt <strong class="text-amber-400" id="metric-takt">36.6 s</strong></span>
-                                <span class="text-slate-400">Bottleneck <strong class="text-rose-400" id="metric-bottleneck">36.60 s</strong></span>
-                                <span class="text-slate-400">Stations <strong class="text-white" id="metric-stations">9</strong></span>
-                                <span class="text-slate-400">Balance <strong class="text-emerald-400" id="metric-balance">59%</strong></span>
+                                <span class="text-slate-400">Takt <strong class="text-amber-400" id="metric-takt">36.6 s</strong>[cite: 6]</span>
+                                <span class="text-slate-400">Bottleneck <strong class="text-rose-400" id="metric-bottleneck">36.60 s</strong>[cite: 6]</span>
+                                <span class="text-slate-400">Stations <strong class="text-white" id="metric-stations">9</strong>[cite: 6]</span>
+                                <span class="text-slate-400">Balance <strong class="text-emerald-400" id="metric-balance">59%</strong>[cite: 6]</span>
                             </div>
                             <button onclick="openEditProcessModal()" class="bg-[#0e1626] hover:bg-blue-950 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-lg border border-blue-900/60 flex items-center gap-1.5">
-                                ✏️ Edit Process & Stations
+                                ✏️ Edit Process & Stations[cite: 6]
                             </button>
                         </div>
                     </div>
 
                     <!-- Model Tags Bar -->
                     <div class="px-4 py-2.5 bg-[#0e1626]/40 border-b border-blue-950/40 flex items-center gap-2 flex-wrap" id="process-model-tags">
-                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">159C</span>
-                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">159F</span>
-                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">199C</span>
-                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">199F</span>
+                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">159C[cite: 6]</span>
+                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">159F[cite: 6]</span>
+                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">199C[cite: 6]</span>
+                        <span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">199F[cite: 6]</span>
                     </div>
 
                     <!-- Station Table -->
@@ -279,16 +278,16 @@
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-[#0e1626]/80 text-slate-400 border-b border-blue-950 font-semibold">
-                                    <th class="p-3.5 pl-5">Station</th>
-                                    <th class="p-3.5">Process 1</th>
-                                    <th class="p-3.5">Process 2</th>
-                                    <th class="p-3.5">Process 3</th>
-                                    <th class="p-3.5 text-center">WT 1</th>
-                                    <th class="p-3.5 text-center">WT 2</th>
-                                    <th class="p-3.5 text-center">WT 3</th>
-                                    <th class="p-3.5 text-center">WT Total</th>
-                                    <th class="p-3.5 text-center">Loss</th>
-                                    <th class="p-3.5 text-center">Cycle Time</th>
+                                    <th class="p-3.5 pl-5">Station[cite: 6]</th>
+                                    <th class="p-3.5">Process 1[cite: 6]</th>
+                                    <th class="p-3.5">Process 2[cite: 6]</th>
+                                    <th class="p-3.5">Process 3[cite: 6]</th>
+                                    <th class="p-3.5 text-center">WT 1[cite: 6]</th>
+                                    <th class="p-3.5 text-center">WT 2[cite: 6]</th>
+                                    <th class="p-3.5 text-center">WT 3[cite: 6]</th>
+                                    <th class="p-3.5 text-center">WT Total[cite: 6]</th>
+                                    <th class="p-3.5 text-center">Loss[cite: 6]</th>
+                                    <th class="p-3.5 text-center">Cycle Time[cite: 6]</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950/40 text-slate-300" id="process-stations-tbody">
@@ -304,17 +303,17 @@
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-200">⚖️ หน้าจอวิเคราะห์ความสมดุลสายการผลิต (Line Balancing & Manpower)</h2>
-                        <p class="text-xs text-slate-400">คำนวณ Takt Time, จำนวนพนักงานที่จำเป็น และค่า Line Efficiency (%)</p>
+                        <h2 class="text-lg font-bold text-slate-200">⚖️ หน้าจอวิเคราะห์ความสมดุลสายการผลิต (Line Balancing & Manpower)[cite: 6]</h2>
+                        <p class="text-xs text-slate-400">คำนวณ Takt Time, จำนวนพนักงานที่จำเป็น และค่า Line Efficiency (%)[cite: 6]</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">เลือกวันที่:</span>
+                            <span class="text-xs text-slate-400">เลือกวันที่:[cite: 6]</span>
                             <select id="lb-date-select" class="bg-[#090d16] text-white border border-blue-950 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-xs text-slate-400">เลือกไลน์:</span>
+                            <span class="text-xs text-slate-400">เลือกไลน์:[cite: 6]</span>
                             <select id="lb-line-select" class="bg-[#090d16] text-white border border-blue-950 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
                             </select>
                         </div>
@@ -322,16 +321,16 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="lb-kpi-summary"></div>
                 <div class="bg-[#090d16] border border-blue-950/60 rounded-xl overflow-hidden p-5 space-y-4">
-                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📊 ตารางวิเคราะห์ภาระงานแต่ละ Station</h3>
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📊 ตารางวิเคราะห์ภาระงานแต่ละ Station[cite: 6]</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse" id="lb-table">
                             <thead>
                                 <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950">
-                                    <th class="p-3">Process / Station</th>
-                                    <th class="p-3 text-center">Cycle Time (sec)</th>
-                                    <th class="p-3 text-center">Takt Time (sec)</th>
-                                    <th class="p-3 text-center">Assigned Workers</th>
-                                    <th class="p-3 text-center">Balance Loss (%)</th>
+                                    <th class="p-3">Process / Station[cite: 6]</th>
+                                    <th class="p-3 text-center">Cycle Time (sec)[cite: 6]</th>
+                                    <th class="p-3 text-center">Takt Time (sec)[cite: 6]</th>
+                                    <th class="p-3 text-center">Assigned Workers[cite: 6]</th>
+                                    <th class="p-3 text-center">Balance Loss (%)[cite: 6]</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-950/40" id="lb-tbody"></tbody>
@@ -347,28 +346,28 @@
     <div id="edit-process-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-[#0e1626] border border-blue-900/60 rounded-2xl w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-5 border-b border-blue-950/80 flex justify-between items-center bg-blue-950/20">
-                <h3 class="font-bold text-slate-100 text-base">✏️ แก้ไขข้อมูลกระบวนการและสถานี (Edit Process & Stations)</h3>
-                <button onclick="closeEditProcessModal()" class="text-slate-400 hover:text-white text-sm bg-[#090d16] px-3 py-1 rounded-lg border border-blue-950">✕ ปิด</button>
+                <h3 class="font-bold text-slate-100 text-base">✏️ แก้ไขข้อมูลกระบวนการและสถานี (Edit Process & Stations)[cite: 6]</h3>
+                <button onclick="closeEditProcessModal()" class="text-slate-400 hover:text-white text-sm bg-[#090d16] px-3 py-1 rounded-lg border border-blue-950">✕ ปิด[cite: 6]</button>
             </div>
             <div class="p-6 overflow-y-auto space-y-6 custom-scrollbar flex-1">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ชื่อหัวข้อกระบวนการ (Title):</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ชื่อหัวข้อกระบวนการ (Title):[cite: 6]</label>
                         <input type="text" id="edit-modal-title" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ย่อย (Badge):</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ย่อย (Badge):[cite: 6]</label>
                         <input type="text" id="edit-modal-badge" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line) — อัตโนมัติ:</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line) — อัตโนมัติ:[cite: 6]</label>
                         <input type="text" id="edit-modal-line" readonly class="w-full bg-[#090d16]/70 border border-blue-950/80 rounded-xl px-3 py-2 text-xs text-blue-400 font-bold cursor-not-allowed">
                     </div>
                 </div>
 
                 <!-- Multi-select Models Selection Area -->
                 <div class="space-y-2 bg-[#090d16] p-4 rounded-xl border border-blue-950/80">
-                    <label class="block text-xs font-semibold text-slate-300">เลือกรุ่นสินค้าที่เกี่ยวข้อง (Multi-select Models):</label>
+                    <label class="block text-xs font-semibold text-slate-300">เลือกรุ่นสินค้าที่เกี่ยวข้อง (Multi-select Models):[cite: 6]</label>
                     <div id="edit-modal-models-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 max-h-36 overflow-y-auto p-2 custom-scrollbar bg-[#0e1626]/50 rounded-lg border border-blue-950/50">
                         <!-- Checkboxes injected by JS -->
                     </div>
@@ -376,18 +375,18 @@
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES</h4>
-                        <button onclick="addModalStationRow()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/30">+ เพิ่ม Station</button>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES[cite: 6]</h4>
+                        <button onclick="addModalStationRow()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/30">+ เพิ่ม Station[cite: 6]</button>
                     </div>
                     <div class="overflow-x-auto border border-blue-950 rounded-xl">
                         <table class="w-full text-left text-xs" id="edit-stations-table">
                             <thead>
                                 <tr class="bg-[#090d16] text-slate-400 border-b border-blue-950">
-                                    <th class="p-2.5">Station</th>
-                                    <th class="p-2.5">Process 1 / WT 1</th>
-                                    <th class="p-2.5">Process 2 / WT 2</th>
-                                    <th class="p-2.5">Process 3 / WT 3</th>
-                                    <th class="p-2.5 text-center">Action</th>
+                                    <th class="p-2.5">Station[cite: 6]</th>
+                                    <th class="p-2.5">Process 1 / WT 1[cite: 6]</th>
+                                    <th class="p-2.5">Process 2 / WT 2[cite: 6]</th>
+                                    <th class="p-2.5">Process 3 / WT 3[cite: 6]</th>
+                                    <th class="p-2.5 text-center">Action[cite: 6]</th>
                                 </tr>
                             </thead>
                             <tbody id="edit-stations-tbody" class="divide-y divide-blue-950/40"></tbody>
@@ -396,8 +395,8 @@
                 </div>
             </div>
             <div class="p-4 border-t border-blue-950/80 bg-blue-950/10 flex justify-end gap-3">
-                <button onclick="closeEditProcessModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-400 border border-blue-950">ยกเลิก</button>
-                <button onclick="saveEditProcessModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">บันทึกการเปลี่ยนแปลง</button>
+                <button onclick="closeEditProcessModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-400 border border-blue-950">ยกเลิก[cite: 6]</button>
+                <button onclick="saveEditProcessModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">บันทึกการเปลี่ยนแปลง[cite: 6]</button>
             </div>
         </div>
     </div>
@@ -406,33 +405,33 @@
     <div id="add-model-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
         <div class="bg-[#0e1626] border border-blue-900/60 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
             <div class="p-5 border-b border-blue-950/80 flex justify-between items-center bg-blue-950/20">
-                <h3 class="font-bold text-slate-100 text-base">➕ เพิ่มรุ่นสินค้าและกระบวนการทำงานใหม่</h3>
-                <button onclick="closeAddNewModelModal()" class="text-slate-400 hover:text-white text-sm bg-[#090d16] px-3 py-1 rounded-lg border border-blue-950">✕ ปิด</button>
+                <h3 class="font-bold text-slate-100 text-base">➕ เพิ่มรุ่นสินค้าและกระบวนการทำงานใหม่[cite: 6]</h3>
+                <button onclick="closeAddNewModelModal()" class="text-slate-400 hover:text-white text-sm bg-[#090d16] px-3 py-1 rounded-lg border border-blue-950">✕ ปิด[cite: 6]</button>
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">ชื่อรุ่น / หัวข้อแผน (Model & Title):</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">ชื่อรุ่น / หัวข้อแผน (Model & Title):[cite: 6]</label>
                     <input type="text" id="new-model-title-input" placeholder="เช่น Bottom plate #B — Two Doors" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">เลือกไลน์ผลิตหลัก (Process Line):</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">เลือกไลน์ผลิตหลัก (Process Line):[cite: 6]</label>
                     <select id="new-model-line-select" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
-                        <option value="Press Machine">Press Machine</option>
-                        <option value="Back&Bottom Plate">Back&Bottom Plate</option>
-                        <option value="Door Frame&Door Glass">Door Frame&Door Glass</option>
-                        <option value="Door A">Door A</option>
-                        <option value="Door B">Door B</option>
-                        <option value="Door C">Door C</option>
+                        <option value="Press Machine">Press Machine[cite: 6]</option>
+                        <option value="Back&Bottom Plate">Back&Bottom Plate[cite: 6]</option>
+                        <option value="Door Frame&Door Glass">Door Frame&Door Glass[cite: 6]</option>
+                        <option value="Door A">Door A[cite: 6]</option>
+                        <option value="Door B">Door B[cite: 6]</option>
+                        <option value="Door C">Door C[cite: 6]</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ป้ายย่อย (Badge Name):</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">หมวดหมู่ป้ายย่อย (Badge Name):[cite: 6]</label>
                     <input type="text" id="new-model-badge-input" placeholder="เช่น Bottom plate #B" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white">
                 </div>
             </div>
             <div class="p-4 border-t border-blue-950/80 bg-blue-950/10 flex justify-end gap-3">
-                <button onclick="closeAddNewModelModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-400 border border-blue-950">ยกเลิก</button>
-                <button onclick="confirmAddNewModel()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">สร้างรายการใหม่</button>
+                <button onclick="closeAddNewModelModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-[#090d16] text-slate-400 border border-blue-950">ยกเลิก[cite: 6]</button>
+                <button onclick="confirmAddNewModel()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30">สร้างรายการใหม่[cite: 6]</button>
             </div>
         </div>
     </div>
@@ -441,14 +440,14 @@
     <div id="line-modal" class="fixed inset-0 z-50 flex flex-col bg-[#090d16] hidden">
         <div class="px-6 py-4 border-b border-blue-950/60 bg-[#0e1626] flex justify-between items-center shadow-xl shrink-0">
             <div class="flex items-center gap-3">
-                <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail</span>
+                <span id="modal-line-badge" class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-mono border border-blue-500/30">Line Detail[cite: 6]</span>
                 <div>
-                    <h3 id="modal-line-title" class="text-xl font-bold text-white">ชื่อไลน์การผลิต</h3>
-                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยและเป้าหมายการผลิต</p>
+                    <h3 id="modal-line-title" class="text-xl font-bold text-white">ชื่อไลน์การผลิต[cite: 6]</h3>
+                    <p class="text-xs text-slate-400">กำหนดชิ้นส่วนย่อยและเป้าหมายการผลิต[cite: 6]</p>
                 </div>
             </div>
             <button onclick="closeLineModal()" class="bg-rose-950/60 hover:bg-rose-900 text-rose-200 font-semibold text-xs px-5 py-2.5 rounded-xl border border-rose-900/60 transition-all shadow-lg">
-                ✕ ปิดหน้าจอ
+                ✕ ปิดหน้าจอ[cite: 6]
             </button>
         </div>
         <div class="flex-1 p-4 md:p-6 overflow-y-auto space-y-6 max-w-full mx-auto w-full custom-scrollbar" id="modal-body-content"></div>
@@ -487,14 +486,24 @@
             { name: "Door C", description: "สายการผลิตประตูรุ่น SBS" }
         ];
 
+        // กำหนด Sub-Stations ตามโครงสร้างจริงที่ผู้ใช้ระบุมา
+        const lineSubStationsMap = {
+            "Press Machine": ["400T", "200T", "100T"],
+            "Back&Bottom Plate": ["Welding Machine", "Back Plate", "Bottom Plate"],
+            "Door Frame&Door Glass": ["Door Frame", "Door Glass"],
+            "Door A": ["Door Bend", "Door Liner", "Door Foam"],
+            "Door B": ["Door Bend", "Door Foam"],
+            "Door C": ["Door Bend", "Door Liner", "Door Foam"]
+        };
+
         let currentSelectedProcessLine = "Back&Bottom Plate";
         let currentStationFilter = "all";
 
         let processDataStore = {
             "Press Machine": [
                 {
-                    title: "Press Machine #1 — Sheet Metal",
-                    badge: "Press #1",
+                    title: "Press Machine #400T — Sheet Metal",
+                    badge: "400T",
                     line: "Press Machine",
                     models: ["159C", "199C"],
                     stations: [
@@ -506,7 +515,7 @@
             "Back&Bottom Plate": [
                 {
                     title: "Bottom plate #A — One Door",
-                    badge: "Bottom plate #A",
+                    badge: "Bottom Plate",
                     line: "Back&Bottom Plate",
                     models: ["159C", "159F", "199C", "199F"],
                     stations: [
@@ -545,7 +554,7 @@
             renderLineOverview();
             renderPartsConfigPage();
             renderLineBalancePage();
-            renderProcessDataTable();
+            selectProcessLine(currentSelectedProcessLine); // เรียกใช้เพื่อตั้งค่าเริ่มต้น Sub-station pills ตามไลน์
         });
 
         function switchTab(tabName) {
@@ -572,6 +581,8 @@
         function selectProcessLine(lineName) {
             currentSelectedProcessLine = lineName;
             activeCardIndex = 0;
+            currentStationFilter = "all"; // รีเซ็ตตัวกรองเป็น All เมื่อเปลี่ยนไลน์
+            
             ['Press Machine', 'Back&Bottom Plate', 'Door Frame&Door Glass', 'Door A', 'Door B', 'Door C'].forEach(l => {
                 const btn = document.getElementById(`pill-line-${l}`);
                 if(btn) {
@@ -582,21 +593,52 @@
                     }
                 }
             });
+
+            // อัปเดตการแสดงผล Sub-Station Pills ตามไลน์ที่เลือก
+            renderSubStationPills();
             renderProcessDataTable();
+        }
+
+        function renderSubStationPills() {
+            const container = document.getElementById('dynamic-substation-pills');
+            if (!container) return;
+            const subStations = lineSubStationsMap[currentSelectedProcessLine] || [];
+            
+            let html = '';
+            subStations.forEach(sub => {
+                let safeId = sub.replace(/[^a-zA-Z0-9]/g, '_');
+                html += `<button onclick="filterWorkStation('${sub}')" id="st-pill-${safeId}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500">${sub}</button>`;
+            });
+            container.innerHTML = html;
         }
 
         function filterWorkStation(type) {
             currentStationFilter = type;
-            ['all', 'welding', 'backplate', 'bottomplate'].forEach(t => {
-                const btn = document.getElementById(`st-pill-${t}`);
-                if(btn) {
-                    if (t === type) {
+            
+            // จัดการคลาส Active ของปุ่ม All stations
+            const allBtn = document.getElementById('st-pill-all');
+            if (allBtn) {
+                if (type === 'all') {
+                    allBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md";
+                } else {
+                    allBtn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500";
+                }
+            }
+
+            // จัดการคลาส Active ของปุ่ม Sub-Stations อื่นๆ
+            const subStations = lineSubStationsMap[currentSelectedProcessLine] || [];
+            subStations.forEach(sub => {
+                let safeId = sub.replace(/[^a-zA-Z0-9]/g, '_');
+                const btn = document.getElementById(`st-pill-${safeId}`);
+                if (btn) {
+                    if (sub === type) {
                         btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-md";
                     } else {
                         btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#090d16] text-slate-300 border border-blue-950 hover:border-blue-500";
                     }
                 }
             });
+
             renderProcessDataTable();
         }
 
@@ -605,7 +647,7 @@
             if (list.length === 0) {
                 processDataStore[currentSelectedProcessLine] = [{
                     title: `${currentSelectedProcessLine} — Standard Model`,
-                    badge: currentSelectedProcessLine,
+                    badge: (lineSubStationsMap[currentSelectedProcessLine] || ["Standard"])[0],
                     line: currentSelectedProcessLine,
                     models: ["159C", "159F"],
                     stations: [
@@ -633,9 +675,12 @@
             let stations = currentCard.stations.filter(st => {
                 let matchSearch = st.id.toLowerCase().includes(searchText) || st.p1.toLowerCase().includes(searchText) || st.p2.toLowerCase().includes(searchText) || st.p3.toLowerCase().includes(searchText);
                 if (!matchSearch) return false;
-                if (currentStationFilter === 'welding') return st.p1.includes('เชื่อม') || st.p2.includes('เชื่อม') || st.id.includes('W');
-                if (currentStationFilter === 'backplate') return st.id.includes('BT') || st.p1.includes('หลัง');
-                if (currentStationFilter === 'bottomplate') return st.id.includes('BTA') || st.id.includes('PR');
+                
+                // เงื่อนไขการกรองตาม Sub-Station ที่เลือกจริง
+                if (currentStationFilter !== 'all') {
+                    let matchSub = currentCard.badge === currentStationFilter || st.id.toLowerCase().includes(currentStationFilter.toLowerCase());
+                    if (!matchSub) return false;
+                }
                 return true;
             });
 
@@ -681,6 +726,7 @@
             document.getElementById('process-stations-tbody').innerHTML = tbodyHTML;
         }
 
+        // --- EDIT MODAL LOGIC WITH AUTO LINE & MULTI-SELECT MODELS ---
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
@@ -688,8 +734,11 @@
 
             document.getElementById('edit-modal-title').value = card.title;
             document.getElementById('edit-modal-badge').value = card.badge;
+            
+            // ตั้งค่าสถานีงานอัตโนมัติเป็นไลน์ปัจจุบัน
             document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
 
+            // Render Multi-select model checkboxes
             let container = document.getElementById('edit-modal-models-checkboxes');
             let allModels = [];
             productStructure.forEach(g => { allModels.push(...g.models); });
@@ -791,8 +840,10 @@
                 let id = r.querySelector('.st-id').value;
                 let p1 = r.querySelector('.st-p1').value || "—";
                 let wt1 = parseFloat(r.querySelector('.st-wt1').value) || 0;
+                
                 let p2 = r.querySelector('.st-p2').value || "—";
                 let wt2 = parseFloat(r.querySelector('.st-wt2').value) || 0;
+
                 let p3 = r.querySelector('.st-p3').value || "—";
                 let wt3 = parseFloat(r.querySelector('.st-wt3').value) || 0;
 
@@ -1079,107 +1130,21 @@
             renderLineOverview();
         }
 
-        // --- ส่วนการจัดการและประมวลผลไฟล์ Excel ที่ถูกรวมเข้ามา ---
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             document.getElementById('file-label-text').innerText = `ไฟล์: ${file.name}`;
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                    if (rows.length < 2) {
-                        alert("⚠️ ไฟล์ Excel มีข้อมูลน้อยเกินไป กรุณาตรวจสอบรูปแบบไฟล์");
-                        return;
-                    }
-
-                    // ค้นหาแถวที่เป็น Header วันที่และรุ่นสินค้า
-                    let headerRowIndex = -1;
-                    let modelColIndex = -1;
-                    let dateCols = {}; // เก็บตำแหน่งคอลัมน์ของแต่ละวันที่
-
-                    for (let r = 0; r < Math.min(rows.length, 10); r++) {
-                        let row = rows[r];
-                        for (let c = 0; c < row.length; c++) {
-                            let cellVal = String(row[c] || "").trim().toLowerCase();
-                            if (cellVal === "model" || cellVal === "รุ่น" || cellVal === "item") {
-                                headerRowIndex = r;
-                                modelColIndex = c;
-                                break;
-                            }
-                        }
-                        if (headerRowIndex !== -1) break;
-                    }
-
-                    if (headerRowIndex === -1) {
-                        // หากไม่พบคำว่า Model ให้ใช้แถวแรกเป็นตัวตั้งต้น
-                        headerRowIndex = 0;
-                        modelColIndex = 0;
-                    }
-
-                    let headerRow = rows[headerRowIndex];
-                    let extractedDates = [];
-
-                    for (let c = 0; c < headerRow.length; c++) {
-                        if (c === modelColIndex) continue;
-                        let val = headerRow[c];
-                        if (val !== undefined && val !== null && String(val).trim() !== "") {
-                            // แปลงรูปแบบวันที่จาก Excel หากจำเป็น
-                            let dateStr = String(val).trim();
-                            extractedDates.push(dateStr);
-                            dateCols[dateStr] = c;
-                        }
-                    }
-
-                    if (extractedDates.length > 0) {
-                        currentDates = extractedDates;
-                    }
-
-                    // ดึงข้อมูลแผนการผลิตแยกตาม Model
-                    let newPlanDB = {};
-                    let allKnownModels = [];
-                    productStructure.forEach(g => { allKnownModels.push(...g.models); });
-
-                    for (let r = headerRowIndex + 1; r < rows.length; r++) {
-                        let row = rows[r];
-                        if (!row || row.length === 0) continue;
-                        let modelName = String(row[modelColIndex] || "").trim();
-                        if (!modelName) continue;
-
-                        // ตรวจสอบโมเดลที่ตรงกับโครงสร้าง
-                        let matchedModel = allKnownModels.find(m => m.toLowerCase() === modelName.toLowerCase());
-                        if (!matchedModel) {
-                            // ตรวจสอบแบบยืดหยุ่น (Partial match)
-                            matchedModel = allKnownModels.find(m => modelName.toLowerCase().includes(m.toLowerCase()));
-                        }
-
-                        if (matchedModel) {
-                            if (!newPlanDB[matchedModel]) newPlanDB[matchedModel] = {};
-                            extractedDates.forEach(dateStr => {
-                                let colIdx = dateCols[dateStr];
-                                let qty = parseFloat(row[colIdx]) || 0;
-                                newPlanDB[matchedModel][dateStr] = qty;
-                            });
-                        }
-                    }
-
-                    planDatabase = newPlanDB;
-                    initOverviewDateDropdown();
-                    initConfigDateDropdown();
-                    initLineBalanceDropdowns();
-                    initMatrixTable(currentDates);
-                    manualSaveDataSilent();
-
-                    alert(`✅ นำเข้าข้อมูลแผนการผลิตจากไฟล์ "${file.name}" สำเร็จ!`);
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    let raw = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    manualSaveData();
+                    alert(`✅ นำเข้าไฟล์ Excel สำเร็จ!`);
                 } catch (err) {
-                    console.error(err);
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel: ' + err.message);
+                    alert('เกิดข้อผิดพลาด: ' + err.message);
                 }
             };
             reader.readAsArrayBuffer(file);
