@@ -9,6 +9,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* สไตล์บังคับให้ dropdown options แสดงสีชัดเจนบนทุกเบราว์เซอร์ */
+        select option {
+            background-color: #0e1626;
+            color: #ffffff;
+            padding: 8px;
+        }
     </style>
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen selection:bg-blue-600 selection:text-white p-4 md:p-8">
@@ -190,7 +196,7 @@
             </div>
         </div>
 
-        <!-- NEW PAGE: Work Process -->
+        <!-- WORK PROCESS PAGE -->
         <div id="page-workprocess" class="space-y-6 hidden">
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -198,13 +204,17 @@
                         <h2 class="text-lg font-bold text-slate-200">🔄 หน้าจอจัดการกระบวนการทำงาน (Work Process Flow & Cycle Time)</h2>
                         <p class="text-xs text-slate-400">กำหนดขั้นตอนการทำงานย่อย (Operation Steps) และ Cycle Time (วินาที/ชิ้น) ของแต่ละชิ้นส่วนและไลน์ผลิต</p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-xs text-slate-400">เลือกชิ้นส่วน:</span>
-                        <select id="wp-part-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderWorkProcessPage()">
-                        </select>
-                        <span class="text-xs text-slate-400 ml-2">เลือกไลน์ผลิต:</span>
-                        <select id="wp-line-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderWorkProcessPage()">
-                        </select>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-300 font-medium">เลือกชิ้นส่วน:</span>
+                            <select id="wp-part-select" class="bg-[#090d16] text-white border border-blue-800 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500 shadow-md cursor-pointer" onchange="renderWorkProcessPage()">
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-300 font-medium">เลือกไลน์ผลิต:</span>
+                            <select id="wp-line-select" class="bg-[#090d16] text-white border border-blue-800 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500 shadow-md cursor-pointer" onchange="renderWorkProcessPage()">
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -234,7 +244,7 @@
             </div>
         </div>
 
-        <!-- NEW PAGE: Line Balance -->
+        <!-- LINE BALANCE PAGE -->
         <div id="page-linebalance" class="space-y-6 hidden">
             <div class="bg-[#0e1626] border border-blue-950/60 p-6 rounded-2xl shadow-xl space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -245,12 +255,12 @@
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-slate-400">เลือกวันที่:</span>
-                            <select id="lb-date-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
+                            <select id="lb-date-select" class="bg-[#090d16] text-white border border-blue-950 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-slate-400">เลือกไลน์:</span>
-                            <select id="lb-line-select" class="bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
+                            <select id="lb-line-select" class="bg-[#090d16] text-white border border-blue-950 rounded-xl px-3 py-2 text-xs font-medium focus:outline-none focus:border-blue-500" onchange="renderLineBalancePage()">
                             </select>
                         </div>
                     </div>
