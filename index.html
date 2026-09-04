@@ -36,7 +36,6 @@
                     <button onclick="switchTab('partsconfig')" id="tab-btn-partsconfig" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
                         ⚙️ ชิ้นส่วน & KPI
                     </button>
-                    <!-- เพิ่มปุ่มเมนูใหม่ -->
                     <button onclick="switchTab('workprocess')" id="tab-btn-workprocess" class="px-3 py-2 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white hover:bg-blue-950/40">
                         🔄 Work Process
                     </button>
@@ -258,7 +257,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="lb-kpi-summary">
                 </div>
 
-                <!-- Line Balance Table & Chart Simulation -->
+                <!-- Line Balance Table -->
                 <div class="bg-[#090d16] border border-blue-950/60 rounded-xl overflow-hidden p-5 space-y-4">
                     <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">📊 ตารางวิเคราะห์ภาระงานแต่ละ Station (Balancing Table)</h3>
                     <div class="overflow-x-auto">
@@ -336,18 +335,17 @@
         ];
 
         let productionLines = [
-            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม", hasSubMachines: false },
-            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ", hasSubMachines: false },
-            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้", hasSubMachines: false },
-            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐาน", hasSubMachines: false },
-            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ", hasSubMachines: false },
-            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS", hasSubMachines: false },
-            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND", hasSubMachines: false },
-            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง", hasSubMachines: false },
-            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่", hasSubMachines: false }
+            { name: "Press Machine", description: "กระบวนการขึ้นรูปแผ่นเหล็กและชิ้นส่วนปั๊ม" },
+            { name: "Glass Door", description: "สายการผลิตกระจกและประตูกระจกพิเศษ" },
+            { name: "Back Plate&Bottom Plate", description: "ประกอบแผ่นหลังและแผ่นฐานตู้" },
+            { name: "Door A", description: "สายการผลิตประตูรุ่นมาตรฐาน" },
+            { name: "Door B", description: "สายการผลิตประตู T-Door และรุ่นพิเศษ" },
+            { name: "Door C", description: "สายการผลิตประตูรุ่น SBS" },
+            { name: "Door In Door", description: "สายการผลิตประตูรุ่นพิเศษ Café, DND" },
+            { name: "Vertical Beam", description: "สายการผลิตโครงสร้างคานแนวตั้ง" },
+            { name: "Gasket", description: "สายการผลิตขอบยางประตูตู้แช่" }
         ];
 
-        // เก็บข้อมูล Work Process (กระบวนการย่อย และ Cycle Time เป็นวินาที)
         let workProcesses = {};
         let modelSubParts = {};
         let activeSelectedModelForConfig = "159C";
@@ -355,7 +353,7 @@
         let selectedWpStepIndex = 0;
 
         function initDefaultWorkProcesses() {
-            productionLines.forEach((line, idx) => {
+            productionLines.forEach((line) => {
                 if (!workProcesses[line.name]) {
                     workProcesses[line.name] = [
                         { stepNo: 1, name: "Preparation / เตรียมวัตถุดิบ", cycleTime: 35, workers: 1 },
@@ -416,6 +414,8 @@
             if (activeBtn) activeBtn.className = "px-3 py-2 rounded-lg text-xs font-semibold transition-all bg-blue-600 text-white shadow-lg shadow-blue-600/30";
             if (activePage) activePage.classList.remove('hidden');
 
+            if (tabName === 'overview') renderLineOverview();
+            if (tabName === 'partsconfig') renderPartsConfigPage();
             if (tabName === 'workprocess') renderWorkProcessPage();
             if (tabName === 'linebalance') renderLineBalancePage();
         }
@@ -519,7 +519,6 @@
             lineSelect.innerHTML = html;
         }
 
-        // --- Work Process Functions ---
         function renderWorkProcessPage() {
             const lineSelect = document.getElementById('wp-line-select');
             if (!lineSelect) return;
@@ -624,13 +623,11 @@
             alert("✅ บันทึก Work Process สำเร็จ!");
         }
 
-        // --- Line Balance Functions ---
         function renderLineBalancePage() {
             const dateSelect = document.getElementById('lb-date-select');
             const lineSelect = document.getElementById('lb-line-select');
             if (!dateSelect || !lineSelect) return;
 
-            let selectedDate = dateSelect.value || currentDates[0];
             let lineIdx = parseInt(lineSelect.value) || 0;
             let line = productionLines[lineIdx];
             let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
@@ -645,8 +642,7 @@
                 if (ct > maxCycleTime) maxCycleTime = ct;
             });
 
-            // สมมติยอดความต้องการผลิตรวมของไลน์ในวันนั้น
-            let lineTargetQty = 400; // ค่าจำลองหรือคำนวณจากแผนจริง
+            let lineTargetQty = 400;
             let availableTimeSec = workingHours * 3600;
             let taktTime = lineTargetQty > 0 ? Math.round(availableTimeSec / lineTargetQty) : 60;
             if (taktTime <= 0) taktTime = 60;
@@ -655,48 +651,49 @@
             let efficiency = (totalCycleTime / (steps.length * maxCycleTime)) * 100;
             if (isNaN(efficiency)) efficiency = 0;
 
-            // Render KPI Summary
             const kpiContainer = document.getElementById('lb-kpi-summary');
-            kpiContainer.innerHTML = `
-                <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
-                    <span class="text-[10px] text-slate-400 block">Takt Time คำนวณ</span>
-                    <span class="text-xl font-extrabold text-amber-400">${taktTime} <span class="text-xs text-slate-400">วินาที/ชิ้น</span></span>
-                </div>
-                <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
-                    <span class="text-[10px] text-slate-400 block">Cycle Time รวม (Sum CT)</span>
-                    <span class="text-xl font-extrabold text-blue-400">${totalCycleTime} <span class="text-xs text-slate-400">วินาที</span></span>
-                </div>
-                <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
-                    <span class="text-[10px] text-slate-400 block">จำนวนพนักงานรวม (Headcount)</span>
-                    <span class="text-xl font-extrabold text-cyan-300">${totalWorkers} <span class="text-xs text-slate-400">คน</span></span>
-                </div>
-                <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
-                    <span class="text-[10px] text-slate-400 block">Line Efficiency</span>
-                    <span class="text-xl font-extrabold text-emerald-400">${efficiency.toFixed(1)}%</span>
-                </div>
-            `;
-
-            // Render Table
-            const tbody = document.getElementById('lb-tbody');
-            let tableHtml = '';
-            steps.forEach((s, idx) => {
-                let ct = parseFloat(s.cycleTime) || 0;
-                let balanceLoss = maxCycleTime > 0 ? (((maxCycleTime - ct) / maxCycleTime) * 100).toFixed(1) : 0;
-                tableHtml += `
-                    <tr class="hover:bg-blue-950/20">
-                        <td class="p-3 font-medium text-slate-200">Step ${idx + 1}: ${s.name}</td>
-                        <td class="p-3 text-center font-bold text-amber-400">${ct} s</td>
-                        <td class="p-3 text-center text-slate-300">${taktTime} s</td>
-                        <td class="p-3 text-center text-cyan-300 font-bold">${s.workers || 1} คน</td>
-                        <td class="p-3 text-center text-rose-300">${balanceLoss}%</td>
-                    </tr>
+            if (kpiContainer) {
+                kpiContainer.innerHTML = `
+                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
+                        <span class="text-[10px] text-slate-400 block">Takt Time คำนวณ</span>
+                        <span class="text-xl font-extrabold text-amber-400">${taktTime} <span class="text-xs text-slate-400">วินาที/ชิ้น</span></span>
+                    </div>
+                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
+                        <span class="text-[10px] text-slate-400 block">Cycle Time รวม (Sum CT)</span>
+                        <span class="text-xl font-extrabold text-blue-400">${totalCycleTime} <span class="text-xs text-slate-400">วินาที</span></span>
+                    </div>
+                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
+                        <span class="text-[10px] text-slate-400 block">จำนวนพนักงานรวม (Headcount)</span>
+                        <span class="text-xl font-extrabold text-cyan-300">${totalWorkers} <span class="text-xs text-slate-400">คน</span></span>
+                    </div>
+                    <div class="bg-[#090d16] p-4 rounded-xl border border-blue-950">
+                        <span class="text-[10px] text-slate-400 block">Line Efficiency</span>
+                        <span class="text-xl font-extrabold text-emerald-400">${efficiency.toFixed(1)}%</span>
+                    </div>
                 `;
-            });
-            tbody.innerHTML = tableHtml;
+            }
+
+            const tbody = document.getElementById('lb-tbody');
+            if (tbody) {
+                let tableHtml = '';
+                steps.forEach((s, idx) => {
+                    let ct = parseFloat(s.cycleTime) || 0;
+                    let balanceLoss = maxCycleTime > 0 ? (((maxCycleTime - ct) / maxCycleTime) * 100).toFixed(1) : 0;
+                    tableHtml += `
+                        <tr class="hover:bg-blue-950/20">
+                            <td class="p-3 font-medium text-slate-200">Step ${idx + 1}: ${s.name}</td>
+                            <td class="p-3 text-center font-bold text-amber-400">${ct} s</td>
+                            <td class="p-3 text-center text-slate-300">${taktTime} s</td>
+                            <td class="p-3 text-center text-cyan-300 font-bold">${s.workers || 1} คน</td>
+                            <td class="p-3 text-center text-rose-300">${balanceLoss}%</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = tableHtml;
+            }
         }
 
         function renderPartsConfigPage() {
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             const selectorListContainer = document.getElementById('model-selector-list');
             if (selectorListContainer) {
                 let listHTML = '';
@@ -785,8 +782,6 @@
 
         function renderLineOverview() {
             const container = document.getElementById('line-cards-container');
-            const selectedDate = document.getElementById('overview-date-select')?.value || currentDates[0];
-            let workingHours = parseFloat(document.getElementById('working-hours').value) || 8;
             if (!container) return;
 
             let cardsHTML = '';
@@ -843,7 +838,6 @@
         }
 
         function smartParseExcelData(rows) {
-            // โค้ดแปลงข้อมูลตามระบบเดิมของคุณ
             initMatrixTable(currentDates);
             renderLineOverview();
         }
