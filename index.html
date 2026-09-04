@@ -361,14 +361,22 @@
                         <input type="text" id="edit-modal-badge" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line):</label>
-                        <input type="text" id="edit-modal-line" class="w-full bg-[#090d16] border border-blue-950 rounded-xl px-3 py-2 text-xs text-white font-bold">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">ไลน์ผลิต (Line) — อัตโนมัติ:</label>
+                        <input type="text" id="edit-modal-line" readonly class="w-full bg-[#090d16]/70 border border-blue-950/80 rounded-xl px-3 py-2 text-xs text-blue-400 font-bold cursor-not-allowed">
+                    </div>
+                </div>
+
+                <!-- Multi-select Models Selection Area -->
+                <div class="space-y-2 bg-[#090d16] p-4 rounded-xl border border-blue-950/80">
+                    <label class="block text-xs font-semibold text-slate-300">เลือกรุ่นสินค้าที่เกี่ยวข้อง (Multi-select Models):</label>
+                    <div id="edit-modal-models-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 max-h-36 overflow-y-auto p-2 custom-scrollbar bg-[#0e1626]/50 rounded-lg border border-blue-950/50">
+                        <!-- Checkboxes injected by JS -->
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES (เพิ่ม/ลบ Process ย่อยและ Station ได้)</h4>
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">รายการ STATIONS & PROCESS WORK TIMES</h4>
                         <button onclick="addModalStationRow()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-lg shadow-blue-600/30">+ เพิ่ม Station</button>
                     </div>
                     <div class="overflow-x-auto border border-blue-950 rounded-xl">
@@ -499,7 +507,7 @@
                 {
                     title: "Bottom plate #A — One Door",
                     badge: "Bottom plate #A",
-                    line: "A line",
+                    line: "Back&Bottom Plate",
                     models: ["159C", "159F", "199C", "199F"],
                     stations: [
                         { id: "BTA01", p1: "ประกอบขา Leg เข้ากับชิ้นส่วน+เคาะ", p2: "ประกอบชิ้นส่วนด้านข้าง", p3: "—", wt1: 13.90, wt2: 11.30, wt3: 0, loss: 3.21, ct: 28.41 },
@@ -598,7 +606,7 @@
                 processDataStore[currentSelectedProcessLine] = [{
                     title: `${currentSelectedProcessLine} — Standard Model`,
                     badge: currentSelectedProcessLine,
-                    line: "Main Line",
+                    line: currentSelectedProcessLine,
                     models: ["159C", "159F"],
                     stations: [
                         { id: "STA01", p1: "กระบวนการเตรียมชิ้นส่วน", p2: "ประกอบชิ้นงาน", p3: "—", wt1: 10.0, wt2: 15.0, wt3: 0, loss: 1.0, ct: 26.0 },
@@ -613,10 +621,10 @@
 
             document.getElementById('current-process-title').innerText = currentCard.title;
             document.getElementById('current-process-badge').innerText = currentCard.badge;
-            document.getElementById('current-line-badge').innerText = currentCard.line;
+            document.getElementById('current-line-badge').innerText = currentCard.line || currentSelectedProcessLine;
 
             let tagsHTML = '';
-            currentCard.models.forEach(m => {
+            (currentCard.models || []).forEach(m => {
                 tagsHTML += `<span class="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">${m}</span>`;
             });
             document.getElementById('process-model-tags').innerHTML = tagsHTML;
@@ -673,7 +681,7 @@
             document.getElementById('process-stations-tbody').innerHTML = tbodyHTML;
         }
 
-        // --- EDIT MODAL LOGIC WITH ADD PROCESS SUPPORT ---
+        // --- EDIT MODAL LOGIC WITH AUTO LINE & MULTI-SELECT MODELS ---
         function openEditProcessModal() {
             let list = processDataStore[currentSelectedProcessLine];
             if (!list || list.length === 0) return;
@@ -681,7 +689,27 @@
 
             document.getElementById('edit-modal-title').value = card.title;
             document.getElementById('edit-modal-badge').value = card.badge;
-            document.getElementById('edit-modal-line').value = card.line;
+            
+            // ตั้งค่าสถานีงานอัตโนมัติเป็นไลน์ปัจจุบัน
+            document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
+
+            // Render Multi-select model checkboxes
+            let container = document.getElementById('edit-modal-models-checkboxes');
+            let allModels = [];
+            productStructure.forEach(g => { allModels.push(...g.models); });
+
+            let currentSelectedModels = card.models || [];
+            let checkHtml = '';
+            allModels.forEach(m => {
+                let isChecked = currentSelectedModels.includes(m) ? 'checked' : '';
+                checkHtml += `
+                    <label class="flex items-center gap-2 bg-[#090d16] px-2.5 py-1.5 rounded-lg border border-blue-950/80 cursor-pointer hover:border-blue-500 transition-all text-xs">
+                        <input type="checkbox" value="${m}" ${isChecked} class="edit-model-chk rounded border-blue-900 bg-blue-950 text-blue-600 focus:ring-0">
+                        <span class="text-slate-300 font-medium truncate">${m}</span>
+                    </label>
+                `;
+            });
+            container.innerHTML = checkHtml;
 
             let editTbody = document.getElementById('edit-stations-tbody');
             let html = '';
@@ -691,17 +719,17 @@
                         <td class="p-2.5"><input type="text" value="${st.id}" class="w-24 bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1.5 text-white font-mono text-xs st-id font-bold"></td>
                         
                         <td class="p-2.5 space-y-1">
-                            <input type="text" value="${st.p1}" placeholder="ชื่อกระบวนการ 1" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p1">
+                            <input type="text" value="${st.p1}" placeholder="กระบวนการ 1" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p1">
                             <div class="flex items-center gap-1"><span class="text-[10px] text-slate-400 w-8">WT1:</span><input type="number" step="0.1" value="${st.wt1}" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1 text-white text-center text-xs st-wt1"></div>
                         </td>
 
                         <td class="p-2.5 space-y-1">
-                            <input type="text" value="${st.p2}" placeholder="ชื่อกระบวนการ 2" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p2">
+                            <input type="text" value="${st.p2}" placeholder="กระบวนการ 2" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p2">
                             <div class="flex items-center gap-1"><span class="text-[10px] text-slate-400 w-8">WT2:</span><input type="number" step="0.1" value="${st.wt2}" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1 text-white text-center text-xs st-wt2"></div>
                         </td>
 
                         <td class="p-2.5 space-y-1">
-                            <input type="text" value="${st.p3 && st.p3 !== '—' ? st.p3 : ''}" placeholder="ชื่อกระบวนการ 3 (เพิ่มใหม่)" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p3">
+                            <input type="text" value="${st.p3 && st.p3 !== '—' ? st.p3 : ''}" placeholder="กระบวนการ 3" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2.5 py-1 text-white text-xs st-p3">
                             <div class="flex items-center gap-1"><span class="text-[10px] text-slate-400 w-8">WT3:</span><input type="number" step="0.1" value="${st.wt3 || 0}" class="w-full bg-[#090d16] border border-blue-950 rounded-lg px-2 py-1 text-white text-center text-xs st-wt3"></div>
                         </td>
 
@@ -753,7 +781,14 @@
 
             card.title = document.getElementById('edit-modal-title').value;
             card.badge = document.getElementById('edit-modal-badge').value;
-            card.line = document.getElementById('edit-modal-line').value;
+            card.line = currentSelectedProcessLine; // บันทึกไลน์อัตโนมัติ
+
+            // เก็บค่ารุ่นที่ถูกติ๊กเลือกหลายรุ่น (Multi-select)
+            let selectedModels = [];
+            document.querySelectorAll('.edit-model-chk:checked').forEach(chk => {
+                selectedModels.push(chk.value);
+            });
+            card.models = selectedModels;
 
             let rows = document.querySelectorAll('#edit-stations-tbody tr');
             let updatedStations = [];
@@ -778,7 +813,7 @@
             closeEditProcessModal();
             renderProcessDataTable();
             manualSaveDataSilent();
-            alert("✅ บันทึกกระบวนการทำงานและเวลาทำงานสำเร็จ!");
+            alert("✅ บันทึกข้อมูลและรุ่นที่เลือกสำเร็จ!");
         }
 
         function openAddNewModelModal() {
