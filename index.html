@@ -298,7 +298,7 @@
                     </div>
                 </div>
 
-                <!-- 🌟 ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน (คงไว้และแสดงผลเต็มรูปแบบ) -->
+                <!-- 🌟 ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน (เพิ่มใหม่ตามคำขอ) -->
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl mt-8">
                     <div class="p-4 bg-blue-950/30 border-b border-blue-950/60 flex justify-between items-center">
                         <div>
@@ -792,9 +792,11 @@
                 tbody.innerHTML = tbodyHTML;
             }
 
+            // เรนเดอร์ตารางสรุปด้านล่างอัตโนมัติ
             renderMasterSummaryProcessTable(currentCard);
         }
 
+        // ฟังก์ชันเรนเดอร์ตารางสรุปข้อมูลกระบวนการและเวลาทำงานด้านล่าง
         function renderMasterSummaryProcessTable(currentCard) {
             const summaryTbody = document.getElementById('master-summary-process-tbody');
             if (!summaryTbody) return;
