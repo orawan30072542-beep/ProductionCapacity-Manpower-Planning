@@ -298,7 +298,7 @@
                     </div>
                 </div>
 
-                <!-- ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน -->
+                <!-- 🌟 ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน (คงไว้และแสดงผลเต็มรูปแบบ) -->
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl mt-8">
                     <div class="p-4 bg-blue-950/30 border-b border-blue-950/60 flex justify-between items-center">
                         <div>
@@ -827,18 +827,16 @@
         }
 
         let isCreatingNewRecord = false;
-        let targetEditLine = "";
 
         function openEditProcessModal(isNew = false) {
             isCreatingNewRecord = isNew;
-            targetEditLine = currentSelectedProcessLine;
             let modalHeader = document.getElementById('edit-modal-header-title');
 
             if (isNew) {
-                modalHeader.innerText = `➕ เพิ่มข้อมูลกระบวนการและสถานีใหม่ (${targetEditLine})`;
+                modalHeader.innerText = `➕ เพิ่มข้อมูลกระบวนการและสถานีใหม่`;
                 document.getElementById('edit-modal-title').value = "";
                 document.getElementById('edit-modal-badge').value = "";
-                document.getElementById('edit-modal-line').value = targetEditLine;
+                document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
 
                 let container = document.getElementById('edit-modal-models-checkboxes');
                 let allModels = [];
@@ -877,13 +875,13 @@
 
             } else {
                 modalHeader.innerText = `✏️ แก้ไขข้อมูลกระบวนการและสถานี`;
-                let list = processDataStore[targetEditLine];
+                let list = processDataStore[currentSelectedProcessLine];
                 if (!list || list.length === 0) return;
                 let card = list[activeCardIndex];
 
                 document.getElementById('edit-modal-title').value = card.title;
                 document.getElementById('edit-modal-badge').value = card.badge;
-                document.getElementById('edit-modal-line').value = targetEditLine;
+                document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
 
                 let container = document.getElementById('edit-modal-models-checkboxes');
                 let allModels = [];
@@ -990,23 +988,22 @@
                 });
             });
 
-            // บันทึกแยกเฉพาะไลน์ผลิตที่เลือกปัจจุบัน ป้องกันไม่ให้ข้อมูลไปปะปนกัน
-            if (!processDataStore[targetEditLine]) processDataStore[targetEditLine] = [];
+            if (!processDataStore[currentSelectedProcessLine]) processDataStore[currentSelectedProcessLine] = [];
 
             if (isCreatingNewRecord) {
-                processDataStore[targetEditLine].push({
+                processDataStore[currentSelectedProcessLine].push({
                     title: titleVal,
                     badge: badgeVal || titleVal,
-                    line: targetEditLine,
+                    line: currentSelectedProcessLine,
                     models: selectedModels.length > 0 ? selectedModels : ["Model New"],
                     stations: updatedStations
                 });
-                activeCardIndex = processDataStore[targetEditLine].length - 1;
+                activeCardIndex = processDataStore[currentSelectedProcessLine].length - 1;
             } else {
-                let card = processDataStore[targetEditLine][activeCardIndex];
+                let card = processDataStore[currentSelectedProcessLine][activeCardIndex];
                 card.title = titleVal;
                 card.badge = badgeVal;
-                card.line = targetEditLine;
+                card.line = currentSelectedProcessLine;
                 card.models = selectedModels;
                 card.stations = updatedStations;
             }
@@ -1014,22 +1011,17 @@
             closeEditProcessModal();
             renderProcessDataTable();
             manualSaveDataSilent();
-            alert("✅ บันทึกข้อมูลกระบวนการและรุ่นแยกตามไลน์ผลิตสำเร็จ!");
+            alert("✅ บันทึกข้อมูลและอัปเดตตารางสรุปเรียบร้อยแล้ว!");
         }
 
         function openAddNewModelModal() {
-            let selectedLineForNew = document.getElementById('new-model-line-select')?.value || currentSelectedProcessLine;
-            currentSelectedProcessLine = selectedLineForNew;
-            selectProcessLine(selectedLineForNew);
             openEditProcessModal(true);
         }
 
         function closeAddNewModelModal() {}
 
         function confirmAddNewModel() {
-            let selectedLineForNew = document.getElementById('new-model-line-select')?.value || currentSelectedProcessLine;
-            currentSelectedProcessLine = selectedLineForNew;
-            selectProcessLine(selectedLineForNew);
+            closeEditProcessModal();
             openEditProcessModal(true);
         }
 
