@@ -298,22 +298,22 @@
                     </div>
                 </div>
 
-                <!-- 🌟 ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน (เพิ่มใหม่ตามคำขอ) -->
+                <!-- 🌟 ตารางสรุปข้อมูลกระบวนการทำงาน (Work Process) และเวลาการทำงาน -->
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl mt-8">
                     <div class="p-4 bg-blue-950/30 border-b border-blue-950/60 flex justify-between items-center">
                         <div>
-                            <h3 class="font-bold text-slate-100 text-sm">📋 ตารางสรุปข้อมูลกระบวนการทำงานและเวลาการทำงานทั้งหมด</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">แสดงข้อมูลกระบวนการทำงาน พร้อมเวลาการทำงาน (Working Time) แยกตามสถานีและรุ่น</p>
+                            <h3 class="font-bold text-slate-100 text-sm">📋 กระบวนการทำงาน (Work Process) และเวลาการทำงาน</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">แสดงรุ่นสินค้า (Model) และเวลาการทำงาน (Working Time) ในแต่ละสถานี</p>
                         </div>
-                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-mono">Summary View</span>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-mono">Work Process View</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950 font-semibold">
-                                    <th class="p-3.5 pl-5">No.</th>
-                                    <th class="p-3.5">Station ID</th>
-                                    <th class="p-3.5">กระบวนการทำงาน (Work Processes)</th>
+                                    <th class="p-3.5 pl-5">Station ID</th>
+                                    <th class="p-3.5">รุ่น (Model)</th>
+                                    <th class="p-3.5">กระบวนการทำงาน (Work Process)</th>
                                     <th class="p-3.5 text-center">เวลา WT1 (s)</th>
                                     <th class="p-3.5 text-center">เวลา WT2 (s)</th>
                                     <th class="p-3.5 text-center">เวลา WT3 (s)</th>
@@ -792,11 +792,10 @@
                 tbody.innerHTML = tbodyHTML;
             }
 
-            // เรนเดอร์ตารางสรุปด้านล่างอัตโนมัติ
+            // เรนเดอร์ตารางสรุปข้อมูลกระบวนการทำงาน (Work Process) และเวลาการทำงาน แยกตามรุ่น
             renderMasterSummaryProcessTable(currentCard);
         }
 
-        // ฟังก์ชันเรนเดอร์ตารางสรุปข้อมูลกระบวนการและเวลาทำงานด้านล่าง
         function renderMasterSummaryProcessTable(currentCard) {
             const summaryTbody = document.getElementById('master-summary-process-tbody');
             if (!summaryTbody) return;
@@ -807,15 +806,17 @@
                 return;
             }
 
-            currentCard.stations.forEach((st, idx) => {
+            let modelsList = currentCard.models && currentCard.models.length > 0 ? currentCard.models.join(', ') : '-';
+
+            currentCard.stations.forEach((st) => {
                 let wtTotal = (st.wt1 + st.wt2 + st.wt3).toFixed(2);
                 let processesCombined = [st.p1, st.p2, st.p3].filter(p => p && p !== '—').join(' ➔ ');
                 if (!processesCombined) processesCombined = '—';
 
                 html += `
                     <tr class="hover:bg-blue-950/20 transition-colors">
-                        <td class="p-3.5 pl-5 text-slate-400 font-mono">${idx + 1}</td>
-                        <td class="p-3.5 font-bold text-blue-400 font-mono">${st.id}</td>
+                        <td class="p-3.5 pl-5 font-bold text-blue-400 font-mono">${st.id}</td>
+                        <td class="p-3.5 font-semibold text-amber-300">${modelsList}</td>
                         <td class="p-3.5 text-slate-200">${processesCombined}</td>
                         <td class="p-3.5 text-center font-mono">${st.wt1 > 0 ? st.wt1.toFixed(2) : '—'}</td>
                         <td class="p-3.5 text-center font-mono">${st.wt2 > 0 ? st.wt2.toFixed(2) : '—'}</td>
@@ -1324,3 +1325,4 @@
     </script>
 </body>
 </html>
+```[cite: 9]
