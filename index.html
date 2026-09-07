@@ -298,22 +298,22 @@
                     </div>
                 </div>
 
-                <!-- 🌟 ตารางสรุปข้อมูลกระบวนการทำงาน (Work Process) และเวลาการทำงาน -->
+                <!-- ตารางหน้าสรุปข้อมูลกระบวนการทำงานและเวลาการทำงาน -->
                 <div class="bg-[#090d16] border border-blue-950/80 rounded-2xl overflow-hidden shadow-2xl mt-8">
                     <div class="p-4 bg-blue-950/30 border-b border-blue-950/60 flex justify-between items-center">
                         <div>
-                            <h3 class="font-bold text-slate-100 text-sm">📋 กระบวนการทำงาน (Work Process) และเวลาการทำงาน</h3>
-                            <p class="text-[11px] text-slate-400 mt-0.5">แสดงรุ่นสินค้า (Model) และเวลาการทำงาน (Working Time) ในแต่ละสถานี</p>
+                            <h3 class="font-bold text-slate-100 text-sm">📋 ตารางสรุปข้อมูลกระบวนการทำงานและเวลาการทำงานทั้งหมด</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">แสดงข้อมูลกระบวนการทำงาน พร้อมเวลาการทำงาน (Working Time) แยกตามสถานีและรุ่น</p>
                         </div>
-                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-mono">Work Process View</span>
+                        <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-mono">Summary View</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-[#0e1626] text-slate-400 border-b border-blue-950 font-semibold">
-                                    <th class="p-3.5 pl-5">Station ID</th>
-                                    <th class="p-3.5">รุ่น (Model)</th>
-                                    <th class="p-3.5">กระบวนการทำงาน (Work Process)</th>
+                                    <th class="p-3.5 pl-5">No.</th>
+                                    <th class="p-3.5">Station ID</th>
+                                    <th class="p-3.5">กระบวนการทำงาน (Work Processes)</th>
                                     <th class="p-3.5 text-center">เวลา WT1 (s)</th>
                                     <th class="p-3.5 text-center">เวลา WT2 (s)</th>
                                     <th class="p-3.5 text-center">เวลา WT3 (s)</th>
@@ -792,7 +792,6 @@
                 tbody.innerHTML = tbodyHTML;
             }
 
-            // เรนเดอร์ตารางสรุปข้อมูลกระบวนการทำงาน (Work Process) และเวลาการทำงาน แยกตามรุ่น
             renderMasterSummaryProcessTable(currentCard);
         }
 
@@ -806,17 +805,15 @@
                 return;
             }
 
-            let modelsList = currentCard.models && currentCard.models.length > 0 ? currentCard.models.join(', ') : '-';
-
-            currentCard.stations.forEach((st) => {
+            currentCard.stations.forEach((st, idx) => {
                 let wtTotal = (st.wt1 + st.wt2 + st.wt3).toFixed(2);
                 let processesCombined = [st.p1, st.p2, st.p3].filter(p => p && p !== '—').join(' ➔ ');
                 if (!processesCombined) processesCombined = '—';
 
                 html += `
                     <tr class="hover:bg-blue-950/20 transition-colors">
-                        <td class="p-3.5 pl-5 font-bold text-blue-400 font-mono">${st.id}</td>
-                        <td class="p-3.5 font-semibold text-amber-300">${modelsList}</td>
+                        <td class="p-3.5 pl-5 text-slate-400 font-mono">${idx + 1}</td>
+                        <td class="p-3.5 font-bold text-blue-400 font-mono">${st.id}</td>
                         <td class="p-3.5 text-slate-200">${processesCombined}</td>
                         <td class="p-3.5 text-center font-mono">${st.wt1 > 0 ? st.wt1.toFixed(2) : '—'}</td>
                         <td class="p-3.5 text-center font-mono">${st.wt2 > 0 ? st.wt2.toFixed(2) : '—'}</td>
@@ -830,16 +827,18 @@
         }
 
         let isCreatingNewRecord = false;
+        let targetEditLine = "";
 
         function openEditProcessModal(isNew = false) {
             isCreatingNewRecord = isNew;
+            targetEditLine = currentSelectedProcessLine;
             let modalHeader = document.getElementById('edit-modal-header-title');
 
             if (isNew) {
-                modalHeader.innerText = `➕ เพิ่มข้อมูลกระบวนการและสถานีใหม่`;
+                modalHeader.innerText = `➕ เพิ่มข้อมูลกระบวนการและสถานีใหม่ (${targetEditLine})`;
                 document.getElementById('edit-modal-title').value = "";
                 document.getElementById('edit-modal-badge').value = "";
-                document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
+                document.getElementById('edit-modal-line').value = targetEditLine;
 
                 let container = document.getElementById('edit-modal-models-checkboxes');
                 let allModels = [];
@@ -878,13 +877,13 @@
 
             } else {
                 modalHeader.innerText = `✏️ แก้ไขข้อมูลกระบวนการและสถานี`;
-                let list = processDataStore[currentSelectedProcessLine];
+                let list = processDataStore[targetEditLine];
                 if (!list || list.length === 0) return;
                 let card = list[activeCardIndex];
 
                 document.getElementById('edit-modal-title').value = card.title;
                 document.getElementById('edit-modal-badge').value = card.badge;
-                document.getElementById('edit-modal-line').value = currentSelectedProcessLine;
+                document.getElementById('edit-modal-line').value = targetEditLine;
 
                 let container = document.getElementById('edit-modal-models-checkboxes');
                 let allModels = [];
@@ -991,22 +990,23 @@
                 });
             });
 
-            if (!processDataStore[currentSelectedProcessLine]) processDataStore[currentSelectedProcessLine] = [];
+            // บันทึกแยกเฉพาะไลน์ผลิตที่เลือกปัจจุบัน ป้องกันไม่ให้ข้อมูลไปปะปนกัน
+            if (!processDataStore[targetEditLine]) processDataStore[targetEditLine] = [];
 
             if (isCreatingNewRecord) {
-                processDataStore[currentSelectedProcessLine].push({
+                processDataStore[targetEditLine].push({
                     title: titleVal,
                     badge: badgeVal || titleVal,
-                    line: currentSelectedProcessLine,
+                    line: targetEditLine,
                     models: selectedModels.length > 0 ? selectedModels : ["Model New"],
                     stations: updatedStations
                 });
-                activeCardIndex = processDataStore[currentSelectedProcessLine].length - 1;
+                activeCardIndex = processDataStore[targetEditLine].length - 1;
             } else {
-                let card = processDataStore[currentSelectedProcessLine][activeCardIndex];
+                let card = processDataStore[targetEditLine][activeCardIndex];
                 card.title = titleVal;
                 card.badge = badgeVal;
-                card.line = currentSelectedProcessLine;
+                card.line = targetEditLine;
                 card.models = selectedModels;
                 card.stations = updatedStations;
             }
@@ -1014,17 +1014,22 @@
             closeEditProcessModal();
             renderProcessDataTable();
             manualSaveDataSilent();
-            alert("✅ บันทึกข้อมูลและอัปเดตตารางสรุปเรียบร้อยแล้ว!");
+            alert("✅ บันทึกข้อมูลกระบวนการและรุ่นแยกตามไลน์ผลิตสำเร็จ!");
         }
 
         function openAddNewModelModal() {
+            let selectedLineForNew = document.getElementById('new-model-line-select')?.value || currentSelectedProcessLine;
+            currentSelectedProcessLine = selectedLineForNew;
+            selectProcessLine(selectedLineForNew);
             openEditProcessModal(true);
         }
 
         function closeAddNewModelModal() {}
 
         function confirmAddNewModel() {
-            closeEditProcessModal();
+            let selectedLineForNew = document.getElementById('new-model-line-select')?.value || currentSelectedProcessLine;
+            currentSelectedProcessLine = selectedLineForNew;
+            selectProcessLine(selectedLineForNew);
             openEditProcessModal(true);
         }
 
@@ -1325,4 +1330,3 @@
     </script>
 </body>
 </html>
-```[cite: 9]
